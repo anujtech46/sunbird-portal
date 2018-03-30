@@ -2916,7 +2916,7 @@ html {
     cursor: pointer;
     position: absolute;
     margin: 0;
-    padding-top: 1.5em; 
+    padding-top: 1.5em;
 }
 
 
@@ -2956,9 +2956,9 @@ html {
 }
 
 @media only screen and (max-width: 767px) {
-  .ui.container.publicResponviveContainer {    
-    margin-right: 0 !important; 
-  } 
+  .ui.container.publicResponviveContainer {
+    margin-right: 0 !important;
+  }
 }
 
 @media only screen and (min-width: 768px) {
@@ -2973,4 +2973,15 @@ html {
 }
 .menu-public-header{
   border-top: 2px solid rgba(0,0,0,.13);
+
+.coursePaymentSectionCards.ui.card {
+    width: 79%;
+    margin-left: 176px;
+}
+
+.paymentOption {
+  margin-left: -846px;
+    color: black;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
 }

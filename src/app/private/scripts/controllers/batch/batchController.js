@@ -23,6 +23,9 @@ angular.module('playerApp')
         { name: 'Ongoing', value: 1 },
         { name: 'Upcoming', value: 0 }
       ]
+      var arr = $rootScope.breadCrumbsData;
+      var courseName = _.last(arr);
+
       batch.showEnroll = true
       batch.searchUserMap = {}
       batch.userSearchTime = 0
@@ -357,17 +360,41 @@ angular.module('playerApp')
         }
         courseService.enrollUserToCourse(req).then(function (response) {
           if (response && response.responseCode === 'OK') {
-            batch.showEnroll = false
-            toasterService.success($rootScope.messages.smsg.m0036)
-            $timeout(function () {
-              $window.location.reload()
-            }, 2000)
-          } else {
+              batch.showEnroll = false
+              toasterService.success($rootScope.messages.smsg.m0036)
+              $timeout(function () {
+                $window.location.reload()
+              }, 2000)
+            } else {
+              toasterService.error($rootScope.messages.emsg.m0001)
+            }
+          }).catch(function () {
             toasterService.error($rootScope.messages.emsg.m0001)
-          }
-        }).catch(function () {
-          toasterService.error($rootScope.messages.emsg.m0001)
-        })
+          })
+      }
+
+        $rootScope.$on('paymentStatus', function (event, args) {
+           $scope.message = args.message;
+           console.log($scope.message);
+           if($rootScope.count === undefined) {
+            $rootScope.count = 1;
+            console.log($rootScope.count)
+             if($scope.message === 'success'){
+                batch.enrollUserToCourse(batch.batchInfo.id)
+                console.log(batch.batchInfo.id);
+              }else{
+                toasterService.error($rootScope.messages.emsg.m0001)
+              }
+            }
+        });
+
+      batch.payForCourse = function(){
+        $('#batchDetails').modal('hide')
+        var params = {courseName: courseName.name,
+                      courseId:batch.courseId,
+                      batchId:batch.batchInfo.id,
+                      userId:batch.userId}
+        $state.go('coursePayment', params)
       }
     }
   ])

@@ -386,5 +386,10 @@ angular.module('playerApp')
       toc.generateInteractEvent = function (env, objId, objType, objVer, edataId, pageId, objRollup) {
         telemetryService.interactTelemetryData(env, objId, objType, objVer, edataId, pageId, objRollup)
       }
+
+      toc.payForCourse = function(){
+        var params = {courseName: toc.courseHierarchy.name}
+        $state.go('coursePayment', params)
+      }
     }
   ])

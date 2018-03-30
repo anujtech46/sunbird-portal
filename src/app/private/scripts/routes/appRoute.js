@@ -5,6 +5,21 @@ angular.module('playerApp')
     $urlRouterProvider.deferIntercept()
     $urlRouterProvider.otherwise('/home')
     $stateProvider
+      .state('coursePayment', {
+        url: '/coursePayment',
+        views: {
+          mainView: {
+            templateUrl: '/views/course/payment/coursePayment.html',
+            controller: 'coursePaymentCtrl as pay'
+          }
+        },
+        params: {
+          courseName:null,
+          courseId:null,
+          batchId:null,
+          userId:null
+        }
+      })
       .state('LandingPage', {
         url: '/',
         views: {

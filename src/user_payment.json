@@ -1,0 +1,40 @@
+{
+  "user_payment": [
+    {
+      "userId": "user_234567",
+      "courseId": "course_56784",
+      "batchId": "batch_748588",
+      "upiId": "upiId_3435445",
+      "userPaidTransactionId": "transaction_78796",
+      "userPaid": true,
+      "id": 1
+    },
+    {
+      "userId": "user_234567",
+      "courseId": "course_56784",
+      "batchId": "batch_748588",
+      "upiId": "upiId_4789654",
+      "userPaidTransactionId": "transaction_78796",
+      "userPaid": true,
+      "id": 2
+    },
+    {
+      "userId": "01247003513227673672",
+      "courseId": "do_2124700281824870401284",
+      "batchId": "01247003513227673672",
+      "upiId": "upiId_456732",
+      "userPaidTransactionId": "transaction_7466796",
+      "userPaid": true,
+      "id": 3
+    },
+    {
+      "userId": "01247002999923507247",
+      "courseId": "do_2124700281824870401284",
+      "batchId": "01247002999923507247",
+      "upiId": "upiId_45678",
+      "userPaidTransactionId": "transaction_7466796",
+      "userPaid": true,
+      "id": 4
+    }
+  ]
+}
