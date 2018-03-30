@@ -33,7 +33,7 @@ angular.module('playerApp')
       }
 
 
-      /*pay.close = function() {
+      pay.close = function() {
         var msg = 'success'
         if(msg === 'success'){
           $rootScope.$emit('paymentStatus', { message: msg });
@@ -41,5 +41,5 @@ angular.module('playerApp')
           $rootScope.$emit('paymentStatus', { message: 'failure' });
         }
         window.history.back()
-      }*/
+      }
   }])
