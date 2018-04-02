@@ -5,21 +5,6 @@ angular.module('playerApp')
     $urlRouterProvider.deferIntercept()
     $urlRouterProvider.otherwise('/home')
     $stateProvider
-      .state('coursePayment', {
-        url: '/coursePayment',
-        views: {
-          mainView: {
-            templateUrl: '/views/course/payment/coursePayment.html',
-            controller: 'coursePaymentCtrl as pay'
-          }
-        },
-        params: {
-          courseName:null,
-          courseId:null,
-          batchId:null,
-          userId:null
-        }
-      })
       .state('LandingPage', {
         url: '/',
         views: {
@@ -180,6 +165,7 @@ angular.module('playerApp')
           $rootScope.courseActive = ''
           dataService.setData('contentStateInit', false)
           dataService.setData('isTrackingEnabled', false)
+          $rootScope.clearTimeOutOfStateChange()
           var contextData = {
             env: 'course',
             rollup: telemetryService.getRollUpData($rootScope.organisationIds)
@@ -348,7 +334,6 @@ angular.module('playerApp')
             env: 'course',
             rollup: telemetryService.getRollUpData($rootScope.organisationIds)
           }
-
           var objectData = {
             id: $rootScope.courseId,
             type: 'course',
@@ -876,6 +861,25 @@ angular.module('playerApp')
             'workspace-content-unlisted', '/content/limited/publish', '', telemetryService.getVisitData())
         }
       })
+      .state('coursePayment', {
+        url: '/coursePayment/:courseId/:batchId',
+        views: {
+          mainView: {
+            templateUrl: '/views/course/payment/coursePayment.html',
+            controller: 'coursePaymentCtrl as pay'
+          }
+        },
+        onEnter: function ($rootScope, routeHelperService) {
+          $rootScope.courseActive = 'active'
+        },
+        onExit: function ($rootScope, routeHelperService) {
+          $rootScope.courseActive = 'active'
+        },
+        params: {
+          courseId: null,
+          batchId: null
+        }
+      })
   })
   .run(function ($urlRouter, $http, $state, permissionsService, $rootScope, $location, config,
     toasterService, routeHelperService, userService) {
@@ -922,65 +926,65 @@ angular.module('playerApp')
         window.localStorage.setItem('previousURl', JSON.stringify({ name: fromState.name, params: fromParams }))
       }
       switch (toState.name) {
-        case 'WorkSpace':
-          routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
-          break
-        case 'WorkSpace.ContentCreation':
-          routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
-          break
-        case 'CreateLesson':
-          routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
-          break
-        case 'ContentEditor':
-          routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
-          break
-        case 'CreateTextbook':
-          routeHelperService.checkStateAccess(config.WORKSPACE.CREATE.BOOK.ROLES, false, event)
-          break
-        case 'CreateCollection':
-          routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
-          break
-        case 'CreateCourse':
-          routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
-          break
-        case 'CollectionEditor':
-          routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
-          break
-        case 'PreviewContent':
-          routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
-          break
-        case 'WorkSpace.UpForReviewContent':
-          routeHelperService.checkStateAccess(config.WORKSPACE.UP_FOR_REVIEW.ROLES, false, event)
-          break
-        case 'WorkSpace.FlaggedContent':
-          routeHelperService.checkStateAccess(['FLAG_REVIEWER'], false, event)
-          break
-        case 'orgDashboard':
-          routeHelperService.checkStateAccess(['ORG_ADMIN', 'SYSTEM_ADMINISTRATION'], false, event)
-          break
-        case 'announcementOutbox':
-          routeHelperService.checkStateAccess(['ANNOUNCEMENT_SENDER'], false, event)
-          break
-        case 'WorkSpace.DraftContent':
-          routeHelperService.checkStateAccess(config.WORKSPACE.DRAFT.ROLES, false, event)
-          break
-        case 'WorkSpace.ReviewContent':
-          routeHelperService.checkStateAccess(config.WORKSPACE.REVIEW.ROLES, false, event)
-          break
-        case 'WorkSpace.PublishedContent':
-          routeHelperService.checkStateAccess(config.WORKSPACE.PUBLISHED.ROLES, false, event)
-          break
-        case 'WorkSpace.AllUploadedContent':
-          routeHelperService.checkStateAccess(config.WORKSPACE.ALL_UPLOADS.ROLES, false, event)
-          break
-        case 'WorkSpace.BatchList':
-          routeHelperService.checkStateAccess(['COURSE_MENTOR'], false, event)
-          break
-        case 'MyActivity':
-          routeHelperService.checkStateAccess(['CONTENT_CREATOR'], false, event)
-          break
-        default:
-          break
+      case 'WorkSpace':
+        routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
+        break
+      case 'WorkSpace.ContentCreation':
+        routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
+        break
+      case 'CreateLesson':
+        routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
+        break
+      case 'ContentEditor':
+        routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
+        break
+      case 'CreateTextbook':
+        routeHelperService.checkStateAccess(config.WORKSPACE.CREATE.BOOK.ROLES, false, event)
+        break
+      case 'CreateCollection':
+        routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
+        break
+      case 'CreateCourse':
+        routeHelperService.checkStateAccess(config.COMMON_ROLES_CHECK, false, event)
+        break
+      case 'CollectionEditor':
+        routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
+        break
+      case 'PreviewContent':
+        routeHelperService.checkStateAccess(config.WORKSPACE_ACCESS_ROLES, false, event)
+        break
+      case 'WorkSpace.UpForReviewContent':
+        routeHelperService.checkStateAccess(config.WORKSPACE.UP_FOR_REVIEW.ROLES, false, event)
+        break
+      case 'WorkSpace.FlaggedContent':
+        routeHelperService.checkStateAccess(['FLAG_REVIEWER'], false, event)
+        break
+      case 'orgDashboard':
+        routeHelperService.checkStateAccess(['ORG_ADMIN', 'SYSTEM_ADMINISTRATION'], false, event)
+        break
+      case 'announcementOutbox':
+        routeHelperService.checkStateAccess(['ANNOUNCEMENT_SENDER'], false, event)
+        break
+      case 'WorkSpace.DraftContent':
+        routeHelperService.checkStateAccess(config.WORKSPACE.DRAFT.ROLES, false, event)
+        break
+      case 'WorkSpace.ReviewContent':
+        routeHelperService.checkStateAccess(config.WORKSPACE.REVIEW.ROLES, false, event)
+        break
+      case 'WorkSpace.PublishedContent':
+        routeHelperService.checkStateAccess(config.WORKSPACE.PUBLISHED.ROLES, false, event)
+        break
+      case 'WorkSpace.AllUploadedContent':
+        routeHelperService.checkStateAccess(config.WORKSPACE.ALL_UPLOADS.ROLES, false, event)
+        break
+      case 'WorkSpace.BatchList':
+        routeHelperService.checkStateAccess(['COURSE_MENTOR'], false, event)
+        break
+      case 'MyActivity':
+        routeHelperService.checkStateAccess(['CONTENT_CREATOR'], false, event)
+        break
+      default:
+        break
       }
     })
   })

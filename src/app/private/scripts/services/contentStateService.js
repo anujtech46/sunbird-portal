@@ -65,11 +65,12 @@ angular.module('playerApp')
          */
       this.getContentsState = function (req, callback) {
         // accepts only one course id and multiple contentids
-
-        if (_.isEmpty(localContentState) || !localContentState[req.request.courseIds[0]]) {
+        if (_.isEmpty(localContentState) || !localContentState[req.request.courseIds[0]] ||
+        req.contentType === 'html') {
           var courseId = req.request.courseIds[0]
           localContentState[courseId] = {}
           localContentState[courseId].contents = []
+          delete req['contentType']
           this.getContentsStateFromAPI(req).then(function (res) {
             if (res && res.responseCode === 'OK') {
               localContentState[courseId].contents = res.result.contentList

@@ -53,7 +53,7 @@ angular.module('playerApp')
       $scope.adjustPlayerHeight = function () {
         var playerWidth = $('#contentViewerIframe').width()
         if (playerWidth) {
-          var height = playerWidth * (9 / 16)
+          var height = playerWidth * (12 / 16)
           $('#contentViewerIframe').css('height', height + 'px')
         }
       }
@@ -167,9 +167,9 @@ angular.module('playerApp')
         $scope.visibility = false
         if (document.getElementById('contentPlayer')) {
           document.getElementById('contentPlayer').removeEventListener('renderer:telemetry:event', function () {
-                      org.sunbird.portal.eventManager.dispatchEvent('sunbird:player:telemetry',
-                        event.detail.telemetryData)
-                    }, false)
+            org.sunbird.portal.eventManager.dispatchEvent('sunbird:player:telemetry',
+              event.detail.telemetryData)
+          }, false)
         }
       }
 

@@ -3,10 +3,10 @@
 angular.module('playerApp')
   .controller('courseScheduleCtrl', ['$rootScope', '$stateParams', 'courseService', 'toasterService',
     '$timeout', 'contentStateService', '$scope', '$location', 'batchService', 'dataService', 'sessionService',
-    '$anchorScroll', 'permissionsService', '$state', 'telemetryService', '$window',
+    '$anchorScroll', 'permissionsService', '$state', 'telemetryService', '$window', 'coursePayment',
     function ($rootScope, $stateParams, courseService, toasterService, $timeout, contentStateService,
       $scope, $location, batchService, dataService, sessionService, $anchorScroll, permissionsService,
-      $state, telemetryService, $window) {
+      $state, telemetryService, $window, coursePayment) {
       var toc = this
 
       toc.getCourseToc = function () {
@@ -15,6 +15,7 @@ angular.module('playerApp')
           if (res && res.responseCode === 'OK') {
             if (res.result.content.status === 'Live' || res.result.content.status === 'Unlisted' ||
               res.result.content.status === 'Flagged') {
+              coursePayment.setCourseDetail(res.result.content)
               res.result.content.children = _.sortBy(res.result.content.children, ['index'])
               // fetch all avaliable contents from course data
               toc.courseContents = toc.getCourseContents(res.result.content, [])
@@ -48,6 +49,9 @@ angular.module('playerApp')
       }
 
       toc.getContentState = function (cb) {
+        var isEnroled = _.find($rootScope.enrolledCourses, function (o) {
+          return o.courseId === toc.courseId
+        })
         var req = {
           request: {
             userId: toc.userId,
@@ -60,8 +64,8 @@ angular.module('playerApp')
           _.forEach(contentRes, function (content) {
             // object 'contentStatusList' has status of each content
             toc.contentStatusList[content.contentId] = toc.contentStatusClass[content.status] ||
-                                    toc.contentStatusClass[0]
-            if (content.status === 2) {
+              toc.contentStatusClass[0]
+            if (content.status === 2 && content.batchId === isEnroled.batchId) {
               toc.courseProgress += 1
             }
           })
@@ -70,9 +74,43 @@ angular.module('playerApp')
         })
       }
 
+      toc.checkProgressContinous = function () {
+        var isEnroled = _.find($rootScope.enrolledCourses, function (o) {
+          return o.courseId === toc.courseId
+        })
+        toc.stateUpdateTimeInterval = setInterval(function () {
+          var req = {
+            request: {
+              userId: toc.userId,
+              courseIds: [toc.courseId],
+              contentIds: _.map(toc.courseContents, 'identifier')
+            },
+            contentType: 'html'
+          }
+          contentStateService.getContentsState(req, function (contentRes) {
+            toc.courseProgress = 0
+            _.forEach(contentRes, function (content) {
+              // object 'contentStatusList' has status of each content
+              toc.contentStatusList[content.contentId] = toc.contentStatusClass[content.status] ||
+                toc.contentStatusClass[0]
+              if (content.status === 2 && content.batchId === isEnroled.batchId) {
+                toc.courseProgress += 1
+              }
+            })
+            console.log('called update state')
+            toc.updateCourseProgress()
+          })
+        }, 4000)
+      }
+
+      $rootScope.clearTimeOutOfStateChange = function () {
+        console.log('clear timeout update state')
+        clearTimeout(toc.stateUpdateTimeInterval)
+      }
+
       toc.getCourseContents = function (contentData, contentList) {
         if (contentData.mimeType !==
-                            'application/vnd.ekstep.content-collection') {
+          'application/vnd.ekstep.content-collection') {
           contentList.push(contentData)
         } else {
           angular.forEach(contentData.children, function (child, item) {
@@ -184,12 +222,17 @@ angular.module('playerApp')
         )
         if (curCourse && toc.itemIndex >= 0) {
           curCourse.lastReadContentId =
-                                toc.courseContents[toc.itemIndex].identifier
+            toc.courseContents[toc.itemIndex].identifier
           $rootScope.enrolledCourseIds[toc.courseId]
             .lastReadContentId = curCourse.lastReadContentId
           curCourse.progress = toc.courseProgress
           $rootScope.enrolledCourseIds[toc.courseId]
             .progress = curCourse.progress
+        }
+        // Clear time out and update progress
+        if (toc.courseProgress === toc.courseContents.length) {
+          clearTimeout(toc.stateUpdateTimeInterval)
+          $rootScope.$emit('updateCourseComplete', {})
         }
       }
 
@@ -199,6 +242,7 @@ angular.module('playerApp')
       $scope.$watch('contentPlayer.isContentPlayerEnabled', function (newValue, oldValue) {
         $('.toc-resume-button').addClass('contentVisibility-hidden')
         if (oldValue === true && newValue === false) {
+          toc.checkProgressContinous()
           toc.hashId = ''
           $location.hash(toc.hashId)
           toc.getContentState(function () {
@@ -299,7 +343,7 @@ angular.module('playerApp')
         {
           name: toc.courseHierarchy.name,
           link: '/course/' +
-                                    '/' + toc.courseId + '/' + toc.lectureView
+            '/' + toc.courseId + '/' + toc.lectureView
         }
         ]
         if ($scope.contentPlayer.isContentPlayerEnabled) {
@@ -385,11 +429,6 @@ angular.module('playerApp')
       /* ---telemetry-interact-event-- */
       toc.generateInteractEvent = function (env, objId, objType, objVer, edataId, pageId, objRollup) {
         telemetryService.interactTelemetryData(env, objId, objType, objVer, edataId, pageId, objRollup)
-      }
-
-      toc.payForCourse = function(){
-        var params = {courseName: toc.courseHierarchy.name}
-        $state.go('coursePayment', params)
       }
     }
   ])

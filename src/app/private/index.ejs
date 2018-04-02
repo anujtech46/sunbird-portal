@@ -31,6 +31,7 @@
     <input type="hidden" id="theme" value="<%=theme%>" />
     <input type="hidden" id="defaultPortalLanguage" value="<%=defaultPortalLanguage%>" />
     <input type="hidden" id="contentChannelFilterType" value="<%=contentChannelFilterType%>" />
+    <input type="hidden" id="courseCompletionBadgeId" value="<%=courseCompletionBadgeId%>" />
     <div ng-include="'views/common/topHeader.html'"></div>
     <div class="ui top attached fluid container">
         <div class="ui padded grid">
@@ -117,7 +118,6 @@
     <script src="scripts/controllers/appController.js"></script>
     <script src="scripts/controllers/note/noteListController.js"></script>
     <script src="scripts/controllers/courseScheduleController.js"></script>
-    <script src="scripts/controllers/coursePaymentController.js"></script>
     <script src="scripts/controllers/learnController.js"></script>
     <script src="scripts/controllers/resourceController.js"></script>
     <script src="scripts/controllers/communityController.js"></script>
@@ -192,6 +192,9 @@
     <script src="scripts/controllers/badge/contentBadgeController.js"></script>
     <script src="scripts/controllers/workspace/DataDrivenFormController.js"></script>
     <script src="scripts/controllers/badge/profileBadgeController.js"></script>
+    <script src="scripts/controllers/coursePaymentController.js"></script>
+    <script src="scripts/services/payment/coursePaymentService.js"></script>
+    <script src="scripts/directives/courseBenefitTransferDirective.js"></script>
 
     <!-- Announcement flow -->
     <script src="/thirdparty/bower_components/file-upload/fine-uploader/fine-uploader.js"></script>

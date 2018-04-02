@@ -108,6 +108,12 @@
             },
             "dataDrivenForms": {
                 "READ":"data/v1/form/read"
+            },
+            "OBJECT": {
+                "READ": "data/v1/object/read",
+                "CREATE": "data/v1/object/create",
+                "UPDATE": "data/v1/object/update",
+                "SEARCH": "data/v1/object/search"
             }
         },
         "FILTER": {

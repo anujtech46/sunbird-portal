@@ -1,0 +1,45 @@
+<div class="rightSideSectionCards ui card margin-top-15" ng-if="courseBT.userTransactionDetail && courseBT.userTransactionDetail.userpaid">
+  <div class="content" ng-init="badge = courseBT.userBadges" ng-if="courseBT.userBadges && courseBT.userBadges.badgeClassName">
+    <div class="header announcementCard-header">Certification
+    </div>
+    <div class="ui items margin-top-10">
+      <div class="item">
+        <img class="ui avatar image" ng-src="{{badge.image || badge.badgeClassImage}}">
+        <div class="middle aligned content padding-left-10">
+          <div class="ui huge sub header secondary-text-color-sunbird">{{badge.name || badge.badgeClassName}}</div>
+          <div class="description">
+            <div class="secondary-text-color-sunbird">{{badge.issuerId | limitTo : 70}}
+              <i ng-if="badge.issuerId && badge.issuerId.length > 70" class="ellipsis horizontal icon" title="{{badge.issuerId}}">
+              </i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="courseBT.isShowBTButton">
+    <div class="ui divider margin-top-0 margin-bottom-10"></div>
+    <button class="ui right floated blue mini basic button margin-bottom-10 margin-right-10" ng-click="courseBT.getBenefit()">GET BENEFIT</button>
+    <div class="ui modal" id="benefitModal">
+      <i class="close icon" ng-click="courseBT.close()"></i>
+      <div class="header">
+        Success
+      </div>
+      <div class="image content">
+        <div class="ui medium image">
+          <img ng-src="{{courseBT.courseImage}}">
+        </div>
+        <div class="description">
+          <div class="ui header">Transaction has been done successfully.</div>
+          <p>Thanks, You got refund for this course ! </p>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="ui black deny button" ng-click="courseBT.close()">
+          close
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

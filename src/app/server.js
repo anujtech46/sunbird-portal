@@ -190,6 +190,22 @@ app.all('/private/service/v1/learner/*',
     }
   }))
 
+app.all('/private/service/v1/aiprohub/*',
+  proxyUtils.verifyToken(),
+  proxy('https://aiprohub.org/api/', {
+    limit: reqDataLimitOfContentUpload,
+    proxyReqOptDecorator: proxyUtils.decorateAiprohubRequestHeaders(),
+    proxyReqPathResolver: function (req) {
+      let urlParam = req.params['0']
+      let query = require('url').parse(req.url).query
+      if (query) {
+        return require('url').parse('https://aiprohub.org/api/' + urlParam + '?' + query).path
+      } else {
+        return require('url').parse('https://aiprohub.org/api/' + urlParam).path
+      }
+    }
+  }))
+
 app.all('/private/service/v1/learner/*', telemetryHelper.generateTelemetryForLearnerService,
   telemetryHelper.generateTelemetryForProxy)
 
@@ -232,6 +248,7 @@ app.all('/private/*', keycloak.protect(), permissionsHelper.checkPermission(), f
   res.locals.theme = envHelper.PORTAL_THEME
   res.locals.defaultPortalLanguage = envHelper.PORTAL_DEFAULT_LANGUAGE
   res.locals.contentChannelFilterType = envHelper.CONTENT_CHANNEL_FILTER_TYPE
+  res.locals.courseCompletionBadgeId = envHelper.COURSE_COMPLITION_BADGE_ID
   res.render(path.join(__dirname, 'private', 'index.ejs'))
 })
 
@@ -264,6 +281,8 @@ app.all('/:tenantName', function (req, res) {
     res.redirect('/')
   }
 })
+
+require('./helpers/contentStateUpdateHelper.js')(app)
 
 // Handle content share request
 require('./helpers/shareUrlHelper.js')(app)

@@ -12,6 +12,8 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
     $rootScope.cdnUrl = $('#cdnUrl').attr('value') || ''
     $rootScope.language = $('#defaultPortalLanguage').attr('value') || 'en'
     $rootScope.content_channel_filter_type = $('#contentChannelFilterType').attr('value')
+    $rootScope.course_completion_badge_id = $('#courseCompletionBadgeId').attr('value')
+
     $rootScope.messages = messages[$rootScope.language]
     $rootScope.frmelmnts = frmelmnts[$rootScope.language]
     $rootScope.searchKey = ''

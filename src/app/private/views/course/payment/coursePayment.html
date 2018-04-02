@@ -1,73 +1,125 @@
-<div class="coursePaymentSectionCards ui card">
-    <div class="content">
-        <div class="header">Select Payment Method</div>
-        <div class="description">
-            <div class="ui secondary pointing menu" style="width:50% !important;">
-                <a class="item ng-binding ng-scope" style="margin-left: -364px;color:black;text-decoration-line: underline;text-decoration-style: solid;"> Pay by UPI</a>
-                 <a class="item ng-binding ng-scope" style="color: grey;"> Voucher Code</a>
+<div class="ui grid">
+  <div class="one wide column"></div>
+  <div class="ten wide column">
+    <div class="ui grid">
+      <div class="eight wide column">
+        <div class="ui grid">
+          <div class="twelve wide column">
+            <div class="margin-top-20 ui raised segment">
+              <div class="row">
+                <span class="header cardsHeading">Select Payment Method</span>
+              </div>
+              <div class="row">
+                <div class="ui secondary pointing compact menu">
+                  <a class="item" ng-click="pay.activePatmentMode = 'UPI'" ng-class="{active: pay.activePatmentMode === 'UPI'}">
+                    Pay by UPI</a>
+                  <a class="item" ng-click="pay.activePatmentMode = 'VOUCHER'" ng-class="{active: pay.activePatmentMode === 'VOUCHER'}">
+                  Voucher Code</a>
+                </div>
+              </div>
+              <!-- if upi -->
+              <div class="row margin-top-20" ng-if="pay.activePatmentMode === 'UPI' ">
+                <form class="ui form">
+                  <div class="three fields">
+                    <div class="field">
+                      <label class="secondary-text-color-sunbird">Enter your UPI ID below</label>
+                      <div class="ui input right icon">
+                        <input type="text" name="location" ng-model="pay.upiId">
+                      </div>
+                    </div>
+                  </div>
+                  <button class="ui primary button" ng-class="{ 'disabled' : !pay.upiId}" ng-click="pay.doPayment()">CONTINUE</button>
+                </form>
+              </div>
+              <!-- If voucher code, currentlly it's disabled -->
+              <div class="row margin-top-20" ng-if="pay.activePatmentMode === 'VOUCHER'" >
+                <form class="ui form">
+                  <div class="three fields">
+                    <div class="field">
+                      <label class="secondary-text-color-sunbird">Enter your voucher code below</label>
+                      <div class="ui input right icon">
+                        <input type="text" name="location" ng-model="pay.upiId">
+                      </div>
+                    </div>
+                  </div>
+                  <button class="ui primary button" ng-class="{ 'disabled' : true}">CONTINUE</button>
+                </form>
+              </div>
             </div>
-           <form class="ui form segment" style="width: 50% !important;">
-                <div class="ui input">
-                     <input type="text" ng-model="pay.upiId" name="upiId" placeholder="Enter your UPI ID" style="margin-top: 21px;margin-left: 22px;width: 278px;" required="">
-                </div>
-                <div style="margin-top: 43px; margin-left: 22px;">
-                    <button class="ui blue button" type="submit" ng-click="pay.submitFormData()">CONTINUE</button>
-                </div>
-                <div class="ui error message" style="width:50% !important;"></div>
-           </form>
-           <div class="ui two column divided grid" style="float: right; margin-right: 20px;margin-top: -268px; width: 48% !important;">
-              <div class="stretched row">
-                    <div class="column">
-                      <div class="ui segment">
-                        <b>{{pay.title}}</b>
-                      </div>
-                      <div class="ui segment">
-                        Sub Total
-                      </div>
-                      <div class="ui segment">
-                        Tax
-                      </div>
-                      <div class="ui segment">
-                        <b>Total</b>
-                      </div>
-                    </div>
-
-                    <div class="column">
-                      <div class="ui segment">
-                        <b>RS. 20,000</b>
-                      </div>
-                      <div class="ui segment">
-                        RS. 20,000
-                      </div>
-                      <div class="ui segment">
-                        Rs. 1,150
-                      </div>
-                      <div class="ui segment">
-                        <b>Rs. 21,150</b>
-                      </div>
-                    </div>
-              </div>
-           </div>
+          </div>
         </div>
-        <div class="ui modal" id="payModal">
-              <i class="close icon" ng-click="pay.close()"></i>
-              <div class="header">
-                Success
-              </div>
-              <div class="image content">
-                <div class="ui medium image">
-                  <img src="/images/avatar/large/chris.jpg">
+      </div>
+      <div class="four wide column">
+        <div class="ui grid">
+          <div class="row">
+            <div class="twelve wide column">
+              <div class="margin-top-20  ui raised segment">
+                <div class="header announcementCard-header">
+                  <div class="profileitems ui relaxed divided items">
+                    <div class="item">
+                      <img class="ui avatar image" ng-src="{{pay.courseImage}}">
+                      <div class="content">
+                        <span>{{pay.courseTitle}}</span>
+                      </div>
+                      <div class="right floated">{{pay.coursePrice | currency : "Rs. " : 0}}</div>
+                    </div>
+                  </div>
                 </div>
-                <div class="description">
-                  <div class="ui header">Transaction has been done successfully.</div>
-                  <p>Thanks, You have enrolled for this course ! </p>
+                <div class="ui divider"></div>
+                <div class="ui middle aligned list margin-top-0">
+                  <div class="item padding-top-10 padding-bottom-5">
+                    <div class="right floated content">
+                      <div>{{pay.coursePrice | currency : "Rs. " : 0}}</div>
+                    </div>
+                    <div class="content contentMetaDetail">
+                      Sub Total
+                    </div>
+                  </div>
+                  <div class="item padding-top-10 padding-bottom-5">
+                    <div class="right floated content">
+                      <div>{{pay.courseTax | currency : "Rs. " : 0}}</div>
+                    </div>
+                    <div class="content contentMetaDetail">
+                      Tax
+                    </div>
+                  </div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="ui middle aligned list margin-top-0">
+                  <div class="item padding-top-10 padding-bottom-5">
+                    <div class="ui right floated tiny header  content">
+                      <div>{{pay.coursePrice + pay.courseTax | currency : "Rs. " : 0}}</div>
+                    </div>
+                    <div class="ui tiny header content">
+                      Total
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="actions">
-                <div class="ui black deny button" ng-click="pay.close()">
-                  close
-                </div>
-              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+  <div class="one wide column"></div>
 </div>
+
+<div class="ui modal" id="payModal"> 
+  <i class="close icon" ng-click="pay.close()"></i> 
+  <div class="header"> 
+    Success 
+    </div> 
+  <div class="image content"> 
+    <div class="ui medium image"> 
+      <img ng-src="{{pay.courseImage}}"> 
+  </div> 
+    <div class="description"> 
+      <div class="ui header">Transaction has been done successfully.</div> 
+      <p>Thanks, You have enrolled for this course ! </p> 
+</div> 
+</div> 
+  <div class="actions"> 
+    <div class="ui black deny button" ng-click="pay.close()"> 
+      close 
+</div> 

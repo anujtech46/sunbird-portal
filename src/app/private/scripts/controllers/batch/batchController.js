@@ -23,8 +23,6 @@ angular.module('playerApp')
         { name: 'Ongoing', value: 1 },
         { name: 'Upcoming', value: 0 }
       ]
-      var arr = $rootScope.breadCrumbsData;
-      var courseName = _.last(arr);
 
       batch.showEnroll = true
       batch.searchUserMap = {}
@@ -129,7 +127,7 @@ angular.module('playerApp')
           batchService.create(request).then(function (response) {
             if (response && response.responseCode === 'OK') {
               telemetryService.startTelemetryData('course', response.result.batchId, 'batch', '1.0', 'batch',
-          'batch-create', 'create')
+                'batch-create', 'create')
               if (data.users && data.users.length > 0) {
                 var userRequest = {
                   request: {
@@ -360,40 +358,43 @@ angular.module('playerApp')
         }
         courseService.enrollUserToCourse(req).then(function (response) {
           if (response && response.responseCode === 'OK') {
-              batch.showEnroll = false
-              toasterService.success($rootScope.messages.smsg.m0036)
-              $timeout(function () {
-                $window.location.reload()
-              }, 2000)
+            batch.showEnroll = false
+            toasterService.success($rootScope.messages.smsg.m0036)
+            $timeout(function () {
+              $window.location.reload()
+            }, 2000)
+          } else {
+            toasterService.error($rootScope.messages.emsg.m0001)
+          }
+        }).catch(function () {
+          toasterService.error($rootScope.messages.emsg.m0001)
+        })
+      }
+
+      function initializeCourseEnrollEvent () {
+        $rootScope.$on('enrollCourse', function (event, args) {
+          $scope.message = args.message
+          console.log($scope.message)
+          if ($rootScope.count === undefined) {
+            $rootScope.count = 1
+            console.log($rootScope.count)
+            if ($scope.message === 'success') {
+              batch.enrollUserToCourse(args.batchId)
+              console.log(args)
             } else {
               toasterService.error($rootScope.messages.emsg.m0001)
             }
-          }).catch(function () {
-            toasterService.error($rootScope.messages.emsg.m0001)
-          })
+          }
+        })
       }
 
-        $rootScope.$on('paymentStatus', function (event, args) {
-           $scope.message = args.message;
-           console.log($scope.message);
-           if($rootScope.count === undefined) {
-            $rootScope.count = 1;
-            console.log($rootScope.count)
-             if($scope.message === 'success'){
-                batch.enrollUserToCourse(batch.batchInfo.id)
-                console.log(batch.batchInfo.id);
-              }else{
-                toasterService.error($rootScope.messages.emsg.m0001)
-              }
-            }
-        });
-
-      batch.payForCourse = function(){
+      batch.payForCourse = function () {
         $('#batchDetails').modal('hide')
-        var params = {courseName: courseName.name,
-                      courseId:batch.courseId,
-                      batchId:batch.batchInfo.id,
-                      userId:batch.userId}
+        var params = {
+          courseId: batch.courseId,
+          batchId: batch.batchInfo.id
+        }
+        initializeCourseEnrollEvent()
         $state.go('coursePayment', params)
       }
     }
