@@ -190,22 +190,6 @@ app.all('/private/service/v1/learner/*',
     }
   }))
 
-app.all('/private/service/v1/aiprohub/*',
-  proxyUtils.verifyToken(),
-  proxy(envHelper.AIPROHUB_URL, {
-    limit: reqDataLimitOfContentUpload,
-    proxyReqOptDecorator: proxyUtils.decorateAiprohubRequestHeaders(),
-    proxyReqPathResolver: function (req) {
-      let urlParam = req.params['0']
-      let query = require('url').parse(req.url).query
-      if (query) {
-        return require('url').parse(envHelper.AIPROHUB_URL + urlParam + '?' + query).path
-      } else {
-        return require('url').parse(envHelper.AIPROHUB_URL + urlParam).path
-      }
-    }
-  }))
-
 app.all('/private/service/v1/learner/*', telemetryHelper.generateTelemetryForLearnerService,
   telemetryHelper.generateTelemetryForProxy)
 
@@ -217,6 +201,7 @@ app.all('/private/service/v1/content/data/v1/telemetry',
       return require('url').parse(envHelper.content_Service_Local_BaseUrl + '/v1/telemetry').path
     }
   }))
+
 app.all('/private/service/v1/content/*',
   proxyUtils.verifyToken(),
   permissionsHelper.checkPermission(),

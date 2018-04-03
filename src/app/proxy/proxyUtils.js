@@ -24,25 +24,6 @@ const decorateRequestHeaders = function () {
   }
 }
 
-const decorateAiprohubRequestHeaders = function () {
-  return function (proxyReqOpts, srcReq) {
-    if (srcReq.session) {
-      var userId = srcReq.session.userId
-      var channel = srcReq.session.rootOrghashTagId || md5('sunbird')
-      if (userId) { proxyReqOpts.headers['X-Authenticated-Userid'] = userId }
-      proxyReqOpts.headers['X-Channel-Id'] = channel
-    }
-    proxyReqOpts.headers['X-App-Id'] = appId
-    if (srcReq.kauth && srcReq.kauth.grant && srcReq.kauth.grant.access_token &&
-    srcReq.kauth.grant.access_token.token) {
-      proxyReqOpts.headers['x-authenticated-user-token'] = srcReq.kauth.grant.access_token.token
-    }
-    proxyReqOpts.headers.Authorization = 'Bearer ' + envHelper.AIPROHUB_AUTH_TOKEN
-    proxyReqOpts.rejectUnauthorized = false
-    return proxyReqOpts
-  }
-}
-
 const decoratePublicRequestHeaders = function () {
   return function (proxyReqOpts, srcReq) {
     proxyReqOpts.headers['X-App-Id'] = appId
@@ -79,4 +60,3 @@ function verifyToken () {
 module.exports.decorateRequestHeaders = decorateRequestHeaders
 module.exports.decoratePublicRequestHeaders = decoratePublicRequestHeaders
 module.exports.verifyToken = verifyToken
-module.exports.decorateAiprohubRequestHeaders = decorateAiprohubRequestHeaders

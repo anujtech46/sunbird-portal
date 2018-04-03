@@ -43,12 +43,7 @@ angular.module('playerApp')
              */
       function httpCall (url, data, method, header) {
         var headers = header || getHeader()
-        var URL
-        if (data && data.request && data.request.entityName === 'userpayment') {
-          URL = config.URL.BASE_PREFIX + 'v1/aiprohub/' + url
-        } else {
-          URL = config.URL.BASE_PREFIX + config.URL.LEARNER_PREFIX + url
-        }
+        var URL = config.URL.BASE_PREFIX + config.URL.LEARNER_PREFIX + url
         return $http({
           method: method,
           url: URL,
