@@ -67,7 +67,7 @@
                   <div>
                     <div ng-include=" 'views/course/carriculumCard.html'"></div>
                   </div>
-                  <div ng-if="toc.courseType === 'ENROLLED_COURSE'">
+                  <div ng-if="toc.courseType === 'ENROLLED_COURSE' && toc.courseProgress > 0">
                       <course-benefit-transfer courseid="toc.courseHierarchy.identifier"></course-benefit-transfer>
                   </div>
                   <br>

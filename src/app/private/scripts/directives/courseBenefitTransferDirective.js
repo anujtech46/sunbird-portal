@@ -10,7 +10,6 @@ angular.module('playerApp')
         courseid: '='
       },
       link: function (scope, element, attrs, batch) {
-
       },
       templateUrl: 'views/course/payment/courseBenefitTransfer.html'
     }
@@ -47,7 +46,6 @@ angular.module('playerApp')
             if (_.find(resp.result.response.content, { coursecomplete: true })) {
               courseBT.getCourseBadge()
             }
-            initializeUpdateCourseEvent()
             courseBT.upiId = (courseBT.userTransactionDetail && courseBT.userTransactionDetail.upiid) || ''
           } else {
           }
@@ -57,32 +55,31 @@ angular.module('playerApp')
         })
       }
 
-      function initializeUpdateCourseEvent () {
-        $rootScope.$on('updateCourseComplete', function () {
+      $rootScope.$on('updateCourseComplete', function () {
+        console.log('Get updateCourseComplete event')
+        if (courseBT.userTransactionDetail && !courseBT.userTransactionDetail.coursecomplete) {
+          console.log('update course complete:', courseBT.userTransactionDetail)
           var updatedReq = Object.assign({}, courseBT.userTransactionDetail)
-          if (courseBT.userTransactionDetail || !courseBT.userTransactionDetail.coursecomplete) {
-            console.log('update course complete:', courseBT.userTransactionDetail)
-            var request = {
-              entityName: 'userpayment',
-              indexed: true,
-              payload: updatedReq
-            }
-
-            request.payload.coursecomplete = true
-
-            coursePayment.updateCoursePayment(request).then(function (resp) {
-              if (resp && resp.responseCode === 'OK') {
-                courseBT.isShowBTButton = true
-                courseBT.getCourseBadge()
-                courseBT.userTransactionDetail = request.payload
-              } else {
-              }
-            }, function (error) {
-              console.log('error', error)
-            })
+          var request = {
+            entityName: 'userpayment',
+            indexed: true,
+            payload: updatedReq
           }
-        })
-      }
+
+          request.payload.coursecomplete = true
+
+          coursePayment.updateCoursePayment(request).then(function (resp) {
+            if (resp && resp.responseCode === 'OK') {
+              courseBT.isShowBTButton = true
+              courseBT.getCourseBadge()
+              courseBT.userTransactionDetail = request.payload
+            } else {
+            }
+          }, function (error) {
+            console.log('error', error)
+          })
+        }
+      })
 
       courseBT.getBenefit = function () {
         var req = {

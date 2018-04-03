@@ -69,6 +69,12 @@ angular.module('playerApp')
               toc.courseProgress += 1
             }
           })
+          if (toc.courseProgress === toc.courseContents.length) {
+            console.log('Update courese to course complete')
+            $timeout(function () {
+              $rootScope.$emit('updateCourseComplete', {})
+            }, 2000)
+          }
           // go back to called function and proceed
           cb()
         })
@@ -100,7 +106,10 @@ angular.module('playerApp')
             console.log('called update state')
             toc.updateCourseProgress()
             if (toc.courseProgress === toc.courseContents.length) {
-              $rootScope.$emit('updateCourseComplete', {})
+              console.log('Update courese to course complete')
+              $timeout(function () {
+                $rootScope.$emit('updateCourseComplete', {})
+              }, 2000)
             }
           })
         }, 4000)

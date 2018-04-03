@@ -192,16 +192,16 @@ app.all('/private/service/v1/learner/*',
 
 app.all('/private/service/v1/aiprohub/*',
   proxyUtils.verifyToken(),
-  proxy('envHelper.AIPROHUB_URL', {
+  proxy(envHelper.AIPROHUB_URL, {
     limit: reqDataLimitOfContentUpload,
     proxyReqOptDecorator: proxyUtils.decorateAiprohubRequestHeaders(),
     proxyReqPathResolver: function (req) {
       let urlParam = req.params['0']
       let query = require('url').parse(req.url).query
       if (query) {
-        return require('url').parse('envHelper.AIPROHUB_URL' + urlParam + '?' + query).path
+        return require('url').parse(envHelper.AIPROHUB_URL + urlParam + '?' + query).path
       } else {
-        return require('url').parse('envHelper.AIPROHUB_URL' + urlParam).path
+        return require('url').parse(envHelper.AIPROHUB_URL + urlParam).path
       }
     }
   }))

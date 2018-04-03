@@ -73,12 +73,12 @@ angular.module('playerApp')
         var deferred = $q.defer()
         if (req.upiId === 'anuj@okhdfcbank') {
           deferred.resolve({
-            'transactionId': 'transaction_123456',
+            'transactionId': 'ut_' + Date.now(),
             'status': 'success'
           })
         } else {
           deferred.resolve({
-            'transactionId': 'transaction_123456',
+            'transactionId': 'ut_' + Date.now(),
             'status': 'failure'
           })
         }
@@ -89,12 +89,12 @@ angular.module('playerApp')
         var deferred = $q.defer()
         if (req.upiId === 'anuj@okhdfcbank') {
           deferred.resolve({
-            'transactionId': 'transaction_123456',
+            'transactionId': 'bt_' + Date.now(),
             'status': 'success'
           })
         } else {
           deferred.resolve({
-            'transactionId': 'tid_' + Date.now(),
+            'transactionId': 'bt_' + Date.now(),
             'status': 'failure'
           })
         }
