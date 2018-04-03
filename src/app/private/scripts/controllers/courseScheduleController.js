@@ -99,6 +99,9 @@ angular.module('playerApp')
             })
             console.log('called update state')
             toc.updateCourseProgress()
+            if (toc.courseProgress === toc.courseContents.length) {
+              $rootScope.$emit('updateCourseComplete', {})
+            }
           })
         }, 4000)
       }
@@ -229,10 +232,8 @@ angular.module('playerApp')
           $rootScope.enrolledCourseIds[toc.courseId]
             .progress = curCourse.progress
         }
-        // Clear time out and update progress
         if (toc.courseProgress === toc.courseContents.length) {
           clearTimeout(toc.stateUpdateTimeInterval)
-          $rootScope.$emit('updateCourseComplete', {})
         }
       }
 

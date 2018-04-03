@@ -374,16 +374,10 @@ angular.module('playerApp')
       function initializeCourseEnrollEvent () {
         $rootScope.$on('enrollCourse', function (event, args) {
           $scope.message = args.message
-          console.log($scope.message)
-          if ($rootScope.count === undefined) {
-            $rootScope.count = 1
-            console.log($rootScope.count)
-            if ($scope.message === 'success') {
-              batch.enrollUserToCourse(args.batchId)
-              console.log(args)
-            } else {
-              toasterService.error($rootScope.messages.emsg.m0001)
-            }
+          if ($scope.message === 'success') {
+            batch.enrollUserToCourse(args.batchId)
+          } else {
+            toasterService.error($rootScope.messages.emsg.m0001)
           }
         })
       }
