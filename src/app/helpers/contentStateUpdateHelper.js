@@ -96,10 +96,10 @@ function updateContentState (req, response) {
     function (cb) {
       updateState(req, function (error, status, resp) {
         if (error) {
-          console.log('Update status fail')
-          response.send(error)
+          console.log('Update status fail: sending response back', JSON.stringify(error), status)
+          return response.send(error)
         } else {
-          console.log('Update status success')
+          console.log('Update status success: sending response back', JSON.stringify(resp), status)
           cb(null, resp)
         }
       })
@@ -210,6 +210,8 @@ function checkRequiredKeys (data, keys) {
 function updateState (req, callback) {
   const body = req.body
   var rspObj = req.rspObj
+  console.log('User request body:', JSON.stringify(body))
+  console.log('User request header', JSON.stringify(req.headers))
   if (!body || !body.request || !checkRequiredKeys(body.request, ['contentId', 'courseId', 'progress', 'uid'])) {
     rspObj.errCode = 'INVALID_REQUEST'
     rspObj.errMsg = 'Required fields are missing.'
@@ -239,13 +241,14 @@ function updateState (req, callback) {
       body: { request: requestBody },
       json: true
     }
+    console.log('Request to learner service:', JSON.stringify(options))
     request(options, function (error, response, body) {
       if (!error && body && body.responseCode === 'OK') {
         rspObj.result = body.result
         var successRspObj = successResponse(rspObj)
         return callback(null, 200, successRspObj)
       } else {
-        console.log('rspObj', body)
+        console.log('Error response from server', JSON.stringify(body))
         rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_CONTENT_STATE_FAILED'
         rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update content state failed, please try again later'
         rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
@@ -307,7 +310,7 @@ function getCourseHierarchy (req, callback) {
 
   console.log('Request: ', JSON.stringify(options))
   request(options, function (error, response, body) {
-    // console.log("response: ", JSON.stringify(body))
+    // console.log('response: ', JSON.stringify(body))
     if (!error && body && body.responseCode === 'OK') {
       return callback(null, 200, body.result)
     } else {
