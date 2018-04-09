@@ -2,7 +2,6 @@ var async = require('async')
 const envVariables = require('./environmentVariablesHelper.js')
 const learnerURL = envVariables.LEARNER_URL
 const request = require('request')
-const ApiInterceptor = require('sb_api_interceptor')
 let uuidv1 = require('uuid/v1')
 const _ = require('lodash')
 const bodyParser = require('body-parser')
@@ -10,7 +9,7 @@ const courseCompliationBadgeId = envVariables.COURSE_COMPLITION_BADGE_ID
 
 module.exports = function (app) {
   app.post('/update/content/state', bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
-    validateToken, updateContentState)
+    updateContentState)
 }
 
 function createAndValidateRequestBody (req, res, next) {
@@ -36,57 +35,10 @@ function createAndValidateRequestBody (req, res, next) {
   removedHeaders.forEach(function (e) {
     delete req.headers[e]
   })
+  req.headers['Authorization'] = req.headers['Authorization'] ? req.headers['Authorization']
+    : 'Bearer ' + envVariables.PORTAL_API_AUTH_TOKEN
   req.rspObj = rspObj
   next()
-}
-
-var keyCloakConfig = {
-  'authServerUrl': envVariables.PORTAL_AUTH_SERVER_URL,
-  'realm': envVariables.KEY_CLOAK_REALM,
-  'clientId': envVariables.PORTAL_AUTH_SERVER_CLIENT,
-  'public': envVariables.KEY_CLOAK_PUBLIC
-}
-
-var cacheConfig = {
-  store: envVariables.sunbird_cache_store,
-  ttl: envVariables.sunbird_cache_ttl
-}
-
-var apiInterceptor = new ApiInterceptor(keyCloakConfig, cacheConfig)
-
-/**
- * [validateToken - Used to validate the token and add userid into headers]
- * @param  {[type]}   req
- * @param  {[type]}   res
- * @param  {Function} next
- */
-function validateToken (req, res, next) {
-  var token = req.headers['x-authenticated-user-token']
-  var rspObj = req.rspObj
-
-  if (!token) {
-    rspObj.errCode = 'USER_TOKEN_MISSING'
-    rspObj.errMsg = 'Required user token is missing in header.'
-    rspObj.responseCode = 401
-    return res.status(401).send(errorResponse(rspObj))
-  }
-
-  apiInterceptor.validateToken(token, function (err, tokenData) {
-    if (err) {
-      rspObj.errCode = 'USER_TOKEN_INVALID'
-      rspObj.errMsg = 'Invalid user token provided.'
-      rspObj.responseCode = 401
-      return res.status(401).send(errorResponse(rspObj))
-    } else {
-      delete req.headers['x-authenticated-userid']
-      req.rspObj.userId = tokenData.userId
-      req.headers['x-authenticated-userid'] = tokenData.userId
-      req.headers['Authorization'] = req.headers['Authorization'] ? req.headers['Authorization']
-        : 'Bearer ' + envVariables.PORTAL_API_AUTH_TOKEN
-      req.rspObj = rspObj
-      next()
-    }
-  })
 }
 
 function successResponse (data) {
@@ -153,6 +105,7 @@ function updateContentState (req, response) {
       })
     },
     function (updateResp, cb) {
+      console.log('rspObj', JSON.stringify(req.rspObj))
       getUserProfile(req, function (error, status, resp) {
         if (error || (resp.response && resp.response.badgeAssertions && resp.response.badgeAssertions.length > 0 &&
           _.findIndex(resp.response.badgeAssertions, { badgeId: courseCompliationBadgeId }) > -1)) {
@@ -257,17 +210,18 @@ function checkRequiredKeys (data, keys) {
 function updateState (req, callback) {
   const body = req.body
   var rspObj = req.rspObj
-  if (!body || !body.request || !checkRequiredKeys(body.request, ['contentId', 'courseId', 'progress'])) {
+  if (!body || !body.request || !checkRequiredKeys(body.request, ['contentId', 'courseId', 'progress', 'uid'])) {
     rspObj.errCode = 'INVALID_REQUEST'
     rspObj.errMsg = 'Required fields are missing.'
     rspObj.responseCode = 'CLIENT_ERROR'
     var errRspObj = errorResponse(rspObj)
     return callback(errRspObj, 400, false)
   } else {
+    rspObj.userId = body.request.uid
     var progress = body.request.progress
     var status = body.request.status ? body.request.status : progress > 0 ? (progress >= 100 ? 2 : 1) : 0
     var requestBody = {
-      userId: rspObj.userId,
+      userId: body.request.uid,
       contents: [
         {
           contentId: body.request.contentId,
@@ -291,6 +245,7 @@ function updateState (req, callback) {
         var successRspObj = successResponse(rspObj)
         return callback(null, 200, successRspObj)
       } else {
+        console.log('rspObj', body)
         rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_CONTENT_STATE_FAILED'
         rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update content state failed, please try again later'
         rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
