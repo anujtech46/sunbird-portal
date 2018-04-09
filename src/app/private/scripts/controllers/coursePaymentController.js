@@ -2,9 +2,9 @@
 
 angular.module('playerApp')
   .controller('coursePaymentCtrl', ['$rootScope', '$stateParams', 'toasterService',
-    '$timeout', 'contentStateService', '$scope', '$location', '$state', 'coursePayment', 'uuid4',
+    '$timeout', 'contentStateService', '$scope', '$location', '$state', 'coursePayment', 'uuid4', '$base64',
     function ($rootScope, $stateParams, toasterService, $timeout, contentStateService,
-      $scope, $location, $state, coursePayment, uuid4) {
+      $scope, $location, $state, coursePayment, uuid4, $base64) {
       var pay = this
       pay.upiId = ''
       pay.courseId = $stateParams.courseId
@@ -14,6 +14,7 @@ angular.module('playerApp')
       pay.coursePrice = 20000
       pay.courseTax = 1150
       pay.activePatmentMode = 'UPI'
+      pay.progress = true
 
       pay.courseDetail = function () {
         coursePayment.getCourseDetail(pay.courseId, function (courseDetail) {
@@ -25,12 +26,26 @@ angular.module('playerApp')
       }
 
       pay.collectPayment = function () {
-        var req = {
-          upiId: pay.upiId
+        var string = {
+          merchantId: 'M2306160483220675579140',
+          transactionId: 'TXN' + new Date().getTime(),
+          merchantOrderId: 'TXN' + new Date().getTime(),
+          amount: 100,
+          instrumentType: 'VPA',
+          instrumentReference: 'nishant@ybl',
+          expiresIn: 300
         }
-        coursePayment.collectPayment(req).then(function (resp) {
-          if (resp.status === 'success') {
-            pay.submitPaymentDetail(resp)
+        //var encodedReq = btoa(string)
+        coursePayment.collectPayment().then(function (resp) {
+          console.log(resp.success);
+          pay.progress = true;
+          var resp = {status: 'success'}
+          if (resp.status == 'success') {
+            $('#payModal').modal('show');
+            // Set time to call object API
+            setTimeout(function(){
+                pay.submitPaymentDetail(resp)
+            }, 300);
           } else {
             toasterService.error('Payment failed, please try again later')
           }
@@ -40,6 +55,7 @@ angular.module('playerApp')
       }
 
       pay.submitPaymentDetail = function (resp) {
+        pay.progress = false;
         var request = {
           entityName: 'userpayment',
           indexed: true,
@@ -55,8 +71,8 @@ angular.module('playerApp')
           }
         }
         coursePayment.createCoursePayment(request).then(function (resp) {
-          if (resp && resp.responseCode === 'OK') {
-            $('#payModal').modal('show')
+          if (resp && resp.responseCode === 'CLIENT ERROR') {
+            $('#payModal').modal('show');
             pay.userTransactionDetail = resp.result.data
           } else {
             pay.userTransactionDetail = {}
