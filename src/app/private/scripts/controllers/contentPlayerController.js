@@ -205,4 +205,35 @@ angular.module('playerApp')
           scrollTop: $('#player-auto-scroll').offset().top
         }, 500)
       }
+
+      function loadCourseDetails () {
+        var mydata = JSON.parse(sessionStorage.getItem('sbConfig'))
+        if (typeof mydata.ENROLLED_COURSES === 'undefined') {
+          return ''
+        }
+
+        var uid = mydata.ENROLLED_COURSES.uid
+        var contentId = mydata.COURSE_PARAMS.contentId
+        var courseId = mydata.COURSE_PARAMS.courseId
+        var batchId = ''
+        var course
+        while (course = mydata.ENROLLED_COURSES.courseArr.pop()) { // eslint-disable-line no-cond-assign
+          if (courseId === course.courseId) {
+            batchId = course.batchId
+            break
+          }
+        }
+        var courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
+                                 '&batchId=' + batchId + '&uid=' + uid
+        // alert("course_details_str = " + course_details_str);
+        return courseDetailsStr
+      }
+
+      $window.open_notebook = function (url) {
+        // alert("open_notebook called");
+        var newUrl = url + loadCourseDetails()
+        console.log('Open notebook link:', newUrl)
+        $window.open(newUrl)
+        return true
+      }
     }])
