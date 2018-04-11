@@ -15,6 +15,7 @@ angular.module('playerApp')
       pay.courseTax = 1150
       pay.activePatmentMode = 'UPI'
       pay.progress = true
+      pay.statusMessage = ''
 
       pay.courseDetail = function () {
         coursePayment.getCourseDetail(pay.courseId, function (courseDetail) {
@@ -58,7 +59,7 @@ angular.module('playerApp')
         }
         coursePayment.createCoursePayment(request).then(function (resp) {
           if (resp && resp.responseCode === 'OK') {
-            $('#payModal').modal({closable: false}).model('show')
+            $('#payModal').modal({ closable: false }).modal('show');
             coursePayment.checkPaymentStatusAfterRequest()
             pay.userTransactionDetail = resp.result.data
           } else {
@@ -112,7 +113,9 @@ angular.module('playerApp')
           coursePayment.getCoursePayment(request).then(function (resp) {
             if (resp && resp.responseCode === 'OK') {
               var result = resp.result.response[0]
-              if (result.userpaid) {
+              pay.userTransactionDetail = result
+              if (result.paymentstatus) {
+                pay.statusMessage = result.paymentstatus
                 pay.progress = false
               }
               if (result.paymentstatus === 'PAYMENT_SUCCESS') {

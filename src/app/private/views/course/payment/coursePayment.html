@@ -116,9 +116,21 @@
       <div class="ui header" style="margin-left: 162px;">Please accept request from your PhonePe mobile app !</div>
       <p></p>
    </div>
-  <div class="description" ng-if="!pay.progress">
+  <div class="description" ng-if="pay.statusMessage === 'PAYMENT_SUCCESS'">
         <div class="ui header">Transaction has been done successfully.</div>
         <p>Thanks, You have enrolled for this course ! </p>
+  </div>
+  <div class="description" ng-if="pay.statusMessage === 'PAYMENT_ERROR'">
+        <p> Payment failed! </p>
+  </div>
+  <div class="description" ng-if="pay.statusMessage === 'PAYMENT_PENDING'">
+        <p> Payment is pending! </p>
+  </div>
+  <div class="description" ng-if="pay.statusMessage === 'PAYMENT_CANCELLED'">
+        <p> Payment cancelled by merchant! </p>
+  </div>
+  <div class="description" ng-if="pay.statusMessage === 'PAYMENT_DECLINED'">
+        <p> Payment declined by user! </p>
   </div>
 
 </div>
