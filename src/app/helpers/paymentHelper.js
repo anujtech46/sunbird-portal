@@ -1,0 +1,258 @@
+const envVariables = require('./environmentVariablesHelper.js')
+const learnerURL = envVariables.LEARNER_URL
+const request = require('request')
+let uuidv1 = require('uuid/v1')
+const bodyParser = require('body-parser')
+const sha = require('sha256')
+const phonePayChargeURL = '/v3/charge'
+const saltKey = '8289e078-be0b-484d-ae60-052f117f8deb'
+const saltIndex = 1
+const PAYMENT_STATUS_UPDATE_API = 'data/v1/object/update'
+const TXN_ID_PREFIX = 'TXN'
+const COLLECT_PAYMENT_MERCHANT_ID = 'M2306160483220675579140'
+const PAYMENT_REQUEST_TIME_OUT = 300
+const PAYMENT_SERVICE_PROVIDER_BASE_URL = 'https://mercury-uat.phonepe.com/v3/charge'
+const PAYMENT_CALLBACK_BASE_URL = 'http://38b5b1f9.ngrok.io'
+const PAYMENT_CALLBACK_URI = '/phonepe/v1/callback'
+
+module.exports = function (app) {
+  app.post('/private/service/v1/phonepe' + phonePayChargeURL, bodyParser.json({ limit: '1mb' }),
+    createAndValidateRequestBody, collectPayment)
+
+  app.post(PAYMENT_CALLBACK_URI, bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
+    handlePaymentCallback)
+}
+
+/**
+ * This function helps to update the payment status
+ * @param {object} req: API req object 
+ * @param {*} callback: Callback have 3 params(error, statusCode, successResp)
+ */
+function updatePaymentStatus (req, callback) {
+  var rspObj = req.rspObj
+  if (typeof req !== 'object' || typeof callback !== 'function') {
+    rspObj.errCode = 'INVALID_REQUEST'
+    rspObj.errMsg = 'Invalid request received'
+    rspObj.responseCode = 400
+    return callback(errorResponse(rspObj), 400, null)
+  }
+  const encodedData = req.body && req.body.response
+  const decodedData = JSON.parse(Buffer.from(encodedData, 'base64').toString())
+  console.log('Decode data of payment callback:', JSON.stringify(decodedData))
+  if (decodedData) {
+    var body = {
+      entityName: 'userpayment',
+      indexed: true,
+      payload: {
+        id: decodedData.data && decodedData.data.transactionId,
+        userpaid: decodedData.code === 'PAYMENT_SUCCESS',
+        paymentstatus: decodedData.code
+      }
+    }
+    var options = {
+      method: 'POST',
+      url: learnerURL + PAYMENT_STATUS_UPDATE_API,
+      body: {request: body},
+      headers: req.headers,
+      json: true
+    }
+    console.log('Update status of transaction', JSON.stringify(options))
+    request(options, function (error, response, body) {
+      if (!error && body && body.responseCode === 'OK') {
+        console.log('Payment status update successfully for transactionid: ', decodedData.data.transactionId)
+        return callback(null, 200, body.result)
+      } else {
+        console.log('Payment status update failed for transactionid: ', decodedData.data.transactionId,
+          JSON.stringify(body))
+        rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_PAYMENT_STATUD_FAILED'
+        rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update payment status failed'
+        rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
+        rspObj.result = body && body.result
+        var httpStatus = body && body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500
+        var errRspObj = errorResponse(rspObj)
+        return callback(errRspObj, httpStatus, false)
+      }
+    })
+  } else {
+    console.log('Invalid data received to update the request')
+    rspObj.errCode = 'INVALID_REQUEST_RECEIVED'
+    rspObj.errMsg = 'Invalid request received, Please try again later'
+    rspObj.responseCode = 400
+    var httpStatus = 400
+    return callback(errorResponse(rspObj), httpStatus, false)
+  }
+}
+
+/**
+ * Api wrapper to handle the payment callback, This api will call by  payment provider
+ * @param {object} req: API request object 
+ * @param {oject} res: API response object
+ */
+function handlePaymentCallback (req, res) {
+  const xVerfiy = req && req.headers['x-verify']
+  const data = req.body.response
+  const rspObj = req.rspObj
+
+  console.log('Got Callback request with data', data, xVerfiy)
+  if (!data || !xVerfiy) {
+    rspObj.errCode = 'MISSING_REQUIRED_FIELDS'
+    rspObj.errMsg = 'Required fields are missing.'
+    rspObj.responseCode = 400
+    return res.status(400).send(errorResponse(rspObj))
+  } else {
+    const shaData = sha(data + saltKey) + '###' + saltIndex
+    if (shaData !== xVerfiy) {
+      rspObj.errCode = 'INVALID_REQUEST_DATE'
+      rspObj.errMsg = 'Requested data invalid.'
+      rspObj.responseCode = 400
+      console.log('Invalid request received, xverify and response not matched')
+      return res.status(400).send(errorResponse(rspObj))
+    } else {
+      console.log('Valid request received')
+      updatePaymentStatus(req, function () { })
+      rspObj.responseCode = 200
+      rspObj.result = {
+        message: 'Request successfully verified.'
+      }
+      return res.status(200).send(successResponse(rspObj))
+    }
+  }
+}
+
+/**
+ * This function helps to return base64 data to make collect payment
+ * @param {object} req 
+ */
+function getRequestBodyForCharge (req) {
+  if (!req) {
+    console.log('Invalid req object')
+    return ''
+  }
+  const txnId = TXN_ID_PREFIX + Date.now()
+  var body = {
+    'merchantId': COLLECT_PAYMENT_MERCHANT_ID,
+    'transactionId': txnId,
+    'merchantOrderId': txnId,
+    'amount': req.amount,
+    'instrumentType': req.instrumentType,
+    'instrumentReference': req.instrumentReference,
+    'expiresIn': PAYMENT_REQUEST_TIME_OUT
+  }
+  return Buffer.from(JSON.stringify(body)).toString('base64')
+}
+
+/**
+ * Api wrapper to handle the collect payment
+ * @param {object} req: API request object 
+ * @param {oject} res: API response object
+ */
+function collectPayment (req, res) {
+  var rspObj = req.rspObj || {}
+  var data = req.body && req.body.request
+  console.log('Request received with data', JSON.stringify(data))
+  if (!data || !data.instrumentType || !data.instrumentReference || !data.amount) {
+    rspObj.errCode = 'MISSING_REQUIRED_FIELDS'
+    rspObj.errMsg = 'Required fields are missing.'
+    rspObj.responseCode = 400
+    return res.status(400).send(errorResponse(rspObj))
+  } else {
+    const reqBody = getRequestBodyForCharge(data)
+    console.log('Request body to call payment provider charge api', reqBody)
+
+    var options = {
+      method: 'POST',
+      url: PAYMENT_SERVICE_PROVIDER_BASE_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-callback-url': PAYMENT_CALLBACK_BASE_URL + PAYMENT_CALLBACK_URI,
+        'x-verify': sha(reqBody + phonePayChargeURL + saltKey) + '###' + saltIndex
+      },
+      body: { request: reqBody },
+      json: true
+    }
+
+    console.log('Req options for payment provider charge api', options)
+    request(options, function (error, response, body) {
+      console.log('Response from phone pay', JSON.stringify(body))
+      if (!error && body && !body.success) {
+        rspObj.errCode = body && body.code ? body.code : 'PAYMENT_FAILED'
+        rspObj.errMsg = body && body.message ? body.message : 'Payment failed, please try again later'
+        const httpStatus = body && (body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500)
+        rspObj.responseCode = httpStatus
+        rspObj.result = body
+        return res.status(400).send(errorResponse(rspObj))
+      } else {
+        rspObj.result = body
+        return res.status(200).send(successResponse(rspObj))
+      }
+    })
+  }
+}
+
+function createAndValidateRequestBody (req, res, next) {
+  req.body = req.body || {}
+  req.body.ts = new Date()
+  req.body.url = req.url
+  req.body.path = req.route.path
+  req.body.params = req.body.params ? req.body.params : {}
+  req.body.params.msgid = req.headers['msgid'] || req.body.params.msgid || uuidv1()
+
+  var rspObj = {
+    apiId: 'update.content.state',
+    path: req.body.path,
+    apiVersion: '1.0',
+    msgid: req.body.params.msgid,
+    result: {},
+    startTime: new Date(),
+    method: req.originalMethod
+  }
+  var removedHeaders = ['host', 'origin', 'accept', 'referer', 'content-length', 'user-agent', 'accept-encoding',
+    'accept-language', 'accept-charset', 'cookie', 'dnt', 'postman-token', 'cache-control', 'connection']
+
+  removedHeaders.forEach(function (e) {
+    delete req.headers[e]
+  })
+  req.headers['Authorization'] = req.headers['Authorization'] ? req.headers['Authorization']
+    : 'Bearer ' + envVariables.PORTAL_API_AUTH_TOKEN
+  console.log('Add Auth key', req.headers)
+  req.rspObj = rspObj
+  next()
+}
+
+function successResponse (data) {
+  var response = {}
+  response.id = data.apiId
+  response.ver = data.apiVersion
+  response.ts = new Date()
+  response.params = getParams(data.msgid, 'successful', null, null)
+  response.responseCode = data.responseCode || 'OK'
+  response.result = data.result
+  return response
+}
+
+/**
+ * this function create error response body.
+ * @param {Object} data
+ * @returns {nm$_responseUtil.errorResponse.response}
+ */
+function errorResponse (data) {
+  var response = {}
+  response.id = data.apiId
+  response.ver = data.apiVersion
+  response.ts = new Date()
+  response.params = getParams(data.msgId, 'failed', data.errCode, data.errMsg)
+  response.responseCode = data.responseCode
+  response.result = data.result
+  return response
+}
+
+function getParams (msgId, status, errCode, msg) {
+  var params = {}
+  params.resmsgid = uuidv1()
+  params.msgid = msgId || null
+  params.status = status
+  params.err = errCode
+  params.errmsg = msg
+
+  return params
+}

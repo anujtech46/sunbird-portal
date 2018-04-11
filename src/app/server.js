@@ -226,6 +226,8 @@ app.all('/v1/user/session/create', function (req, res) {
   trampolineServiceHelper.handleRequest(req, res, keycloak)
 })
 
+require('./helpers/paymentHelper.js')(app)
+
 app.all('/private/*', keycloak.protect(), permissionsHelper.checkPermission(), function (req, res) {
   res.locals.userId = req.kauth.grant.access_token.content.sub
   res.locals.sessionId = req.sessionID
@@ -335,7 +337,7 @@ exports.close = function () {
 
 // Telemetry initialization
 const telemetryConfig = {
-  pdata: {id: appId, ver: telemtryEventConfig.pdata.ver},
+  pdata: { id: appId, ver: telemtryEventConfig.pdata.ver },
   method: 'POST',
   batchsize: process.env.sunbird_telemetry_sync_batch_size || 20,
   endpoint: telemtryEventConfig.endpoint,

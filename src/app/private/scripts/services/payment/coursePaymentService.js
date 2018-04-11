@@ -5,8 +5,8 @@
 'use strict'
 
 angular.module('playerApp')
-  .service('coursePayment', ['restfulLearnerService', 'config', 'uuid4', '$q', 'courseService',
-    function (restfulLearnerService, config, uuid4, $q, courseService) {
+  .service('coursePayment', ['restfulLearnerService', 'phonePePaymentService', 'config', 'uuid4', '$q',
+    'courseService', function (restfulLearnerService, phonePePaymentService, config, uuid4, $q, courseService) {
       this.courseDetail = {}
 
       this.setCourseDetail = function (courseDetail) {
@@ -37,28 +37,17 @@ angular.module('playerApp')
           'request': req
         }
       }
-      /**
-             * @method addBadges
-             * @desc assign badge to  users .
-             * @memberOf Services.adminService
-             * @param {Object}  request - Request object
-             * @param {string}  request.badgeTypeId - Badge type id
-             * @param {string}  request.receiverId - User  id
-             * @returns {Promise} Promise object containing response code and message.
-             * @instance
-             */
 
-      this.getCoursePayment = function (req) {
+      this.searchCoursePayment = function (req) {
         var url = config.URL.OBJECT.SEARCH
         return restfulLearnerService.post(url, this.getReauestBody(req))
       }
-      /**
-                     * @method getBadges
-                     * @desc Get badges
-                     * @memberOf Services.adminService
-                     * @returns {Promise} Promise object containing list of badges.
-                     * @instance
-                     */
+
+      this.getCoursePayment = function (req) {
+        var url = config.URL.OBJECT.READ
+        return restfulLearnerService.post(url, this.getReauestBody(req))
+      }
+
       this.createCoursePayment = function (req) {
         var url = config.URL.OBJECT.CREATE
         return restfulLearnerService.post(url, this.getReauestBody(req))
@@ -70,19 +59,8 @@ angular.module('playerApp')
       }
 
       this.collectPayment = function (req) {
-        var deferred = $q.defer()
-        if (req.upiId === 'anuj@okhdfcbank') {
-          deferred.resolve({
-            'transactionId': 'ut_' + Date.now(),
-            'status': 'success'
-          })
-        } else {
-          deferred.resolve({
-            'transactionId': 'ut_' + Date.now(),
-            'status': 'failure'
-          })
-        }
-        return deferred.promise
+        var url = 'v3/charge'
+        return phonePePaymentService.post(url, req)
       }
 
       this.refundPayment = function (req) {

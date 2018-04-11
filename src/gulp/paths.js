@@ -299,7 +299,8 @@ var paths = {
     'dist/private/scripts/controllers/badge/profileBadgeController.js',
     'dist/private/scripts/controllers/coursePaymentController.js',
     'dist/private/scripts/services/payment/coursePaymentService.js',
-    'dist/private/scripts/directives/courseBenefitTransferDirective.js'
+    'dist/private/scripts/directives/courseBenefitTransferDirective.js',
+    'dist/private/scripts/services/phonePePaymentService.js'
   ],
   telemetry_js: [
     'dist/private/scripts/telemetry/TelemetryEvent.js',

@@ -310,7 +310,7 @@ function getCourseHierarchy (req, callback) {
 
   console.log('Request: ', JSON.stringify(options))
   request(options, function (error, response, body) {
-    // console.log('response: ', JSON.stringify(body))
+    // console.log("response: ", JSON.stringify(body))
     if (!error && body && body.responseCode === 'OK') {
       return callback(null, 200, body.result)
     } else {

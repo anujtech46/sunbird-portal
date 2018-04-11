@@ -2,9 +2,9 @@
 
 angular.module('playerApp')
   .controller('coursePaymentCtrl', ['$rootScope', '$stateParams', 'toasterService',
-    '$timeout', 'contentStateService', '$scope', '$location', '$state', 'coursePayment', 'uuid4', '$base64',
+    '$timeout', 'contentStateService', '$scope', '$location', '$state', 'coursePayment', 'uuid4',
     function ($rootScope, $stateParams, toasterService, $timeout, contentStateService,
-      $scope, $location, $state, coursePayment, uuid4, $base64) {
+      $scope, $location, $state, coursePayment, uuid4) {
       var pay = this
       pay.upiId = ''
       pay.courseId = $stateParams.courseId
@@ -26,26 +26,14 @@ angular.module('playerApp')
       }
 
       pay.collectPayment = function () {
-        var string = {
-          merchantId: 'M2306160483220675579140',
-          transactionId: 'TXN' + new Date().getTime(),
-          merchantOrderId: 'TXN' + new Date().getTime(),
-          amount: 100,
-          instrumentType: 'VPA',
-          instrumentReference: 'nishant@ybl',
-          expiresIn: 300
+        var req = {
+          'amount': 1,
+          'instrumentType': 'VPA',
+          'instrumentReference': pay.upiId
         }
-        //var encodedReq = btoa(string)
-        coursePayment.collectPayment().then(function (resp) {
-          console.log(resp.success);
-          pay.progress = true;
-          var resp = {status: 'success'}
-          if (resp.status == 'success') {
-            $('#payModal').modal('show');
-            // Set time to call object API
-            setTimeout(function(){
-                pay.submitPaymentDetail(resp)
-            }, 300);
+        coursePayment.collectPayment({request: req}).then(function (resp) {
+          if (resp && resp.responseCode === 'OK') {
+            pay.submitPaymentDetail(resp.result.data)
           } else {
             toasterService.error('Payment failed, please try again later')
           }
@@ -55,24 +43,23 @@ angular.module('playerApp')
       }
 
       pay.submitPaymentDetail = function (resp) {
-        pay.progress = false;
         var request = {
           entityName: 'userpayment',
           indexed: true,
           payload: {
-            id: uuid4.generate(),
+            id: resp.transactionId,
             userid: pay.userId,
             courseid: pay.courseId,
             batchid: pay.batchId,
             upiid: pay.upiId,
             createddate: (new Date()).toISOString(),
-            userpaid: true,
             userpaidtransactionid: resp.transactionId
           }
         }
         coursePayment.createCoursePayment(request).then(function (resp) {
-          if (resp && resp.responseCode === 'CLIENT ERROR') {
-            $('#payModal').modal('show');
+          if (resp && resp.responseCode === 'OK') {
+            $('#payModal').modal({closable: false}).model('show')
+            coursePayment.checkPaymentStatusAfterRequest()
             pay.userTransactionDetail = resp.result.data
           } else {
             pay.userTransactionDetail = {}
@@ -101,7 +88,7 @@ angular.module('playerApp')
             batchid: pay.batchId
           }
         }
-        coursePayment.getCoursePayment(request).then(function (resp) {
+        coursePayment.searchCoursePayment(request).then(function (resp) {
           if (resp && resp.responseCode === 'OK') {
             pay.userTransactionDetail = resp.result.response.content[0]
           } else {
@@ -113,17 +100,39 @@ angular.module('playerApp')
         })
       }
 
-      pay.checkCoursePayment()
+      coursePayment.checkPaymentStatusAfterRequest = function () {
+        coursePayment.stateUpdateTimeInterval = setInterval(function () {
+          var request = {
+            entityName: 'userpayment',
+            userid: pay.userId,
+            courseid: pay.courseId,
+            batchid: pay.batchId,
+            id: pay.userTransactionDetail.id
+          }
+          coursePayment.getCoursePayment(request).then(function (resp) {
+            if (resp && resp.responseCode === 'OK') {
+              var result = resp.result.response[0]
+              if (result.userpaid) {
+                pay.progress = false
+              }
+              if (result.paymentstatus === 'PAYMENT_SUCCESS') {
+                clearInterval(coursePayment.stateUpdateTimeInterval)
+              }
+            }
+          })
+        }, 4000)
+      }
 
       pay.close = function () {
         var msg = 'success'
         if (msg === 'success') {
-          $rootScope.$emit('enrollCourse', { message: msg, batchId: pay.batchId, courseId: pay.courseId })
+          // $rootScope.$emit('enrollCourse', { message: msg, batchId: pay.batchId, courseId: pay.courseId })
         } else {
-          $rootScope.$emit('enrollCourse', { message: 'failure' })
+          // $rootScope.$emit('enrollCourse', { message: 'failure' })
         }
         window.history.back()
       }
 
+      pay.checkCoursePayment()
       pay.courseDetail()
     }])
