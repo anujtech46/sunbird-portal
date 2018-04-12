@@ -38,7 +38,7 @@ angular.module('playerApp')
             batchid: courseBT.batchId
           }
         }
-        coursePayment.getCoursePayment(request).then(function (resp) {
+        coursePayment.searchCoursePayment(request).then(function (resp) {
           if (resp && resp.responseCode === 'OK') {
             courseBT.userTransactionDetail = _.find(resp.result.response.content, { userpaid: true })
             courseBT.isShowBTButton = courseBT.userTransactionDetail && courseBT.userTransactionDetail.userpaid &&
