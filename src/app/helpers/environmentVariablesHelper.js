@@ -38,7 +38,13 @@ let envVariables = {
   MOBILE_APP_URL: env.sunbird_mobile_app_url || 'http://www.sunbird.org',
   COURSE_COMPLITION_BADGE_ID: env.sunbird_course_complition_badgeid,
   BADGE_ASSIGN_USERNAME: env.sunbird_badge_assign_username,
-  BADGE_ASSIGN_USER_PASSWORD: env.sunbird_badge_assign_user_password
+  BADGE_ASSIGN_USER_PASSWORD: env.sunbird_badge_assign_user_password,
+  AZURE_ACCOUNT_NAME: env.julia_azure_account_name,
+  AZURE_ACCOUNT_KEY: env.julia_azure_account_key,
+  AZURE_STORAGE_URL: env.julia_azure_storage_url,
+  CERTIFICATE_STORE_CONTAINER_NAME: env.julia_certificate_storage_container_name || 'certificate',
+  CERTIFICATE_PROVIDER_NAME: env.julia_certificate_provider_name || 'Julia Computing, Inc.',
+  CERTIFICATE_INSTRUCTOR_NAME: env.julia_certificate_instructor_name || 'Alan Edelman'
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

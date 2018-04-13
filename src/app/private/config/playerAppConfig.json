@@ -115,6 +115,9 @@
                 "CREATE": "data/v1/object/create",
                 "UPDATE": "data/v1/object/update",
                 "SEARCH": "data/v1/object/search"
+            },
+            "CERTIFICATE": {
+                "COURSE": "/course/certificate/download"
             }
         },
         "FILTER": {

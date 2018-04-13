@@ -227,6 +227,7 @@ app.all('/v1/user/session/create', function (req, res) {
 })
 
 require('./helpers/paymentHelper.js')(app)
+require('./helpers/pdfCreator/pdfCreator.js')(app)
 
 app.all('/private/*', keycloak.protect(), permissionsHelper.checkPermission(), function (req, res) {
   res.locals.userId = req.kauth.grant.access_token.content.sub
