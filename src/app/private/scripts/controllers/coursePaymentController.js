@@ -58,7 +58,7 @@ angular.module('playerApp')
         }
         coursePayment.createCoursePayment(request).then(function (resp) {
           if (resp && resp.responseCode === 'OK') {
-            $('#payModal').modal({closable: false}).modal('show')
+            $('#payModal').modal({ closable: false }).modal('show')
             coursePayment.checkPaymentStatusAfterRequest()
             pay.userTransactionDetail = resp.result.data
           } else {
