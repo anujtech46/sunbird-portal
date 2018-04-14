@@ -39,7 +39,7 @@ angular.module('playerApp')
 
       function getUserFullName (userData) {
         if (userData) {
-          return firstLetterUpperCase(certificate.userData.firstName) +
+          return firstLetterUpperCase(certificate.userData.firstName) + ' ' +
               firstLetterUpperCase(certificate.userData.lastName)
         } else {
           return ''

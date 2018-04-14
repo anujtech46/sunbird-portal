@@ -203,7 +203,7 @@ function createCerticate (req, res) {
   // Create local file path
   const filePath = path.join(__dirname, fileName)
   // Create destination path (Azure bucket path)
-  var destPath = path.join(courseName, courseName, fileName)
+  var destPath = path.join('course_certificate', fileName)
   async.waterfall([
     function (CB) {
       uploadUtil.checkFileExist(destPath, function (err, downloadFileData) {
