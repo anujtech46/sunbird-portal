@@ -118,6 +118,10 @@
             },
             "CERTIFICATE": {
                 "COURSE": "/course/certificate/download"
+            },
+            "PAYMENT": {
+                "COLLECT": "/payment/v3/charge",
+                "REFUND": ""
             }
         },
         "FILTER": {

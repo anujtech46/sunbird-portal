@@ -372,7 +372,9 @@ angular.module('playerApp')
       }
 
       function initializeCourseEnrollEvent () {
+        console.log('Initialize enroll course event')
         $rootScope.$on('enrollCourse', function (event, args) {
+          console.log('Got callback from payment:', args)
           $scope.message = args.message
           if ($scope.message === 'success') {
             batch.enrollUserToCourse(args.batchId)
@@ -384,6 +386,11 @@ angular.module('playerApp')
 
       batch.payForCourse = function () {
         $('#batchDetails').modal('hide')
+        $('#batchDetails').modal('hide all')
+        $('#batchDetails').modal('hide others')
+        if (document.getElementById('batchDetails')) {
+          document.getElementById('batchDetails').remove()
+        }
         var params = {
           courseId: batch.courseId,
           batchId: batch.batchInfo.id

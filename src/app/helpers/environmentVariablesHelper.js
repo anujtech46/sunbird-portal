@@ -44,7 +44,17 @@ let envVariables = {
   AZURE_STORAGE_URL: env.julia_azure_storage_url,
   CERTIFICATE_STORE_CONTAINER_NAME: env.julia_certificate_storage_container_name || 'certificate',
   CERTIFICATE_PROVIDER_NAME: env.julia_certificate_provider_name || 'Julia Computing, Inc.',
-  CERTIFICATE_INSTRUCTOR_NAME: env.julia_certificate_instructor_name || 'Alan Edelman'
+  CERTIFICATE_INSTRUCTOR_NAME: env.julia_certificate_instructor_name || 'Alan Edelman',
+  PAYMENT_PROVIDER_BASE_URL: env.julia_payment_provider_base_url || 'https://mercury-uat.phonepe.com',
+  PAYMENT_PROVIDER_SALT_KEY: env.julia_payment_provider_salt_key,
+  PAYMENT_PROVIDER_SALT_INDEX: env.julia_payment_provider_salt_index || 1,
+  PAYMENT_TRANSACTION_ID_PREFIX: env.julia_transaction_id_prefix || 'TXN',
+  PAYMENT_COLLECT_MERCHANT_ID: env.julia_payment_collect_merchant_id,
+  PAYMENT_COLLECT_REQUEST_TIME_OUT: env.julia_payment_collect_request_timeout || 300,
+  PAYMENT_PROVIDER_COLLECT_REQUEST_URI: env.julia_payment_provider_collect_request_uri || '/v3/charge',
+  PAYMENT_COLLECT_CALLBACk_BASE_URL: env.julia_payment_collect_callback_base_url || 'https://aiprohub.org',
+  PAYMENT_COLLECT_CALLBACk_URI: env.julia_payment_collect_callback_uri || '/phonepe/v1/callback',
+  SIGN_UP_USER_PROVIDER: env.julia_sign_up_user_provider
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

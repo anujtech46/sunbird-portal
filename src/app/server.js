@@ -33,6 +33,7 @@ const reqDataLimitOfContentUpload = '30mb'
 const ekstepEnv = envHelper.EKSTEP_ENV
 const appId = envHelper.APPID
 const defaultTenant = envHelper.DEFAUULT_TENANT
+const signUpUserProvider = envHelper.SIGN_UP_USER_PROVIDER
 const portal = this
 const Telemetry = require('sb_telemetry_util')
 const telemetry = new Telemetry()
@@ -91,6 +92,7 @@ app.all('/public', function (req, res) {
   res.locals.cdnUrl = envHelper.PORTAL_CDN_URL
   res.locals.theme = envHelper.PORTAL_THEME
   res.locals.defaultPortalLanguage = envHelper.PORTAL_DEFAULT_LANGUAGE
+  res.locals.signUpUserProvider = signUpUserProvider
   res.render(path.join(__dirname, 'public', 'index.ejs'))
 })
 
@@ -119,6 +121,7 @@ app.all('/', function (req, res) {
   res.locals.cdnUrl = envHelper.PORTAL_CDN_URL
   res.locals.theme = envHelper.PORTAL_THEME
   res.locals.defaultPortalLanguage = envHelper.PORTAL_DEFAULT_LANGUAGE
+  res.locals.signUpUserProvider = signUpUserProvider
   res.render(path.join(__dirname, 'public', 'index.ejs'))
 })
 

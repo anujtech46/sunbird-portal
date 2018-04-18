@@ -300,9 +300,10 @@ var paths = {
     'dist/private/scripts/controllers/coursePaymentController.js',
     'dist/private/scripts/services/payment/coursePaymentService.js',
     'dist/private/scripts/directives/courseBenefitTransferDirective.js',
-    'dist/private/scripts/services/phonePePaymentService.js',
     'dist/private/scripts/services/restfulPlayerService.js',
-    'dist/private/scripts/directives/certificate/courseCertificateDirective.js'
+    'dist/private/scripts/directives/certificate/courseCertificateDirective.js',
+    'dist/private/scripts/services/coursePriceService.js',
+    'dist/private/scripts/directives/coursePriceDirective.js'
   ],
   telemetry_js: [
     'dist/private/scripts/telemetry/TelemetryEvent.js',

@@ -12,6 +12,7 @@ angular.module('loginApp', [
   .controller('loginCtrl', ['$rootScope', 'messages', 'frmelmnts',
     function ($rootScope, messages, frmelmnts) {
       $rootScope.language = $('#defaultPortalLanguage').attr('value') || 'en'
+      $rootScope.signUpUserProvider = $('#signUpUserProvider').attr('value')
       $rootScope.messages = messages[$rootScope.language]
       $rootScope.frmelmnts = frmelmnts[$rootScope.language]
       $rootScope.cdnUrl = $('#cdnUrl').attr('value') || ''

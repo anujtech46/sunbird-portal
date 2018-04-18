@@ -11,8 +11,8 @@ angular.module('playerApp')
       pay.userId = $rootScope.userId
       pay.batchId = $stateParams.batchId
       pay.userTransactionDetail = {}
-      pay.coursePrice = 20000
-      pay.courseTax = 1150
+      pay.coursePrice = 0
+      // pay.courseTax = 11
       pay.activePatmentMode = 'UPI'
       pay.progress = true
 
@@ -21,13 +21,21 @@ angular.module('playerApp')
           pay.courseTitle = courseDetail && courseDetail.name
           pay.courseImage = courseDetail && courseDetail.appIcon
         })
+        coursePayment.getPaymentDetail(pay.courseId, function (priceDetail) {
+          pay.coursePrice = priceDetail && priceDetail.courseprice
+          pay.coursePayment = (priceDetail && priceDetail.payment).toLowerCase()
+        })
         pay.isEnrolledCourse = _.find($rootScope.enrolledCourses, { courseId: pay.courseId, batchId: pay.batchId })
         console.log('pay.isEnrolledCourse', pay.isEnrolledCourse)
       }
 
       pay.collectPayment = function () {
+        if (pay.coursePrice === undefined) {
+          toasterService.warning('Price is not defined for this course, Please contact admin...')
+          return
+        }
         var req = {
-          'amount': 1,
+          'amount': pay.coursePrice * 100,
           'instrumentType': 'VPA',
           'instrumentReference': pay.upiId
         }
@@ -79,6 +87,33 @@ angular.module('playerApp')
         }
       }
 
+      pay.skipAndContinue = function () {
+        var request = {
+          entityName: 'userpayment',
+          indexed: true,
+          payload: {
+            id: uuid4.generate(),
+            userid: pay.userId,
+            courseid: pay.courseId,
+            batchid: pay.batchId,
+            upiid: pay.upiId,
+            createddate: (new Date()).toISOString()
+          }
+        }
+        coursePayment.createCoursePayment(request).then(function (resp) {
+          if (resp && resp.responseCode === 'OK') {
+            $rootScope.$emit('enrollCourse', { message: 'success', batchId: pay.batchId, courseId: pay.courseId })
+            window.history.back()
+            pay.userTransactionDetail = resp.result.data
+          } else {
+            pay.userTransactionDetail = {}
+          }
+          console.log('resp', resp)
+        }, function (error) {
+          console.log('error', error)
+        })
+      }
+
       pay.checkCoursePayment = function () {
         var request = {
           entityName: 'userpayment',
@@ -90,7 +125,8 @@ angular.module('playerApp')
         }
         coursePayment.searchCoursePayment(request).then(function (resp) {
           if (resp && resp.responseCode === 'OK') {
-            pay.userTransactionDetail = resp.result.response.content[0]
+            var paymentDetail = _.find(resp.result.response.content, { paymentstatus: 'PAYMENT_SUCCESS' })
+            pay.userTransactionDetail = paymentDetail
           } else {
             pay.userTransactionDetail = {}
           }
@@ -112,23 +148,33 @@ angular.module('playerApp')
           coursePayment.getCoursePayment(request).then(function (resp) {
             if (resp && resp.responseCode === 'OK') {
               var result = resp.result.response[0]
-              if (result.userpaid) {
+              pay.userTransactionDetail = result
+              console.log('Payment status: ', result.paymentstatus)
+              if (result.paymentstatus) {
+                pay.statusMessage = result.paymentstatus
                 pay.progress = false
               }
-              if (result.paymentstatus === 'PAYMENT_SUCCESS') {
+              if (result.paymentstatus) {
+                console.log('Clear timeout', coursePayment.stateUpdateTimeInterval)
                 clearInterval(coursePayment.stateUpdateTimeInterval)
               }
             }
           })
         }, 4000)
+
+        setTimeout(() => {
+          console.log('Clear timeout after 300 sec, if interval is pending', coursePayment.stateUpdateTimeInterval)
+          if (coursePayment.stateUpdateTimeInterval) {
+            clearInterval(coursePayment.stateUpdateTimeInterval)
+          }
+        }, 300000)
       }
 
       pay.close = function () {
-        var msg = 'success'
-        if (msg === 'success') {
-          // $rootScope.$emit('enrollCourse', { message: msg, batchId: pay.batchId, courseId: pay.courseId })
+        if (pay.statusMessage === 'PAYMENT_SUCCESS') {
+          $rootScope.$emit('enrollCourse', { message: 'success', batchId: pay.batchId, courseId: pay.courseId })
         } else {
-          // $rootScope.$emit('enrollCourse', { message: 'failure' })
+          $rootScope.$emit('enrollCourse', { message: 'failure' })
         }
         window.history.back()
       }

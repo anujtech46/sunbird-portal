@@ -24,6 +24,9 @@
                             </div>
                         </div>
                         <div class="extra content">
+                            <a href="javascript:void(0);" ng-if="item.contentType === 'Course'">
+                                <course-price data="item" courseid="item.identifier" viewtype="'ICON'"></course-price>
+                            </a>
                             <a href="javascript:void(0);" ng-click="publishedContent.openRemoveContentModel(item.identifier)"><i class="trash large icon float-ContentRight"></i></a>
                         </div>
                     </div>

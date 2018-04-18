@@ -1,0 +1,95 @@
+<div class="rightSideSectionCards ui card margin-bottom-10" ng-if="coursePrice.viewType === 'CARD'" ng-init="coursePrice.getPriceDetail()">
+  <div class="content">
+    <div class="header announcementCard-header">Course Price Detail
+    </div>
+    <div class="ui middle aligned list margin-top-0">
+      <div class="item padding-top-10 padding-bottom-5">
+        <div class="right floated content contentMetaDetail">
+          <div>{{(coursePrice.data.courseprice | currency : "Rs. " : 0) || 'Not Defined'}}</div>
+        </div>
+        <div class="content">
+          Price
+        </div>
+      </div>
+      <div class="item padding-top-10 padding-bottom-5">
+        <div class="right floated content contentMetaDetail">
+          <div>{{(coursePrice.data.coursebenifit | currency : "Rs. " : 0) || 'Not Defined'}}</div>
+        </div>
+        <div class="content">
+          Benifit
+        </div>
+      </div>
+      <div class="item padding-top-10 padding-bottom-5">
+        <div class="right floated content contentMetaDetail">
+          <div>{{coursePrice.data.payment || 'Not Defined'}}</div>
+        </div>
+        <div class="content ">
+          Payment
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="coursePrice.course.createdBy === coursePrice.userId">
+        <div class="ui divider" ng-if="coursePrice.data"></div>
+        <button class="ui right floated blue mini basic button" ng-click="coursePrice.initializeModal();">{{coursePrice.data ? 'UPDATE PRICE' : 'ADD PRICE'}}</button>
+    </div>
+  </div>
+</div>
+
+<span ng-if="coursePrice.viewType === 'ICON'" ng-click="coursePrice.initializeModal(); coursePrice.getPriceDetail()" class="ui mouse-pointer content-font"
+  title="Add Course Price">
+  <i class="rupee sign large icon"></i>&nbsp;
+</span>
+
+<div class="ui small modal" id="coursePriceModal" ng-if="coursePrice.showCoursePriceModal">
+  <div class="header">
+    <div class="ui grid">
+      <div class="eleven wide column">
+        <span class="ui header">{{coursePrice.titleMessage}}</span>
+      </div>
+      <div class="one wide column actions">
+        <h5 class="ui basic icon circular button deny">
+          <i class="ui remove icon"></i>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <form class="ui form">
+      <div class="two fields">
+        <div class="required field">
+          <label>Course Price (In Rs.)</label>
+          <input type="number" name="course price" placeholder="Course Price" ng-model="coursePrice.data.courseprice">
+        </div>
+        <div class="required field">
+          <label>Course Benefit (In Rs.)</label>
+          <input type="number" name="course benefit" placeholder="Course Benifit" ng-model="coursePrice.data.coursebenifit">
+        </div>
+      </div>
+      <div class="required fields inline">
+        <label for="payment">Payment:</label>
+        <div class="field">
+          <div class="ui radio checkbox">
+            <input type="radio" name="payment" value='Optional' ng-model="coursePrice.data.payment" required>
+            <label>Optional</label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui radio checkbox">
+            <input type="radio" name="payment" value='Mandatory' ng-model="coursePrice.data.payment" required>
+            <label>Mandatory</label>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="actions margin-top-20" ng-show="!coursePrice.loader.showLoader">
+    <button class="ui primary button " ng-click="coursePrice.saveMetaData(coursePrice.data) " ng-disabled="coursePrice.loader.showLoader || !coursePrice.data.courseprice || !coursePrice.data.coursebenifit || !coursePrice.data.payment">
+      {{$root.frmelmnts.btn.submit}}
+    </button>
+
+    <div class=" ui segment margin-top-10 " ng-if="coursePrice.loader.showLoader ">
+      <app-loader data="{{coursePrice.loader}} "></app-loader>
+    </div>
+  </div>
+</div>

@@ -4,22 +4,22 @@ const request = require('request')
 let uuidv1 = require('uuid/v1')
 const bodyParser = require('body-parser')
 const sha = require('sha256')
-const phonePayChargeURL = '/v3/charge'
-const saltKey = '8289e078-be0b-484d-ae60-052f117f8deb'
-const saltIndex = 1
 const PAYMENT_STATUS_UPDATE_API = 'data/v1/object/update'
-const TXN_ID_PREFIX = 'TXN'
-const COLLECT_PAYMENT_MERCHANT_ID = 'M2306160483220675579140'
-const PAYMENT_REQUEST_TIME_OUT = 300
-const PAYMENT_SERVICE_PROVIDER_BASE_URL = 'https://mercury-uat.phonepe.com/v3/charge'
-const PAYMENT_CALLBACK_BASE_URL = 'http://38b5b1f9.ngrok.io'
-const PAYMENT_CALLBACK_URI = '/phonepe/v1/callback'
+const PAYMENT_SERVICE_PROVIDER_BASE_URL = envVariables.PAYMENT_PROVIDER_BASE_URL
+const COLLECT_REQUEST_URI = envVariables.PAYMENT_PROVIDER_COLLECT_REQUEST_URI
+const PAYMENT_PROVIDER_SALT_KEY = envVariables.PAYMENT_PROVIDER_SALT_KEY
+const PAYMENT_PROVIDER_SALT_INDEX = envVariables.PAYMENT_PROVIDER_SALT_INDEX
+const TXN_ID_PREFIX = envVariables.PAYMENT_TRANSACTION_ID_PREFIX
+const COLLECT_PAYMENT_MERCHANT_ID = envVariables.PAYMENT_COLLECT_MERCHANT_ID
+const PAYMENT_REQUEST_TIME_OUT = envVariables.PAYMENT_COLLECT_REQUEST_TIME_OUT
+const PAYMENT_CALLBACK_BASE_URL = envVariables.PAYMENT_COLLECT_CALLBACk_BASE_URL
+const PAYMENT_CALLBACK_URI = envVariables.PAYMENT_COLLECT_CALLBACk_URI
 
 module.exports = function (app) {
-  app.post('/private/service/v1/phonepe' + phonePayChargeURL, bodyParser.json({ limit: '1mb' }),
+  app.post('/payment' + COLLECT_REQUEST_URI, bodyParser.json({ limit: '1mb' }),
     createAndValidateRequestBody, collectPayment)
 
-  app.post(PAYMENT_CALLBACK_URI, bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
+  app.all(PAYMENT_CALLBACK_URI, bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
     handlePaymentCallback)
 }
 
@@ -100,7 +100,7 @@ function handlePaymentCallback (req, res) {
     rspObj.responseCode = 400
     return res.status(400).send(errorResponse(rspObj))
   } else {
-    const shaData = sha(data + saltKey) + '###' + saltIndex
+    const shaData = sha(data + PAYMENT_PROVIDER_SALT_KEY) + '###' + PAYMENT_PROVIDER_SALT_INDEX
     if (shaData !== xVerfiy) {
       rspObj.errCode = 'INVALID_REQUEST_DATE'
       rspObj.errMsg = 'Requested data invalid.'
@@ -161,11 +161,11 @@ function collectPayment (req, res) {
 
     var options = {
       method: 'POST',
-      url: PAYMENT_SERVICE_PROVIDER_BASE_URL,
+      url: PAYMENT_SERVICE_PROVIDER_BASE_URL + COLLECT_REQUEST_URI,
       headers: {
         'Content-Type': 'application/json',
         'x-callback-url': PAYMENT_CALLBACK_BASE_URL + PAYMENT_CALLBACK_URI,
-        'x-verify': sha(reqBody + phonePayChargeURL + saltKey) + '###' + saltIndex
+        'x-verify': sha(reqBody + COLLECT_REQUEST_URI + PAYMENT_PROVIDER_SALT_KEY) + '###' + PAYMENT_PROVIDER_SALT_INDEX
       },
       body: { request: reqBody },
       json: true

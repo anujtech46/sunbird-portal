@@ -145,11 +145,17 @@ function createPDF (data, filePath, callback) {
     width: 700
   })
 
-  doc.fontSize(15)
-    .text('This is to certify that ' + title + ' ' + name + ' has completed the course "' +
-    courseName + '" conducted by ' + provider, 150, 300, {
-    })
+  // doc.fontSize(15)
+  //   .text('This is to certify that ' + title + ' ' + name + ' has completed the course "' +
+  //   courseName + '" conducted by ' + provider, 150, 300, {
+  //   })
   // .font('Times-Roman')
+  doc.font('Helvetica').text('This is to certify that ', 150, 300, { continued: true })
+    .font('Helvetica-Bold').text(title + ' ' + name, { continued: true })
+    .font('Helvetica').text(' has completed the course "', { continued: true })
+    .font('Helvetica-Bold').text(courseName, { continued: true })
+    .font('Helvetica').text('" conducted by ', { continued: true })
+    .font('Helvetica-Bold').text(provider)
 
   doc.moveDown()
   doc.moveDown()

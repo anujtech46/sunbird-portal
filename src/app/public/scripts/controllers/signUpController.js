@@ -158,7 +158,9 @@ angular.module('loginApp')
             email: newUser.email,
             userName: newUser.userName.trim(),
             phone: newUser.phone,
-            language: [newUser.language]
+            language: [newUser.language],
+            provider: $rootScope.signUpUserProvider,
+            phoneVerified: true
           }
         }
         newUser.loader = toasterService.loader('', $rootScope.messages.stmsg.m0084)

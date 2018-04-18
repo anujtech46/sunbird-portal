@@ -5,17 +5,46 @@
 'use strict'
 
 angular.module('playerApp')
-  .service('coursePayment', ['restfulLearnerService', 'phonePePaymentService', 'config', 'uuid4', '$q',
-    'courseService', function (restfulLearnerService, phonePePaymentService, config, uuid4, $q, courseService) {
-      this.courseDetail = {}
+  .service('coursePayment', ['restfulLearnerService', 'restfulPlayerService', 'config', 'uuid4', '$q',
+    'coursePriceService', 'courseService',
+    function (restfulLearnerService, restfulPlayerService, config, uuid4, $q, coursePriceService, courseService) {
+      var courseDetail = {}
+      var paymentDetail = {}
+
+      this.getPaymentDetail = function (courseId, callback) {
+        if (paymentDetail && paymentDetail.courseid === courseId) {
+          callback(paymentDetail)
+        } else {
+          var request = {
+            entityName: 'courseprice',
+            id: courseId
+          }
+          coursePriceService.getPrice(request).then(function (response) {
+            if (response && response.responseCode === 'OK') {
+              paymentDetail = response.result.response[0]
+              return callback(response.result.response[0])
+            } else {
+              callback()
+            }
+          }).catch(function (err) {
+            console.log('err:', err)
+            callback()
+          })
+          return paymentDetail
+        }
+      }
+
+      this.setPaymentDetail = function (payment) {
+        paymentDetail = payment
+      }
 
       this.setCourseDetail = function (courseDetail) {
         this.courseDetail = courseDetail
       }
 
       this.getCourseDetail = function (courseId, cb) {
-        if (this.courseDetail && this.courseDetail.identifier === courseId) {
-          cb(this.courseDetail)
+        if (courseDetail && courseDetail.identifier === courseId) {
+          cb(courseDetail)
         } else {
           courseService.courseHierarchy(courseId).then(function (res) {
             if (res && res.responseCode === 'OK') {
@@ -59,13 +88,13 @@ angular.module('playerApp')
       }
 
       this.collectPayment = function (req) {
-        var url = 'v3/charge'
-        return phonePePaymentService.post(url, req)
+        var url = config.URL.PAYMENT.COLLECT
+        return restfulPlayerService.post(url, req)
       }
 
       this.refundPayment = function (req) {
         var deferred = $q.defer()
-        if (req.upiId === 'anuj@okhdfcbank') {
+        if (req.upiId.includes('ybl')) {
           deferred.resolve({
             'transactionId': 'bt_' + Date.now(),
             'status': 'success'

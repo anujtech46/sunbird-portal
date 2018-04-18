@@ -234,6 +234,5 @@ angular.module('playerApp')
         var newUrl = url + loadCourseDetails()
         console.log('Open notebook link:', newUrl)
         $window.open(newUrl)
-        return true
       }
     }])

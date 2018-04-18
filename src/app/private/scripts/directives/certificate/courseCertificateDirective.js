@@ -59,7 +59,9 @@ angular.module('playerApp')
         restfulPlayerService.post(config.URL.CERTIFICATE.COURSE, {request: request}).then(function (response) {
           if (response && response.responseCode === 'OK') {
             aTag.href = response.result && response.result.fileUrl
-            aTag.click()
+            setTimeout(function () {
+              aTag.click()
+            }, 100)
           } else {
             toasterService.error('Unable to download file, Please try again later...')
           }

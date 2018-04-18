@@ -33,6 +33,8 @@
                   <course-discussions showaskquestion="true"></course-discussions>
                 </div>
                 <div class='three wide column'>
+                  <course-price coursedata="toc.courseHierarchy" courseid="toc.courseHierarchy.identifier" viewtype="'CARD'"></course-price>
+                  
                   <!--<a ng-click="toc.payForCourse()" style="cursor:pointer;" coursename="{{toc.courseHierarchy.name}}">Enroll</a>-->
                   <batch-card ng-show="toc.batchCardShow" showbatchcard="true" coursecreatedby="toc.courseHierarchy.createdBy"></batch-card>
                   <div ng-show="toc.batchDetailsShow">
@@ -67,7 +69,7 @@
                   <div>
                     <div ng-include=" 'views/course/carriculumCard.html'"></div>
                   </div>
-                  <div ng-if="toc.courseType === 'ENROLLED_COURSE' && toc.courseProgress > 0">
+                  <div ng-if="toc.courseType === 'ENROLLED_COURSE' && (toc.courseProgress * 100 / toc.courseTotal) == 100">
                       <course-benefit-transfer courseid="toc.courseHierarchy.identifier"></course-benefit-transfer>
                       <course-certificate coursedata="toc.courseHierarchy" batchdata="toc.selectedBatchInfo"></course-certificate>
                   </div>
