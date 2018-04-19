@@ -56,11 +56,12 @@ angular.module('playerApp')
           createdDate: new Date()
         }
 
+        var popup = $window.open('', '_blank')
+        popup.document.write('loading ...')
         restfulPlayerService.post(config.URL.CERTIFICATE.COURSE, {request: request}).then(function (response) {
           if (response && response.responseCode === 'OK') {
             var fileUrl = response.result && response.result.fileUrl
-            console.log('fileUrl', fileUrl)
-            $window.open(fileUrl, '_blank')
+            popup.location.href = fileUrl
           } else {
             toasterService.error('Unable to download file, Please try again later...')
           }
