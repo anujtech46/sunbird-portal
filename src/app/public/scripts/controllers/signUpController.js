@@ -28,12 +28,12 @@ angular.module('loginApp')
                 prompt: $rootScope.messages.stmsg.m0092
               }]
             },
-            phone: {
-              rules: [{
-                type: 'regExp[^\\d{10}$]', // eslint-disable-line  ,max-len
-                prompt: $rootScope.messages.stmsg.m0091
-              }]
-            },
+            // phone: {
+            //   rules: [{
+            //     type: 'regExp[^\\d{10}$]', // eslint-disable-line  ,max-len
+            //     prompt: $rootScope.messages.stmsg.m0091
+            //   }]
+            // },
             email: {
               rules: [{
                 type: 'regExp[/^([a-zA-Z0-9_.+\\-])+\\@(([a-zA-Z0-9-])+\\.)+([a-zA-Z0-9]{2,4})+$/]',
@@ -158,9 +158,8 @@ angular.module('loginApp')
             email: newUser.email,
             userName: newUser.userName.trim(),
             phone: newUser.phone,
-            language: [newUser.language],
             provider: $rootScope.signUpUserProvider,
-            phoneVerified: true
+            emailVerified: true
           }
         }
         newUser.loader = toasterService.loader('', $rootScope.messages.stmsg.m0084)

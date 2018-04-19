@@ -16,8 +16,8 @@ angular.module('playerApp')
     }
   }])
   .controller('courseCertificateCtrl', ['$rootScope', '$scope', 'restfulPlayerService', '$state', 'userService',
-    'toasterService', 'config', function ($rootScope, $scope, restfulPlayerService, $state, userService,
-      toasterService, config) {
+    'toasterService', 'config', '$window', function ($rootScope, $scope, restfulPlayerService, $state, userService,
+      toasterService, config, $window) {
       var certificate = this
       certificate.courseData = $scope.coursedata
       certificate.batchData = $scope.batchdata
@@ -55,13 +55,12 @@ angular.module('playerApp')
           courseId: certificate.courseData && certificate.courseData.identifier,
           createdDate: new Date()
         }
-        var aTag = document.getElementById('courseCertificate')
+
         restfulPlayerService.post(config.URL.CERTIFICATE.COURSE, {request: request}).then(function (response) {
           if (response && response.responseCode === 'OK') {
-            aTag.href = response.result && response.result.fileUrl
-            setTimeout(function () {
-              aTag.click()
-            }, 100)
+            var fileUrl = response.result && response.result.fileUrl
+            console.log('fileUrl', fileUrl)
+            $window.open(fileUrl, '_blank')
           } else {
             toasterService.error('Unable to download file, Please try again later...')
           }

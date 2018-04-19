@@ -13,10 +13,10 @@
       </div>
       <div class="item padding-top-10 padding-bottom-5">
         <div class="right floated content contentMetaDetail">
-          <div>{{(coursePrice.data.coursebenifit | currency : "Rs. " : 0) || 'Not Defined'}}</div>
+          <div>{{(coursePrice.data.coursebenefit | currency : "Rs. " : 0) || 'Not Defined'}}</div>
         </div>
         <div class="content">
-          Benifit
+          Benefit
         </div>
       </div>
       <div class="item padding-top-10 padding-bottom-5">
@@ -63,7 +63,7 @@
         </div>
         <div class="required field">
           <label>Course Benefit (In Rs.)</label>
-          <input type="number" name="course benefit" placeholder="Course Benifit" ng-model="coursePrice.data.coursebenifit">
+          <input type="number" name="course benefit" placeholder="Course Benefit" ng-model="coursePrice.data.coursebenefit">
         </div>
       </div>
       <div class="required fields inline">
@@ -84,7 +84,7 @@
     </form>
   </div>
   <div class="actions margin-top-20" ng-show="!coursePrice.loader.showLoader">
-    <button class="ui primary button " ng-click="coursePrice.saveMetaData(coursePrice.data) " ng-disabled="coursePrice.loader.showLoader || !coursePrice.data.courseprice || !coursePrice.data.coursebenifit || !coursePrice.data.payment">
+    <button class="ui primary button " ng-click="coursePrice.saveMetaData(coursePrice.data) " ng-disabled="coursePrice.loader.showLoader || !coursePrice.data.courseprice || !coursePrice.data.coursebenefit || !coursePrice.data.payment">
       {{$root.frmelmnts.btn.submit}}
     </button>
 

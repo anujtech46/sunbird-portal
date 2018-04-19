@@ -97,7 +97,7 @@ angular.module('playerApp')
             courseid: coursePrice.courseId,
             payment: data.payment,
             courseprice: data.courseprice,
-            coursebenifit: data.coursebenifit,
+            coursebenefit: data.coursebenefit,
             createddate: coursePrice.data && coursePrice.data.createddate
               ? coursePrice.data.createddate
               : (new Date()).toISOString(),

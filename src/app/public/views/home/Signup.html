@@ -17,7 +17,14 @@
                 <div class=" two fields">
                     <div class="required field ">
                         <label>{{frmelmnts.lbl.username}}</label>
+                        <div class="fields">
+                            <div class="eight wide field padding-right-none">
                         <input type="text" name="userName" placeholder="eg:user.name , min 5 character required" ng-model="newUser.userName">
+                    </div>
+                            <div class="four wide field padding-left-none">
+                                <input type="text" name="userName" ng-model="$root.signUpUserProvider" value="@aiprohub" ng-disabled="true">
+                            </div>
+                        </div>
                     </div>
                     <div class="required field">
                         <label>{{frmelmnts.lbl.password}}</label>
@@ -38,7 +45,7 @@
                 </div>
             </div>
             <div class="two fields">
-                <div class="required field">
+                <div class="field">
                     <label>{{frmelmnts.lbl.phonenumber}}</label>
                     <input type="text" name="phone" placeholder="eg:XXXXXXXXXX" ng-model="newUser.phone">
                 </div>
@@ -49,10 +56,10 @@
             </div>
 
             <div class=" required field" ng-init="newUser.formInit() ">
-                <label>{{frmelmnts.lbl.lang}}</label>
+                <!-- <label>{{frmelmnts.lbl.lang}}</label>
                 <select name="language" ng-selected="true" placeholder="Languages" class="ui fluid dropdown signupMultiple" ng-value="option.value" ng-options=" language for language in newUser.languages" ng-model="newUser.language">
                         <option value="">Languages</option>
-                    </select>
+                    </select> -->
             </div>
 
             <div class="ui error message">

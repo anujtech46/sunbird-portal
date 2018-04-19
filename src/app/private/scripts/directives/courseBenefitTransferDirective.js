@@ -30,9 +30,10 @@ angular.module('playerApp')
         courseBT.batchId = isEnroled && isEnroled.batchId
         courseBT.courseImage = isEnroled.courseLogoUrl
         coursePayment.getPaymentDetail(courseBT.courseId, function (priceDetail) {
-          courseBT.courseBenifit = priceDetail && priceDetail.coursebenifit
+          courseBT.courseBenefit = priceDetail && priceDetail.coursebenefit
           courseBT.payment = (priceDetail && priceDetail.payment).toLowerCase()
         })
+        courseBT.getCourseBadge()
         courseBT.getUserCoursePaymentDetail()
       }
 
@@ -51,14 +52,12 @@ angular.module('playerApp')
               courseBT.userTransactionDetail = _.find(resp.result.response.content, { courseid: courseBT.courseId })
               courseBT.isShowBTButton = courseBT.userTransactionDetail &&
               !courseBT.userTransactionDetail.benefittransfer && courseBT.userTransactionDetail.coursecomplete
-              courseBT.getCourseBadge()
             }
             if (courseBT.payment === 'mandatory') {
               courseBT.userTransactionDetail = _.find(resp.result.response.content, { userpaid: true })
               courseBT.isShowBTButton = courseBT.userTransactionDetail && courseBT.userTransactionDetail.userpaid &&
                 !courseBT.userTransactionDetail.benefittransfer && courseBT.userTransactionDetail.coursecomplete
               if (_.find(resp.result.response.content, { coursecomplete: true })) {
-                courseBT.getCourseBadge()
               }
             }
             courseBT.upiId = (courseBT.userTransactionDetail && courseBT.userTransactionDetail.upiid) || ''
