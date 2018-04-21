@@ -71,7 +71,7 @@ angular.module('playerApp')
 
       courseBT.getBenefit = function () {
         if (!courseBT.upiId) {
-          toasterService.info('We can not proceed for benefit b`coz upi id missing, Please contact to admin...')
+          toasterService.info('UPI ID is missing, Please contact to admin...')
           return
         }
         var req = {
