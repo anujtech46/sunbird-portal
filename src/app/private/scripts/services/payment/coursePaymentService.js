@@ -93,18 +93,7 @@ angular.module('playerApp')
       }
 
       this.refundPayment = function (req) {
-        var deferred = $q.defer()
-        if (req.upiId.includes('ybl')) {
-          deferred.resolve({
-            'transactionId': 'bt_' + Date.now(),
-            'status': 'success'
-          })
-        } else {
-          deferred.resolve({
-            'transactionId': 'bt_' + Date.now(),
-            'status': 'failure'
-          })
-        }
-        return deferred.promise
+        var url = config.URL.PAYMENT.REFUND
+        return restfulPlayerService.post(url, req)
       }
     }])

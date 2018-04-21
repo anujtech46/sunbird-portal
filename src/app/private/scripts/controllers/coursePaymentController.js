@@ -67,7 +67,7 @@ angular.module('playerApp')
         coursePayment.createCoursePayment(request).then(function (resp) {
           if (resp && resp.responseCode === 'OK') {
             $('#payModal').modal({ closable: false }).modal('show')
-            coursePayment.checkPaymentStatusAfterRequest()
+            pay.checkPaymentStatusAfterRequest()
             pay.userTransactionDetail = resp.result.data
           } else {
             pay.userTransactionDetail = {}
@@ -136,7 +136,7 @@ angular.module('playerApp')
         })
       }
 
-      coursePayment.checkPaymentStatusAfterRequest = function () {
+      pay.checkPaymentStatusAfterRequest = function () {
         coursePayment.stateUpdateTimeInterval = setInterval(function () {
           var request = {
             entityName: 'userpayment',
@@ -165,6 +165,8 @@ angular.module('playerApp')
         setTimeout(() => {
           console.log('Clear timeout after 300 sec, if interval is pending', coursePayment.stateUpdateTimeInterval)
           if (coursePayment.stateUpdateTimeInterval) {
+            pay.statusMessage = 'PAYMENT_FAILED'
+            pay.progress = false
             clearInterval(coursePayment.stateUpdateTimeInterval)
           }
         }, 300000)

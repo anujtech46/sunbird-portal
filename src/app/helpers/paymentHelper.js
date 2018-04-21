@@ -13,14 +13,24 @@ const TXN_ID_PREFIX = envVariables.PAYMENT_TRANSACTION_ID_PREFIX
 const COLLECT_PAYMENT_MERCHANT_ID = envVariables.PAYMENT_COLLECT_MERCHANT_ID
 const PAYMENT_REQUEST_TIME_OUT = envVariables.PAYMENT_COLLECT_REQUEST_TIME_OUT
 const PAYMENT_CALLBACK_BASE_URL = envVariables.PAYMENT_COLLECT_CALLBACk_BASE_URL
-const PAYMENT_CALLBACK_URI = envVariables.PAYMENT_COLLECT_CALLBACk_URI
+const PAYMENT_COLLECT_CALLBACK_URI = envVariables.PAYMENT_COLLECT_CALLBACk_URI
+const REFUND_REQUEST_BASE_URL = envVariables.PAYMENT_PROVIDER_REFUND_REQUEST_URL
+const REFUND_REQUEST_URI = envVariables.PAYMENT_PROVIDER_REFUND_REQUEST_URI
+const PAYMENT_REFUND_CALLBACK_URI = envVariables.PAYMENT_PROVIDER_REFUND_CALLBACk_URI
+const refundTxnIdMap = {}
 
 module.exports = function (app) {
   app.post('/payment' + COLLECT_REQUEST_URI, bodyParser.json({ limit: '1mb' }),
     createAndValidateRequestBody, collectPayment)
 
-  app.all(PAYMENT_CALLBACK_URI, bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
-    handlePaymentCallback)
+  app.post('/payment' + REFUND_REQUEST_URI, bodyParser.json({ limit: '1mb' }),
+    createAndValidateRequestBody, refundPayment)
+
+  app.all(PAYMENT_COLLECT_CALLBACK_URI, bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
+    handleCollectPaymentCallback)
+
+  app.all(PAYMENT_REFUND_CALLBACK_URI, bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
+    handleRefundPaymentCallback)
 }
 
 /**
@@ -88,7 +98,7 @@ function updatePaymentStatus (req, callback) {
  * @param {object} req: API request object 
  * @param {oject} res: API response object
  */
-function handlePaymentCallback (req, res) {
+function handleCollectPaymentCallback (req, res) {
   const xVerfiy = req && req.headers['x-verify']
   const data = req.body.response
   const rspObj = req.rspObj
@@ -164,7 +174,7 @@ function collectPayment (req, res) {
       url: PAYMENT_SERVICE_PROVIDER_BASE_URL + COLLECT_REQUEST_URI,
       headers: {
         'Content-Type': 'application/json',
-        'x-callback-url': PAYMENT_CALLBACK_BASE_URL + PAYMENT_CALLBACK_URI,
+        'x-callback-url': PAYMENT_CALLBACK_BASE_URL + PAYMENT_COLLECT_CALLBACK_URI,
         'x-verify': sha(reqBody + COLLECT_REQUEST_URI + PAYMENT_PROVIDER_SALT_KEY) + '###' + PAYMENT_PROVIDER_SALT_INDEX
       },
       body: { request: reqBody },
@@ -183,6 +193,7 @@ function collectPayment (req, res) {
         return res.status(400).send(errorResponse(rspObj))
       } else {
         rspObj.result = body
+        rspObj.result.data && delete rspObj.result.data['merchantId']
         return res.status(200).send(successResponse(rspObj))
       }
     })
@@ -255,4 +266,154 @@ function getParams (msgId, status, errCode, msg) {
   params.errmsg = msg
 
   return params
+}
+
+/**
+ * Api wrapper to handle the refund payment
+ * @param {object} req: API request object
+ * @param {oject} res: API response object
+ */
+function refundPayment (req, res) {
+  var rspObj = req.rspObj || {}
+  var data = req.body && req.body.request
+  console.log('Refund request received with data', JSON.stringify(data))
+  if (!data || !data.instrumentType || !data.instrumentReference || !data.amount) {
+    rspObj.errCode = 'MISSING_REQUIRED_FIELDS'
+    rspObj.errMsg = 'Required fields are missing.'
+    rspObj.responseCode = 400
+    return res.status(400).send(errorResponse(rspObj))
+  } else {
+    const reqBody = getRequestBodyForCharge(data)
+    console.log('Request body to call payment provider charge api', reqBody)
+
+    var options = {
+      method: 'POST',
+      url: REFUND_REQUEST_BASE_URL + REFUND_REQUEST_URI,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-callback-url': PAYMENT_CALLBACK_BASE_URL + PAYMENT_REFUND_CALLBACK_URI,
+        'x-verify': sha(reqBody + REFUND_REQUEST_URI + PAYMENT_PROVIDER_SALT_KEY) + '###' + PAYMENT_PROVIDER_SALT_INDEX
+      },
+      body: { request: reqBody },
+      json: true
+    }
+
+    console.log('Req options for payment provider charge api', options)
+    request(options, function (error, response, body) {
+      console.log('Refund response from phone pay', JSON.stringify(body))
+      if (!error && body && !body.success) {
+        rspObj.errCode = body && body.code ? body.code : 'PAYMENT_FAILED'
+        rspObj.errMsg = body && body.message ? body.message : 'Payment failed, please try again later'
+        const httpStatus = body && (body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500)
+        rspObj.responseCode = httpStatus
+        rspObj.result = body
+        return res.status(400).send(errorResponse(rspObj))
+      } else {
+        rspObj.result = body
+        refundTxnIdMap[body.data.transactionId] = data.userPaidTxnId
+        console.log('Map status', refundTxnIdMap[body.data.transactionId])
+        rspObj.result.data && delete rspObj.result.data['merchantId']
+        return res.status(200).send(successResponse(rspObj))
+      }
+    })
+  }
+}
+
+/**
+ * Api wrapper to handle the payment refund callback, This api will call by payment provider
+ * @param {object} req: API request object 
+ * @param {oject} res: API response object
+ */
+function handleRefundPaymentCallback (req, res) {
+  const xVerfiy = req && req.headers['x-verify']
+  console.log('req.body', req.body)
+  const data = req.body.response
+  const rspObj = req.rspObj
+
+  console.log('Got Callback request with data', data, xVerfiy)
+  if (!data || !xVerfiy) {
+    rspObj.errCode = 'MISSING_REQUIRED_FIELDS'
+    rspObj.errMsg = 'Required fields are missing.'
+    rspObj.responseCode = 400
+    return res.status(400).send(errorResponse(rspObj))
+  } else {
+    const shaData = sha(data + PAYMENT_PROVIDER_SALT_KEY) + '###' + PAYMENT_PROVIDER_SALT_INDEX
+    if (shaData !== xVerfiy) {
+      rspObj.errCode = 'INVALID_REQUEST_DATA'
+      rspObj.errMsg = 'Requested data invalid.'
+      rspObj.responseCode = 400
+      console.log('Invalid request received, xverify and response not matched')
+      return res.status(200).send(errorResponse(rspObj))
+    } else {
+      console.log('Valid request received')
+      updateRefundPaymentStatus(req, function () { })
+      rspObj.responseCode = 200
+      rspObj.result = {
+        message: 'Request successfully verified.'
+      }
+      return res.status(200).send(successResponse(rspObj))
+    }
+  }
+}
+
+/**
+ * This function helps to update the payment status
+ * @param {object} req: API req object 
+ * @param {*} callback: Callback have 3 params(error, statusCode, successResp)
+ */
+function updateRefundPaymentStatus (req, callback) {
+  var rspObj = req.rspObj
+  if (typeof req !== 'object' || typeof callback !== 'function') {
+    rspObj.errCode = 'INVALID_REQUEST'
+    rspObj.errMsg = 'Invalid request received'
+    rspObj.responseCode = 400
+    return callback(errorResponse(rspObj), 400, null)
+  }
+  const encodedData = req.body && req.body.response
+  const decodedData = JSON.parse(Buffer.from(encodedData, 'base64').toString())
+  console.log('Decode data of payment callback:', JSON.stringify(decodedData))
+  if (decodedData) {
+    var body = {
+      entityName: 'userpayment',
+      indexed: true,
+      payload: {
+        id: refundTxnIdMap[decodedData.data && decodedData.data.transactionId],
+        benefittransfertransactionid: decodedData.data && decodedData.data.transactionId,
+        benefittransfer: decodedData.code === 'PAYMENT_SUCCESS',
+        benefittransferstatus: decodedData.code
+      }
+    }
+    var options = {
+      method: 'POST',
+      url: learnerURL + PAYMENT_STATUS_UPDATE_API,
+      body: {request: body},
+      headers: req.headers,
+      json: true
+    }
+    console.log('Update status of transaction', JSON.stringify(options))
+    request(options, function (error, response, body) {
+      delete refundTxnIdMap[decodedData.data && decodedData.data.transactionId]
+      if (!error && body && body.responseCode === 'OK') {
+        console.log('Payment status update successfully for transactionid: ', decodedData.data.transactionId)
+        return callback(null, 200, body.result)
+      } else {
+        console.log('Payment status update failed for transactionid: ', decodedData.data.transactionId,
+          JSON.stringify(body))
+        rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_PAYMENT_STATUD_FAILED'
+        rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update payment status failed'
+        rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
+        rspObj.result = body && body.result
+        var httpStatus = body && body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500
+        var errRspObj = errorResponse(rspObj)
+        return callback(errRspObj, httpStatus, false)
+      }
+    })
+  } else {
+    console.log('Invalid data received to update the request')
+    rspObj.errCode = 'INVALID_REQUEST_RECEIVED'
+    rspObj.errMsg = 'Invalid request received, Please try again later'
+    rspObj.responseCode = 400
+    var httpStatus = 400
+    return callback(errorResponse(rspObj), httpStatus, false)
+  }
 }

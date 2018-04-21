@@ -51,12 +51,12 @@ angular.module('playerApp')
             if (courseBT.payment === 'optional') {
               courseBT.userTransactionDetail = _.find(resp.result.response.content, { courseid: courseBT.courseId })
               courseBT.isShowBTButton = courseBT.userTransactionDetail &&
-              !courseBT.userTransactionDetail.benefittransfer && courseBT.userTransactionDetail.coursecomplete
+              !courseBT.userTransactionDetail.benefittransfer
             }
             if (courseBT.payment === 'mandatory') {
               courseBT.userTransactionDetail = _.find(resp.result.response.content, { userpaid: true })
               courseBT.isShowBTButton = courseBT.userTransactionDetail && courseBT.userTransactionDetail.userpaid &&
-                !courseBT.userTransactionDetail.benefittransfer && courseBT.userTransactionDetail.coursecomplete
+                !courseBT.userTransactionDetail.benefittransfer
               if (_.find(resp.result.response.content, { coursecomplete: true })) {
               }
             }
@@ -69,51 +69,34 @@ angular.module('playerApp')
         })
       }
 
-      $rootScope.$on('updateCourseComplete', function () {
-        console.log('Get updateCourseComplete event')
-        if (courseBT.userTransactionDetail && !courseBT.userTransactionDetail.coursecomplete) {
-          console.log('update course complete:', courseBT.userTransactionDetail)
-          var updatedReq = Object.assign({}, courseBT.userTransactionDetail)
-          var request = {
-            entityName: 'userpayment',
-            indexed: true,
-            payload: updatedReq
-          }
-
-          request.payload.coursecomplete = true
-
-          coursePayment.updateCoursePayment(request).then(function (resp) {
-            if (resp && resp.responseCode === 'OK') {
-              courseBT.isShowBTButton = true
-              courseBT.getCourseBadge()
-              courseBT.userTransactionDetail = request.payload
-            } else {
-            }
-          }, function (error) {
-            console.log('error', error)
-          })
-        }
-      })
-
       courseBT.getBenefit = function () {
-        var req = {
-          upiId: courseBT.upiId
+        if (!courseBT.upiId) {
+          toasterService.info('We can not proceed for benefit b`coz upi id missing, Please contact to admin...')
+          return
         }
-        coursePayment.refundPayment(req).then(function (resp) {
-          if (resp.status === 'success') {
+        var req = {
+          'amount': courseBT.courseBenefit * 100,
+          'instrumentType': 'MOBILE',
+          'instrumentReference': courseBT.upiId.replace('@ybl', ''),
+          'userPaidTxnId': courseBT.userTransactionDetail.id
+        }
+        $('#benefitModal').modal({ closable: false }).modal('show')
+        coursePayment.refundPayment({request: req}).then(function (resp) {
+          if (resp && resp.responseCode === 'OK') {
             courseBT.updatePaymentDetail(resp)
           } else {
-            toasterService.error('Payment failed, please try again later')
+            courseBT.close()
+            toasterService.error('Transaction failed, please try again later')
           }
         }, function () {
-          toasterService.error('Payment failed, please try again later')
+          courseBT.close()
+          toasterService.error('Transaction failed, please try again later')
         })
       }
 
       courseBT.updatePaymentDetail = function (resp) {
         var updatedReq = Object.assign({}, courseBT.userTransactionDetail)
-        updatedReq.benefittransfer = true
-        updatedReq.benefittransfertransactionid = resp.transactionId
+        updatedReq.benefittransfertransactionid = resp.result.data.transactionId
 
         var request = {
           entityName: 'userpayment',
@@ -124,11 +107,11 @@ angular.module('playerApp')
           request.payload.coursecomplete = true
         }
         coursePayment.updateCoursePayment(request).then(function (resp) {
+          courseBT.checkPaymentStatusAfterRequest()
           if (resp && resp.responseCode === 'OK') {
-            $('#benefitModal').modal('show')
-            courseBT.isShowBTButton = false
             courseBT.userTransactionDetail = request.payload
           } else {
+            courseBT.userTransactionDetail = {}
           }
           console.log('resp', resp)
         }, function (error) {
@@ -136,8 +119,47 @@ angular.module('playerApp')
         })
       }
 
+      courseBT.checkPaymentStatusAfterRequest = function () {
+        console.log('time start', Date.now())
+        coursePayment.stateUpdateTimeInterval = setInterval(function () {
+          var request = {
+            entityName: 'userpayment',
+            userid: courseBT.userId,
+            courseid: courseBT.courseId,
+            batchid: courseBT.userTransactionDetail.batchId,
+            id: courseBT.userTransactionDetail.id
+          }
+          coursePayment.getCoursePayment(request).then(function (resp) {
+            if (resp && resp.responseCode === 'OK') {
+              var result = resp.result.response[0]
+              courseBT.userTransactionDetail = result
+              console.log('Payment status: ', result.benefittransferstatus)
+              if (result.benefittransferstatus) {
+                courseBT.statusMessage = result.benefittransferstatus
+                courseBT.progress = false
+                console.log('Clear timeout', coursePayment.stateUpdateTimeInterval)
+                clearInterval(coursePayment.stateUpdateTimeInterval)
+              }
+              if (result.benefittransferstatus === 'PAYMENT_SUCCESS') {
+                courseBT.isShowBTButton = false
+              }
+            }
+          })
+        }, 4000)
+        setTimeout(() => {
+          console.log('Clear timeout after 300 sec, if interval is pending', coursePayment.stateUpdateTimeInterval)
+          if (coursePayment.stateUpdateTimeInterval) {
+            courseBT.statusMessage = 'PAYMENT_FAILED'
+            courseBT.progress = false
+            clearInterval(coursePayment.stateUpdateTimeInterval)
+          }
+        }, 300000)
+      }
+
       courseBT.close = function () {
         $('#benefitModal').modal('hide')
+        $('#benefitModal').modal('hide all')
+        $('#benefitModal').modal('hide other')
       }
 
       courseBT.getCourseBadge = function () {

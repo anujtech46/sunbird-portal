@@ -121,7 +121,7 @@
             },
             "PAYMENT": {
                 "COLLECT": "/payment/v3/charge",
-                "REFUND": ""
+                "REFUND": "/payment/v3/credit/instant"
             }
         },
         "FILTER": {
