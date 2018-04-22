@@ -149,6 +149,12 @@ angular.module('loginApp')
         return errorMessage
       }
       newUser.signUp = function () {
+        var phoneverified_status = false
+        var emailverified_status = true
+        if(newUser.phone !== '') {
+          phoneverified_status = true
+          emailverified_status = false
+        }
         newUser.request = {
           params: {},
           request: {
@@ -159,7 +165,8 @@ angular.module('loginApp')
             userName: newUser.userName.trim(),
             phone: newUser.phone,
             provider: $rootScope.signUpUserProvider,
-            emailVerified: true
+            emailVerified: emailverified_status,
+            phoneVerified: phoneverified_status
           }
         }
         newUser.loader = toasterService.loader('', $rootScope.messages.stmsg.m0084)
