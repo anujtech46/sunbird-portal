@@ -34,6 +34,10 @@ angular.module('playerApp')
           toasterService.warning('Price is not defined for this course, Please contact admin...')
           return
         }
+        if(pay.upiId == ''){
+          toasterService.warning('Please enter UPI ID.')
+          return
+        }
         var req = {
           'amount': pay.coursePrice * 100,
           'instrumentType': 'VPA',

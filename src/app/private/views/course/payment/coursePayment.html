@@ -28,7 +28,7 @@
                       </div>
                     </div>
                   </div>
-                  <button class="ui primary button" ng-if="!pay.coursePayment || pay.coursePayment === 'mandatory'" ng-class="{ 'disabled' : !pay.upiId}"
+                  <button class="ui primary button"
                     ng-click="pay.doPayment()">CONTINUE</button>
                   <button class="ui primary button" ng-if="pay.coursePayment === 'optional'"
                   ng-click="pay.skipAndContinue()">SKIP AND CONTINUE</button>
