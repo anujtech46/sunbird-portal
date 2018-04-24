@@ -63,7 +63,7 @@
         </div>
         <div class="required field">
           <label>Course Benefit (In Rs.)</label>
-          <input type="number" name="course benefit" placeholder="Course Benefit" ng-model="coursePrice.data.coursebenefit">
+          <input type="text" name="course benefit" placeholder="Course Benefit" ng-model="coursePrice.data.coursebenefit" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
         </div>
       </div>
       <div class="required fields inline">
