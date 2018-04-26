@@ -9,6 +9,7 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
     sessionService, learnService, $http, searchService, toasterService, adminService, $state, $window) {
     $rootScope.userId = $('#userId').attr('value')
     $rootScope.sessionId = $('#sessionId').attr('value')
+    $rootScope.logSession = $('#logSession').attr('value')
     $rootScope.cdnUrl = $('#cdnUrl').attr('value') || ''
     $rootScope.language = $('#defaultPortalLanguage').attr('value') || 'en'
     $rootScope.content_channel_filter_type = $('#contentChannelFilterType').attr('value')
@@ -20,6 +21,7 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
     $rootScope.enrolledCourseIds = {}
     telemetryService.setConfigData('env', 'home')
     telemetryService.setConfigData('message', 'Content read')
+    org.sunbird.portal.appid = $('#producerId').attr('value')
     /**
      * This function contentModelSetBackLink is to store back link value for modal popup close dynamically.
      * **/
@@ -118,7 +120,16 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
       permissionsService.setCurrentUserRoles(userRoles)
       $rootScope.initializePermissionDirective = true
       telemetryService.init()
+      $scope.logSessionStartEvent()
       $scope.setRootOrgInfo(profileData)
+    }
+    $scope.logSessionStartEvent = function () {
+      if ($rootScope.logSession === 'false') {
+        $http.get('/v1/user/session/start/' + EkTelemetry.fingerPrintId).then(function (res) {
+        }).catch(function () {
+        })
+      } else {
+      }
     }
 
     $scope.getTelemetryConfigData = function () {
@@ -130,6 +141,7 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
         org.sunbird.portal.ekstep_env = res.data.ekstep_env
         org.sunbird.portal.init()
         telemetryService.init()
+        $scope.logSessionStartEvent()
       }).catch(function () {
 
       })

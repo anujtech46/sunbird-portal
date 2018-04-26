@@ -2,13 +2,14 @@
 
 angular.module('playerApp')
   .controller('contentPlayerCtrl', ['$state', '$scope', 'contentService', '$timeout', '$stateParams',
-    'config', '$rootScope', '$location', '$anchorScroll', 'toasterService', 'telemetryService', '$window',
+    'config', '$rootScope', '$location', '$anchorScroll', 'toasterService', '$window',
     function ($state, $scope, contentService, $timeout, $stateParams, config, $rootScope,
-      $location, $anchorScroll, toasterService, telemetryService, $window) {
+      $location, $anchorScroll, toasterService, $window) {
       $scope.isClose = $scope.isclose
       $scope.isHeader = $scope.isheader
       $scope.showModalInLectureView = true
       $scope.contentProgress = 0
+      $scope.telemetryEnv = ($state.current.name === 'Toc') ? 'course' : 'library'
       var count = 0
 
       $scope.getContentEditorConfig = function (data) {
@@ -47,6 +48,8 @@ angular.module('playerApp')
         configuration.config.repos = config.ekstep_CP_config.config.repos
         configuration.metadata = $scope.contentData
         configuration.data = $scope.contentData.mimeType !== config.MIME_TYPE.ecml ? {} : data.body
+        configuration.config.overlay = config.ekstep_CP_config.config.overlay || {}
+        configuration.config.overlay.showUser = false
         return configuration
       }
 
@@ -78,8 +81,6 @@ angular.module('playerApp')
             previewContentIframe.contentWindow.initializePreview(configuration)
             $scope.gotoBottom()
           }
-          telemetryService.startTelemetryData($state.params.backState, $rootScope.contentId,
-            $scope.contentData.contentType, '1.0', 'previewContent', 'content-read', 'play')
         }, 0)
 
         /**
@@ -141,8 +142,6 @@ angular.module('playerApp')
       }
 
       $scope.close = function () {
-        telemetryService.endTelemetryData($stateParams.backState, $rootScope.contentId, 'Resource',
-          '1.0', 'previewContent', 'content-read', 'play')
         if ($scope.closeurl === 'Profile') {
           $state.go($scope.closeurl)
           return

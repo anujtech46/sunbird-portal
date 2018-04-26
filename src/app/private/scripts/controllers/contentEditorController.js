@@ -26,10 +26,7 @@ angular.module('playerApp')
           tags: _.concat([], org.sunbird.portal.channel),
           channel: org.sunbird.portal.channel
         }
-        // Add search criteria
-        if (searchService.updateReqForChannelFilter()) {
-          window.context.searchCriteria = searchService.updateReqForChannelFilter()
-        }
+
         window.config = {
           baseURL: '',
           modalId: 'contentEditor',
@@ -42,7 +39,7 @@ angular.module('playerApp')
           plugins: [
             {
               id: 'org.ekstep.sunbirdcommonheader',
-              ver: '1.2',
+              ver: '1.3',
               type: 'plugin'
             },
             {
@@ -74,6 +71,11 @@ angular.module('playerApp')
             showEndPage: false
           }
         }
+        // Add search criteria
+        if (searchService.updateReqForChannelFilter()) {
+          window.config.searchCriteria = searchService.updateReqForChannelFilter()
+        }
+
         $('#contentEditor').iziModal({
           title: '',
           iframe: true,
@@ -98,7 +100,7 @@ angular.module('playerApp')
       var validateModal = {
         state: ['WorkSpace.UpForReviewContent', 'WorkSpace.ReviewContent',
           'WorkSpace.PublishedContent', 'LimitedPublishedContent'],
-        status: ['Review', 'Draft', 'Live', 'Unlisted'],
+        status: ['Review', 'Draft', 'Live', 'Unlisted', 'FlagDraft', 'FlagReview'],
         mimeType: config.CreateLessonMimeType
       }
 
@@ -158,12 +160,12 @@ angular.module('playerApp')
 
         org.sunbird.portal.eventManager.addEventListener('sunbird:portal:content:review',
                 function (event, data) { //eslint-disable-line
-                  if ($stateParams.state) {
-                    $state.go($stateParams.state)
-                  } else {
-                    $state.go('WorkSpace.DraftContent')
-                  }
-                })
+            if ($stateParams.state) {
+              $state.go($stateParams.state)
+            } else {
+              $state.go('WorkSpace.DraftContent')
+            }
+          })
 
         window.addEventListener('editor:metadata:edit', function (event, data) {
           org.sunbird.portal.eventManager.dispatchEvent('sunbird:portal:editor:editmeta')

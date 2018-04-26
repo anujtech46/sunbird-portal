@@ -29,7 +29,7 @@ const realm = envHelper.PORTAL_REALM
 const authServerUrl = envHelper.PORTAL_AUTH_SERVER_URL
 const keycloakResource = envHelper.PORTAL_AUTH_SERVER_CLIENT
 const reqDataLimitOfContentEditor = '50mb'
-const reqDataLimitOfContentUpload = '30mb'
+const reqDataLimitOfContentUpload = '50mb'
 const ekstepEnv = envHelper.EKSTEP_ENV
 const appId = envHelper.APPID
 const defaultTenant = envHelper.DEFAUULT_TENANT
@@ -38,7 +38,7 @@ const portal = this
 const Telemetry = require('sb_telemetry_util')
 const telemetry = new Telemetry()
 const telemtryEventConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'helpers/telemetryEventConfig.json')))
-
+const producerId = process.env.sunbird_environment + '.' + process.env.sunbird_instance + '.portal'
 let cassandraCP = envHelper.PORTAL_CASSANDRA_URLS
 
 let memoryStore = null
@@ -88,18 +88,22 @@ app.use(express.static(path.join(__dirname, 'tenant', tenantId)))
 // this line should be above middleware please don't change
 app.get('/public/service/orgs', publicServicehelper.getOrgs)
 
+if (defaultTenant) {
+  app.use(express.static(path.join(__dirname, 'tenant', defaultTenant)))
+}
+
 app.all('/public', function (req, res) {
   res.locals.cdnUrl = envHelper.PORTAL_CDN_URL
   res.locals.theme = envHelper.PORTAL_THEME
   res.locals.defaultPortalLanguage = envHelper.PORTAL_DEFAULT_LANGUAGE
   res.locals.signUpUserProvider = signUpUserProvider
+  res.locals.producerId = producerId
+  res.locals.instance = process.env.sunbird_instance
   res.render(path.join(__dirname, 'public', 'index.ejs'))
 })
 
 app.use('/public/*', express.static(path.join(__dirname, 'public')))
-if (defaultTenant) {
-  app.use(express.static(path.join(__dirname, 'tenant', defaultTenant)))
-}
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'private')))
 
@@ -114,6 +118,10 @@ app.use('/private/index', function (req, res, next) {
   next()
 })
 
+app.all('/logoff', endSession, function (req, res) {
+  res.cookie('connect.sid', '', { expires: new Date() })
+  res.redirect('/logout')
+})
 // Mobile redirection to app
 require('./helpers/mobileAppHelper.js')(app)
 
@@ -122,6 +130,8 @@ app.all('/', function (req, res) {
   res.locals.theme = envHelper.PORTAL_THEME
   res.locals.defaultPortalLanguage = envHelper.PORTAL_DEFAULT_LANGUAGE
   res.locals.signUpUserProvider = signUpUserProvider
+  res.locals.producerId = producerId
+  res.locals.instance = process.env.sunbird_instance
   res.render(path.join(__dirname, 'public', 'index.ejs'))
 })
 
@@ -237,9 +247,11 @@ app.all('/private/*', keycloak.protect(), permissionsHelper.checkPermission(), f
   res.locals.sessionId = req.sessionID
   res.locals.cdnUrl = envHelper.PORTAL_CDN_URL
   res.locals.theme = envHelper.PORTAL_THEME
+  res.locals.logSession = req.session.logSession
   res.locals.defaultPortalLanguage = envHelper.PORTAL_DEFAULT_LANGUAGE
   res.locals.contentChannelFilterType = envHelper.CONTENT_CHANNEL_FILTER_TYPE
   res.locals.courseCompletionBadgeId = envHelper.COURSE_COMPLITION_BADGE_ID
+  res.locals.producerId = producerId
   res.render(path.join(__dirname, 'private', 'index.ejs'))
 })
 
@@ -249,6 +261,15 @@ app.get('/get/envData', keycloak.protect(), function (req, res) {
   res.end()
 })
 
+app.get('/v1/user/session/start/:deviceId', function (req, res) {
+  if (req.session.logSession === false) {
+    req.session.deviceId = req.params.deviceId
+    telemetryHelper.logSessionStart(req)
+    req.session.logSession = true
+  }
+  res.status(200)
+  res.end()
+})
 // tenant Api's
 app.get('/v1/tenant/info', tenantHelper.getInfo)
 app.get('/v1/tenant/info/:tenantId', tenantHelper.getInfo)
@@ -287,6 +308,7 @@ app.all('*', function (req, res) {
  * Method called after successful authentication and it will log the telemetry for CP_SESSION_START and updates the login time
  */
 keycloak.authenticated = function (request) {
+  request.session.logSession = false
   async.series({
     getPermissionData: function (callback) {
       permissionsHelper.getPermissions(request)
@@ -297,9 +319,6 @@ keycloak.authenticated = function (request) {
     },
     updateLoginTime: function (callback) {
       userHelper.updateLoginTime(request, callback)
-    },
-    logSession: function (callback) {
-      telemetryHelper.logSessionStart(request, callback)
     }
   }, function (err, results) {
     if (err) {
@@ -307,21 +326,45 @@ keycloak.authenticated = function (request) {
     }
   })
 }
+function endSession (request, response, next) {
+  delete request.session['roles']
+  delete request.session['rootOrgId']
+  delete request.session['orgs']
+  if (request.session) {
+    if (_.get(request, 'kauth.grant.access_token.content.sub')) { telemetryHelper.logSessionEnd(request) }
+    telemetry.syncOnExit(function (err, res) { // sync on session end
+      if (err) {
+        console.log('error while syncing', err)
+      }
+      request.session.sessionEvents = request.session.sessionEvents || []
+      delete request.session.sessionEvents
+      delete request.session['deviceId']
+    })
+  }
+  next()
+}
 
 keycloak.deauthenticated = function (request) {
   delete request.session['roles']
   delete request.session['rootOrgId']
   delete request.session['orgs']
   if (request.session) {
-    request.session.sessionEvents = request.session.sessionEvents || []
     telemetryHelper.logSessionEnd(request)
-    delete request.session.sessionEvents
+    telemetry.syncOnExit(function (err, res) { // sync on session end
+      if (err) {
+        console.log('error while syncing', err)
+      }
+      request.session.sessionEvents = request.session.sessionEvents || []
+      delete request.session.sessionEvents
+      delete request.session['deviceId']
+    })
   }
 }
 
 resourcesBundlesHelper.buildResources(function (err, result) {
-  if (!process.env.sunbird_appid) {
-    console.error('please set sunbird_appid environment variable which is telemetry producer id')
+  if (!process.env.sunbird_environment || !process.env.sunbird_instance) {
+    console.error('please set environment variable sunbird_environment, ' +
+    'sunbird_instance  start service Eg: sunbird_environment = dev, sunbird_instance = sunbird')
     process.exit(1)
   }
   console.log('building resource bundles ......')

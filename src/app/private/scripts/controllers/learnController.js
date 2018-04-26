@@ -31,8 +31,6 @@ angular.module('playerApp')
         $state.go('Toc', params)
         telemetryService.interactTelemetryData('course', course.courseId, 'course',
           $rootScope.version, 'course-read', 'course')
-        telemetryService.startTelemetryData('course', course.courseId, 'course',
-          $rootScope.version, 'course', 'course-read', 'play')
       }
 
       learn.courses = function () {
@@ -82,7 +80,6 @@ angular.module('playerApp')
             index: index
           })
         }
-        console.log('----------', inviewLogs)
         $rootScope.$broadcast('mycoursesVisit', inviewLogs)
         telemetryService.setVisitData(inviewLogs)
       }

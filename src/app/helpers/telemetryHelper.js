@@ -13,6 +13,7 @@ const telemetry = new Telemetry()
 const appId = envHelper.APPID
 const fs = require('fs')
 const path = require('path')
+const contentURL = envHelper.CONTENT_URL
 const telemtryEventConfig = JSON.parse(fs.readFileSync(path.join(__dirname, './telemetryEventConfig.json')))
 
 telemtryEventConfig['pdata']['id'] = appId
@@ -34,7 +35,7 @@ module.exports = {
   /**
    * this function helps to generate session start event
    */
-  logSessionStart: function (req, callback) {
+  logSessionStart: function (req) {
     req.session.orgs = _.compact(req.session.orgs)
     req.session.save()
     var channel = req.session.rootOrghashTagId || md5('sunbird')
@@ -45,6 +46,7 @@ module.exports = {
     edata.uaspec = this.getUserSpec(req)
     const context = telemetry.getContextData({ channel: channel, env: 'user' })
     context.sid = req.sessionID
+    context.did = req.session.deviceId
     context.rollup = telemetry.getRollUpData(dims)
     const actor = telemetry.getActorData(req.kauth.grant.access_token.content.sub, 'user')
     telemetry.start({
@@ -53,7 +55,6 @@ module.exports = {
       actor: actor,
       tags: _.concat([], channel)
     })
-    return callback()
   },
 
   /**
@@ -62,9 +63,15 @@ module.exports = {
   logSessionEnd: function (req) {
     const edata = telemetry.endEventData('session')
     const actor = telemetry.getActorData(req.kauth.grant.access_token.content.sub, 'user')
+    var dims = _.clone(req.session.orgs || [])
     var channel = req.session.rootOrghashTagId || md5('sunbird')
+    const context = telemetry.getContextData({ channel: channel, env: 'user' })
+    context.sid = req.sessionID
+    context.did = req.session.deviceId
+    context.rollup = telemetry.getRollUpData(dims)
     telemetry.end({
       edata: edata,
+      context: context,
       actor: actor,
       tags: _.concat([], channel)
     })
@@ -293,7 +300,6 @@ module.exports = {
       'params': {
         'requesterId': req.kauth.grant.access_token.content.sub,
         'did': telemtryEventConfig.default_did,
-        'key': '13405d54-85b4-341b-da2f-eb6b9e546fff',
         'msgid': uuidv1()
       },
       'events': eventsData
@@ -309,7 +315,7 @@ module.exports = {
     var data = this.prepareTelemetryRequestBody(req, eventsData)
     var options = {
       method: 'POST',
-      url: envHelper.content_Service_Local_BaseUrl + '/v1/telemetry',
+      url: contentURL + '/data/v1/telemetry',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + apiToken
@@ -318,10 +324,13 @@ module.exports = {
       json: true
     }
     request(options, function (error, response, body) {
+      console.log()
       if (_.isFunction(callback)) {
         if (error) {
+          console.log('telemetry sync error while syncing  portal', error)
           callback(error, false)
         } else if (body && body.params && body.params.err) {
+          console.log('telemetry sync error while syncing  portal', body.params.err)
           callback(body, false)
         } else {
           callback(null, true)

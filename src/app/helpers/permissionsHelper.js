@@ -19,7 +19,7 @@ let PERMISSIONS_HELPER = {
     'content/create': ['CONTENT_CREATOR', 'CONTENT_CREATION', 'CONTENT_REVIEWER', 'BOOK_CREATOR'],
     'content/update': ['CONTENT_CREATOR', 'CONTENT_CREATION', 'CONTENT_REVIEWER', 'BOOK_CREATOR'],
     'content/review': ['CONTENT_CREATOR', 'CONTENT_CREATION', 'CONTENT_REVIEWER', 'CONTENT_REVIEW',
-      'BOOK_CREATOR', 'BOOK_REVIEWER'],
+      'BOOK_CREATOR', 'BOOK_REVIEWER', 'FLAG_REVIEWER'],
     'content/publish': ['CONTENT_REVIEWER', 'CONTENT_REVIEW'],
     'content/flag/accept': ['FLAG_REVIEWER'],
     'content/flag/reject': ['FLAG_REVIEWER'],
@@ -131,6 +131,9 @@ let PERMISSIONS_HELPER = {
                 }
               })
             }
+            reqObj.session.orgs = _.uniq(reqObj.session.orgs)
+            reqObj.session.roles = _.uniq(reqObj.session.roles)
+
             if (body.result.response.rootOrg && body.result.response.rootOrg.id) {
               reqObj.session.rootOrgId = body.result.response.rootOrg.id
               reqObj.session.rootOrghashTagId = body.result.response.rootOrg.hashTagId
