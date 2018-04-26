@@ -32,6 +32,7 @@
                                     <course-discussions showaskquestion="true"></course-discussions>
                                 </div>
                                 <div class='three wide column'>
+                                <course-price coursedata="toc.courseHierarchy" courseid="toc.courseHierarchy.identifier" viewtype="'CARD'"></course-price>
                                     <batch-card ng-show="toc.batchCardShow" showbatchcard="true" coursecreatedby="toc.courseHierarchy.createdBy"></batch-card>
                                     <div ng-show="toc.batchDetailsShow">
                                         <div class="rightSideSectionCards ui card">
@@ -55,22 +56,26 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div ng-if="toc.courseType === 'ENROLLED_COURSE'" class="margin-bottom-15 margin-top-15">
-                                        <add-note shownoteincourse="true" courseid="toc.courseId"></add-note>
-                                    </div>
-                                    <div>
-                                        <note-card ng-if="toc.courseType === 'ENROLLED_COURSE'" shownotecard="toc.courseType === 'ENROLLED_COURSE' ? true : false" courseid="toc.courseId"></note-card>
-                                    </div>
-                                    <div>
-                                        <div ng-include=" 'views/course/carriculumCard.html'"></div>
-                                    </div>
-                                    <br>
-                                    <!--                                    <div ng-include=" 'views/course/facultyCard.html'" class="margin-bottom-15"></div>-->
-                                    <div class="courseupdate">
-                                        <b>{{$root.frmelmnts.lbl.coursecreatedon}}: {{toc.courseHierarchy.createdOn | dateFilterWithMDY}}</b>
-                                        <br>
-                                        <b>{{$root.frmelmnts.lbl.updatedon}}: {{toc.courseHierarchy.lastUpdatedOn | dateFilterWithMDY}}</b>
-                                    </div>
+            <div ng-if="toc.courseType === 'ENROLLED_COURSE'" class="margin-bottom-15 margin-top-15">
+                <add-note shownoteincourse="true" courseid="toc.courseId"></add-note>
+            </div>
+            <div>
+                <note-card ng-if="toc.courseType === 'ENROLLED_COURSE'" shownotecard="toc.courseType === 'ENROLLED_COURSE' ? true : false" courseid="toc.courseId"></note-card>
+            </div>
+            <div>
+                <div ng-include=" 'views/course/carriculumCard.html'"></div>
+            </div>
+            <div ng-if="toc.courseType === 'ENROLLED_COURSE' && (toc.courseProgress * 100 / toc.courseTotal) == 100">
+                <course-benefit-transfer courseid="toc.courseHierarchy.identifier"></course-benefit-transfer>
+                <course-certificate coursedata="toc.courseHierarchy" batchdata="toc.selectedBatchInfo"></course-certificate>
+            </div>
+            <br>
+            <!--                                    <div ng-include=" 'views/course/facultyCard.html'" class="margin-bottom-15"></div>-->
+            <div class="courseupdate">
+                <b>{{$root.frmelmnts.lbl.coursecreatedon}}: {{toc.courseHierarchy.createdOn | dateFilterWithMDY}}</b>
+                <br>
+                <b>{{$root.frmelmnts.lbl.updatedon}}: {{toc.courseHierarchy.lastUpdatedOn | dateFilterWithMDY}}</b>
+            </div>
                                 </div>
                             </div>
                         </div>
