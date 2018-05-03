@@ -508,10 +508,7 @@
             { "field": "name", "name": "Name A-Z"}
         ],
         "searchSelectionKeys": [
-            { "id": "All", "name": "All" },
             { "id": "Courses", "name": "Courses" },
-            { "id": "Library", "name": "Library" },
-            { "id": "Organisations", "name": "Organisations" },
             { "id": "Users", "name": "Users" }
         ],
         "contributeContentType": ["Collection", "TextBook", "Course", "LessonPlan", "Resource"],

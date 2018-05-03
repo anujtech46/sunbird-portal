@@ -26,7 +26,7 @@ angular.module('playerApp')
           'Search', 'TocPlayer', 'PreviewCollection', 'Profile', 'PublicProfile']
         var filterEnabledStates = ['Courses', 'Resources', 'Search']
         var searchKey = {
-          Home: 'All',
+          Home: 'Courses',
           Courses: 'Courses',
           Resources: 'Library',
           CourseNote: 'Courses',

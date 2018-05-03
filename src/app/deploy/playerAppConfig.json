@@ -428,10 +428,7 @@
             { "field": "createdOn", "name": "Created On" }
         ],
         "searchSelectionKeys": [
-            { "id": "All", "name": "All" },
             { "id": "Courses", "name": "Courses" },
-            { "id": "Resources", "name": "Resources" },
-            { "id": "Organisations", "name": "Organisations" },
             { "id": "Users", "name": "Users" }
         ],
         "contributeContentType": ["Collection", "TextBook", "Course", "LessonPlan", "Resource"],
