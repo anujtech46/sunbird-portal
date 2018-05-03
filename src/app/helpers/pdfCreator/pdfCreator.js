@@ -12,9 +12,7 @@ const UploadUtil = require('./uploadUtil')
 const envVariables = require('./../environmentVariablesHelper.js')
 
 const backgroundImg = FileSystem.readFileSync(path.join(__dirname, 'CertBackground.jpg'))
-const companyLogo = FileSystem.readFileSync(path.join(__dirname, 'jc-logo-small.jpg'))
 const containerName = envVariables.CERTIFICATE_STORE_CONTAINER_NAME || 'container'
-const certificateProviderName = envVariables.CERTIFICATE_PROVIDER_NAME
 const certificateInstructor = envVariables.CERTIFICATE_INSTRUCTOR_NAME
 const uploadUtil = new UploadUtil(containerName)
 
@@ -128,7 +126,6 @@ function createPDF (data, filePath, callback) {
   // Extract all the data from request
   var title = data.title
   var name = data.name
-  var provider = certificateProviderName
   var instructor = data.instructor || certificateInstructor
   var courseCompletionDate = getCertificateDate(data.createdDate || new Date())
   var courseName = data.courseName
@@ -145,34 +142,10 @@ function createPDF (data, filePath, callback) {
     width: 700
   })
 
-  // doc.fontSize(15)
-  //   .text('This is to certify that ' + title + ' ' + name + ' has completed the course "' +
-  //   courseName + '" conducted by ' + provider, 150, 300, {
-  //   })
-  // .font('Times-Roman')
-  doc.font('Helvetica').text('This is to certify that ', 150, 300, { continued: true })
-    .font('Helvetica-Bold').text(title + ' ' + name, { continued: true })
-    .font('Helvetica').text(' has completed the course "', { continued: true })
-    .font('Helvetica-Bold').text(courseName, { continued: true })
-    .font('Helvetica').text('" conducted by ', { continued: true })
-    .font('Helvetica-Bold').text(provider)
-
-  doc.moveDown()
-  doc.moveDown()
-  doc.image(companyLogo)
-
-  doc.text(courseCompletionDate, 180, 480, {
-    align: 'left'
-  })
-
-  /*
-  doc.text('Course Instructor', 280, 340, {
-      align: 'right'
-  });
-  */
-
-  doc.text('(' + instructor + ' )', 550, 520, {
-  })
+  doc.font('Helvetica-Bold').fontSize(15).text(title + ' ' + name, 200, 293, { align: 'center' })
+  doc.font('Helvetica-Bold').fontSize(15).text(courseName, 200, 376, { align: 'center' })
+  doc.text(courseCompletionDate, 340, 470, { align: 'left' })
+  doc.text(instructor, 385, 470, { align: 'center' })
 
   doc.end()
   stream.on('error', function (err) {
