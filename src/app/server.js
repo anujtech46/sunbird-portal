@@ -250,7 +250,7 @@ app.all('/private/*', keycloak.protect(), permissionsHelper.checkPermission(), f
   res.locals.logSession = req.session.logSession
   res.locals.defaultPortalLanguage = envHelper.PORTAL_DEFAULT_LANGUAGE
   res.locals.contentChannelFilterType = envHelper.CONTENT_CHANNEL_FILTER_TYPE
-  res.locals.courseCompletionBadgeId = envHelper.COURSE_COMPLITION_BADGE_ID
+  res.locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
   res.locals.producerId = producerId
   res.render(path.join(__dirname, 'private', 'index.ejs'))
 })

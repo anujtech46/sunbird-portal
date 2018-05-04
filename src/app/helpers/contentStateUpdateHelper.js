@@ -5,7 +5,7 @@ const request = require('request')
 let uuidv1 = require('uuid/v1')
 const _ = require('lodash')
 const bodyParser = require('body-parser')
-const courseCompliationBadgeId = envVariables.COURSE_COMPLITION_BADGE_ID
+const courseCompletionBadgeId = envVariables.COURSE_COMPLETION_BADGE_ID
 
 module.exports = function (app) {
   app.post('/update/content/state', bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
@@ -108,7 +108,7 @@ function updateContentState (req, response) {
       console.log('rspObj', JSON.stringify(req.rspObj))
       getUserProfile(req, function (error, status, resp) {
         if (error || (resp.response && resp.response.badgeAssertions && resp.response.badgeAssertions.length > 0 &&
-          _.findIndex(resp.response.badgeAssertions, { badgeId: courseCompliationBadgeId }) > -1)) {
+          _.findIndex(resp.response.badgeAssertions, { badgeId: courseCompletionBadgeId }) > -1)) {
           console.log('User have badge')
           return response.send(updateResp)
         } else {
@@ -352,7 +352,7 @@ function getBadgeDetailWithID (req, callback) {
   var rspObj = req.rspObj
   var options = {
     method: 'GET',
-    url: learnerURL + 'badging/v1/issuer/badge/read/' + envVariables.COURSE_COMPLITION_BADGE_ID,
+    url: learnerURL + 'badging/v1/issuer/badge/read/' + envVariables.COURSE_COMPLETION_BADGE_ID,
     headers: req.headers,
     json: true
   }
