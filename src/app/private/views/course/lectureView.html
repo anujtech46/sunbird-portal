@@ -7,9 +7,9 @@
     </ul>
 </script>
 <div id="course-toc{{$index}}" class="ui styled accordion margin-top-10 accordian-left-bottomMargin width-100" ng-repeat="item in  toc.courseHierarchy.children track by $index" ng-class="{'cursor-pointerText':item.children.length == 0 && item.mimeType == 'application/vnd.ekstep.content-collection'}"
-    ng-init="$last && toc.initTocView()">
+    ng-init="$last && !toc.contentScoreProgress && toc.initTocView()">
     <div ng-if="item.mimeType == 'application/vnd.ekstep.content-collection'" class="courseAccordianHeading title title-padding-left accordian-left-text" ng-click="toc.expandAccordion($event)">
-        <img ng-src="{{toc.getContentIcon(item.mimeType)}}" class="ui mini floated image"> {{item.name}}
+        <img ng-src="{{toc.getContentIcon(item.mimeType)}}" class="ui mini floated image"> {{item.name}} 
         <i ng-if='item.children && item.children.length > 0' class="plus icon down-arrow-accordion"></i>
     </div>
     <div ng-if="item.mimeType != 'application/vnd.ekstep.content-collection'" class="courseAccordianHeading title title-padding-left accordian-left-text" ng-class="{'cursor-pointerText':(toc.playContent == false && item.mimeType !== 'application/vnd.ekstep.content-collection')}"

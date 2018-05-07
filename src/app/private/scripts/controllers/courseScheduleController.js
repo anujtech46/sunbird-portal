@@ -17,13 +17,14 @@ angular.module('playerApp')
               res.result.content.status === 'Flagged') {
               coursePayment.setCourseDetail(res.result.content)
               res.result.content.children = _.sortBy(res.result.content.children, ['index'])
-              // fetch all avaliable contents from course data
+              // fetch all available contents from course data
               toc.courseContents = toc.getCourseContents(res.result.content, [])
               toc.courseTotal = toc.courseContents.length
               toc.version = res.ver
               toc.contentCountByType = _.countBy(toc.courseContents, 'mimeType')
               // if enrolled course then load batch details also after content status
               if (toc.courseType === 'ENROLLED_COURSE') {
+                toc.getContentScoreAndFeedback(false)
                 toc.getContentState(function () {
                   toc.courseHierarchy = res.result.content
                   toc.showBatchCardList()
@@ -61,6 +62,7 @@ angular.module('playerApp')
         }
         toc.courseProgress = 0
         contentStateService.getContentsState(req, function (contentRes) {
+          toc.contentProgressDetail = contentRes
           _.forEach(contentRes, function (content) {
             // object 'contentStatusList' has status of each content
             toc.contentStatusList[content.contentId] = toc.contentStatusClass[content.status] ||
@@ -69,18 +71,12 @@ angular.module('playerApp')
               toc.courseProgress += 1
             }
           })
-          if (toc.courseProgress === toc.courseContents.length) {
-            console.log('Update courese to course complete')
-            $timeout(function () {
-              $rootScope.$emit('updateCourseComplete', {})
-            }, 2000)
-          }
           // go back to called function and proceed
           cb()
         })
       }
 
-      toc.checkProgressContinous = function () {
+      toc.checkProgressContinuous = function () {
         var isEnroled = _.find($rootScope.enrolledCourses, function (o) {
           return o.courseId === toc.courseId
         })
@@ -95,6 +91,7 @@ angular.module('playerApp')
           }
           contentStateService.getContentsState(req, function (contentRes) {
             toc.courseProgress = 0
+            toc.contentProgressDetail = contentRes
             _.forEach(contentRes, function (content) {
               // object 'contentStatusList' has status of each content
               toc.contentStatusList[content.contentId] = toc.contentStatusClass[content.status] ||
@@ -103,20 +100,17 @@ angular.module('playerApp')
                 toc.courseProgress += 1
               }
             })
+            toc.getContentScoreAndFeedback(true)
             console.log('called update state')
             toc.updateCourseProgress()
-            if (toc.courseProgress === toc.courseContents.length) {
-              console.log('Update courese to course complete')
-              $timeout(function () {
-                $rootScope.$emit('updateCourseComplete', {})
-              }, 2000)
-            }
+            toc.checkForTocUpdate()
           })
         }, 4000)
       }
 
       $rootScope.clearTimeOutOfStateChange = function () {
         console.log('clear timeout update state')
+        localStorage.removeItem('contentStatusAndScore')
         clearTimeout(toc.stateUpdateTimeInterval)
       }
 
@@ -147,6 +141,9 @@ angular.module('playerApp')
                 data.targetType = 'expander'
                 toc.openContent(data.node.key)
               }
+            },
+            renderNode: function (event, data) {
+              return toc.updateNodeTitle(data)
             }
           })
           $('.ui.accordion').accordion({
@@ -243,6 +240,7 @@ angular.module('playerApp')
         }
         if (toc.courseProgress === toc.courseContents.length) {
           clearTimeout(toc.stateUpdateTimeInterval)
+          localStorage.removeItem('contentStatusAndScore')
         }
       }
 
@@ -252,7 +250,7 @@ angular.module('playerApp')
       $scope.$watch('contentPlayer.isContentPlayerEnabled', function (newValue, oldValue) {
         $('.toc-resume-button').addClass('contentVisibility-hidden')
         if (oldValue === true && newValue === false) {
-          toc.checkProgressContinous()
+          toc.checkProgressContinuous()
           toc.hashId = ''
           $location.hash(toc.hashId)
           toc.getContentState(function () {
@@ -331,7 +329,7 @@ angular.module('playerApp')
 
             // generate telemetry interact event//
             toc.objRollup = [contentId]
-
+            toc.storeContentProgressAndScore(contentId)
             toc.scrollToPlayer()
             toc.updateBreadCrumbs()
           }
@@ -435,6 +433,73 @@ angular.module('playerApp')
           toc.isCourseMentor = true
         }
         toc.getCourseToc()
+      }
+
+      toc.getContentScoreAndFeedback = function (status) {
+        var request = {
+          entityName: 'coursescore',
+          filters: {
+            userid: $rootScope.userId,
+            courseid: toc.courseId
+          }
+        }
+        toc.contentScoreProgress = false
+        courseService.getContentScore(request).then(function (res) {
+          toc.contentScoreProgress = false
+          if (res && res.responseCode === 'OK') {
+            toc.courseScoreFeedback = res.result.response.content
+            toc.initTocView()
+          } else {
+            console.log('err fetch in content feedback', JSON.stringify(res))
+          }
+        }).catch(function (err) {
+          console.log('err fetch in content feedback', JSON.stringify(err))
+        })
+      }
+
+      toc.updateNodeTitle = function (data) {
+        var title = ''
+        var scoreData = _.find(toc.courseScoreFeedback, { 'contentid': data.node.key })
+        if (scoreData) {
+          if (scoreData.userscore) {
+            title = title + '<span class="fancy-tree-feedback">( Score: ' +
+            scoreData.userscore + '/' + scoreData.maxscore + ' ) </span>'
+          }
+          if (scoreData.feedback) {
+            var feedbackLinkHtml = '<a href=' + scoreData.feedback + ' target="_blank" return false; > Feedback </a>'
+            title = title + feedbackLinkHtml
+          }
+        }
+        var node = data.node
+        var $nodeSpan = $(node.span)
+        if (!$nodeSpan.data('rendered')) {
+          $nodeSpan.append(title)
+          $nodeSpan.data('rendered', true)
+        }
+      }
+
+      toc.storeContentProgressAndScore = function (contentId) {
+        console.log('toc.contentProgressDetail', toc.contentProgressDetail)
+        console.log('toc.courseScoreFeedback', toc.courseScoreFeedback)
+        var scoreData = _.find(toc.courseScoreFeedback, {contentid: contentId})
+        var progressData = _.find(toc.contentProgressDetail, {contentId: contentId})
+        var data = {
+          contentId: contentId,
+          status: progressData && progressData.status,
+          score: scoreData && scoreData.userscore
+        }
+        localStorage.setItem('contentStatusAndScore', JSON.stringify(data))
+      }
+
+      toc.checkForTocUpdate = function () {
+        var previousData = JSON.parse(localStorage.getItem('contentStatusAndScore'))
+        var scoreData = _.find(toc.courseScoreFeedback, {contentid: previousData.contentId})
+        var progressData = _.find(toc.contentProgressDetail, {contentId: previousData.contentId})
+        if ((scoreData.userscore !== previousData.score) || (progressData.status !== previousData.status)) {
+          console.log('Update toc')
+          toc.initTocView()
+          localStorage.removeItem('contentStatusAndScore')
+        }
       }
 
       toc.initDropdownValues = function () {

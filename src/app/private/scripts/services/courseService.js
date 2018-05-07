@@ -2,7 +2,8 @@
 
 angular.module('playerApp')
   .service('courseService', ['restfulLearnerService', 'config', '$sessionStorage', 'restfulContentService',
-    function (restfulLearnerService, config, $sessionStorage, restfulContentService) {
+    'uuid4',
+    function (restfulLearnerService, config, $sessionStorage, restfulContentService, uuid4) {
     /**
      * @class courseService
      * @desc Service to manage courses
@@ -64,5 +65,19 @@ angular.module('playerApp')
              */
       this.enrollUserToCourse = function (req) {
         return restfulLearnerService.post(config.URL.COURSE.ENROLL_USER_COURSE, req)
+      }
+
+      this.getRequestBody = function (req) {
+        return {
+          'id': uuid4.generate(),
+          'ts': new Date(),
+          'params': {},
+          'request': req
+        }
+      }
+
+      this.getContentScore = function (req) {
+        var url = config.URL.OBJECT.SEARCH
+        return restfulLearnerService.post(url, this.getRequestBody(req))
       }
     }])

@@ -190,6 +190,7 @@ angular.module('playerApp')
           $rootScope.courseActive = ''
           dataService.setData('contentStateInit', false)
           dataService.setData('isTrackingEnabled', false)
+          $rootScope.clearTimeOutOfStateChange()
           if (dataService.getData('isTelemtryStarted') === true) {
             dataService.setData('isTelemtryStarted', false)
             telemetryService.endTelemetryData('course', $stateParams.courseId, 'course', '1.0', 'player',
@@ -357,6 +358,7 @@ angular.module('playerApp')
             tags: _.concat([], org.sunbird.portal.channel)
           }
           telemetryService.end(data)
+          $rootScope.clearTimeOutOfStateChange()
           dataService.setData('isTrackingEnabled', false)
         }
       })

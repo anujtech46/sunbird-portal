@@ -57,7 +57,8 @@ let envVariables = {
   SIGN_UP_USER_PROVIDER: env.julia_sign_up_user_provider,
   PAYMENT_PROVIDER_REFUND_REQUEST_URL: env.julia_payment_refund_request_base_url || 'https://mercury-stg.phonepe.com',
   PAYMENT_PROVIDER_REFUND_REQUEST_URI: env.julia_payment_refund_callback_uri || '/v3/credit/instant',
-  PAYMENT_PROVIDER_REFUND_CALLBACK_URI: env.julia_payment_refund_callback_uri || '/phonepe/v1/callback/refund'
+  PAYMENT_PROVIDER_REFUND_CALLBACK_URI: env.julia_payment_refund_callback_uri || '/phonepe/v1/callback/refund',
+  CONTENT_FEEDBACK_STORE_CONTAINER_NAME: env.julia_content_feedback_storage_container_name || 'feedback'
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

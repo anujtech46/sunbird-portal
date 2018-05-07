@@ -5,6 +5,7 @@ const request = require('request')
 let uuidv1 = require('uuid/v1')
 const _ = require('lodash')
 const bodyParser = require('body-parser')
+const feedback = require('./feedback/contentFeedback')
 const courseCompletionBadgeId = envVariables.COURSE_COMPLETION_BADGE_ID
 
 module.exports = function (app) {
@@ -94,10 +95,10 @@ function getCourseContents (contentData, contentList) {
 function updateContentState (req, response) {
   async.waterfall([
     function (cb) {
-      updateState(req, function (error, status, resp) {
+      updateStateAndFeedback(req, function (error, status, resp) {
         if (error) {
-          console.log('Update status fail: sending response back', JSON.stringify(error), status)
-          return response.send(error)
+          console.log('Update fail: sending response back', JSON.stringify(error), status)
+          return response.status(status).send(error)
         } else {
           console.log('Update status success: sending response back', JSON.stringify(resp), status)
           cb(null, resp)
@@ -207,9 +208,21 @@ function checkRequiredKeys (data, keys) {
   return isValid
 }
 
-function updateState (req, callback) {
+function getPartialResponseObj (name, success, err, errMsg, status) {
+  return {
+    name: name,
+    success: success,
+    err: err,
+    errmsg: errMsg,
+    status: status
+  }
+};
+
+function updateStateAndFeedback (req, callback) {
   const body = req.body
   var rspObj = req.rspObj
+  var progressUpdate, feedbackUpdate, scoreUpdate
+  var result = []
   console.log('User request body:', JSON.stringify(body))
   console.log('User request header', JSON.stringify(req.headers))
   if (!body || !body.request || !checkRequiredKeys(body.request, ['contentId', 'courseId', 'progress', 'uid'])) {
@@ -219,46 +232,168 @@ function updateState (req, callback) {
     var errRspObj = errorResponse(rspObj)
     return callback(errRspObj, 400, false)
   } else {
-    rspObj.userId = body.request.uid
-    var progress = body.request.progress
-    var status = body.request.status ? body.request.status : progress > 0 ? (progress >= 100 ? 2 : 1) : 0
-    var requestBody = {
-      userId: body.request.uid,
-      contents: [
-        {
-          contentId: body.request.contentId,
-          courseId: body.request.courseId,
-          batchId: body.request.batchId,
-          status: status,
-          progress: body.request.progress
-        }
-      ]
-    }
-    var options = {
-      method: 'PATCH',
-      url: learnerURL + 'course/v1/content/state/update',
-      headers: req.headers,
-      body: { request: requestBody },
-      json: true
-    }
-    console.log('Request to learner service:', JSON.stringify(options))
-    request(options, function (error, response, body) {
-      if (!error && body && body.responseCode === 'OK') {
-        rspObj.result = body.result
+    async.waterfall([
+      function (cb) {
+        updateState(req, function (error, status, resp) {
+          if (error) {
+            progressUpdate = false
+            result.push(getPartialResponseObj('Progress Update', progressUpdate, error.params.err,
+              error.params.errmsg, error.params.status))
+            console.log('Update state fail:', JSON.stringify(error), status)
+          } else {
+            progressUpdate = true
+            result.push(getPartialResponseObj('Progress Update', progressUpdate, '', '', ''))
+            console.log('Update state success:', JSON.stringify(resp), status)
+          }
+          cb()
+        })
+      },
+      function (cb) {
+        feedback.createAndUploadFeedback(req, function (error, resp) {
+          if (error) {
+            feedbackUpdate = false
+            result.push(getPartialResponseObj('Feedback file creation', feedbackUpdate, error.errMsg,
+              error.errmsg, error.responseCode))
+            console.log('Update feedback fail:', JSON.stringify(error))
+            cb(null, error)
+          } else {
+            feedbackUpdate = true
+            result.push(getPartialResponseObj('Feedback file creation', feedbackUpdate, '', '', ''))
+            console.log('Update feedback success:', JSON.stringify(resp))
+            cb(null, resp)
+          }
+        })
+      },
+      function (data, cb) {
+        updateScore(req, data, function (error, status, resp) {
+          if (error) {
+            scoreUpdate = false
+            result.push(getPartialResponseObj('Score_Feedback Update', scoreUpdate, error.params.err,
+              error.params.errmsg, error.params.status))
+            console.log('Update score fail:', JSON.stringify(error), status)
+          } else {
+            scoreUpdate = true
+            result.push(getPartialResponseObj('Score_Feedback Update', scoreUpdate, '', '', ''))
+            console.log('Update score success:', JSON.stringify(resp), status)
+          }
+          cb()
+        })
+      }
+    ], function () {
+      rspObj.result = result
+      if (progressUpdate && feedbackUpdate && scoreUpdate) {
         var successRspObj = successResponse(rspObj)
         return callback(null, 200, successRspObj)
+      } else if (progressUpdate || feedbackUpdate || scoreUpdate) {
+        return callback(errorResponse(rspObj), 207, null)
       } else {
-        console.log('Error response from server', JSON.stringify(body))
-        rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_CONTENT_STATE_FAILED'
-        rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update content state failed, please try again later'
-        rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
-        rspObj.result = body && body.result
-        var httpStatus = body && body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500
-        var errRspObj = errorResponse(rspObj)
-        return callback(errRspObj, httpStatus, false)
+        return callback(errorResponse(rspObj), 500, null)
       }
     })
   }
+}
+
+function getObjectRequestData (schemaName, payload) {
+  return {
+    request: {
+      entityName: schemaName,
+      indexed: true,
+      payload: payload
+    }
+  }
+}
+
+function updateScore (req, feedbackData, callback) {
+  const body = req.body
+  var rspObj = req.rspObj
+  rspObj.userId = body.request.uid
+  var optType = body.request.first_submission // Operation type
+  var requestBody = {
+    id: body.request.uid + '+' + body.request.courseId + '+' + body.request.contentId,
+    userid: body.request.uid,
+    contentid: body.request.contentId,
+    courseid: body.request.courseId,
+    userscore: Number((body.request.score).toFixed(0)),
+    maxscore: Number((body.request.max_score).toFixed(0)),
+    updateddate: new Date()
+  }
+  if (feedbackData && feedbackData.result) {
+    requestBody.feedback = feedbackData.result.fileUrl
+  }
+  optType = (optType === 'true' || typeof (optType) === 'boolean') ? JSON.parse(optType) : false
+  if (optType) {
+    requestBody.createddate = new Date()
+  }
+  var url = optType ? 'data/v1/object/create' : 'data/v1/object/update'
+
+  var options = {
+    method: 'POST',
+    url: learnerURL + url,
+    headers: req.headers,
+    body: getObjectRequestData('coursescore', requestBody),
+    json: true
+  }
+  console.log('Request to learner service for course score:', JSON.stringify(options))
+  request(options, function (error, response, body) {
+    if (!error && body && body.responseCode === 'OK') {
+      rspObj.result = body.result
+      var successRspObj = successResponse(rspObj)
+      return callback(null, 200, successRspObj)
+    } else {
+      console.log('Error response from server to update score', JSON.stringify(body))
+      rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_SCORE_FAILED'
+      rspObj.errMsg = body && body.params ? body.params.errmsg : 'Updating score failed, please try again later'
+      rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
+      rspObj.result = body && body.result
+      var httpStatus = body && body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500
+      var errRspObj = errorResponse(rspObj)
+      return callback(errRspObj, httpStatus, false)
+    }
+  })
+}
+
+function updateState (req, callback) {
+  const body = req.body
+  var rspObj = req.rspObj
+  rspObj.userId = body.request.uid
+  var progress = body.request.progress
+  var status = body.request.status ? body.request.status : progress > 0 ? (progress >= 100 ? 2 : 1) : 0
+  var requestBody = {
+    userId: body.request.uid,
+    contents: [
+      {
+        contentId: body.request.contentId,
+        courseId: body.request.courseId,
+        batchId: body.request.batchId,
+        status: status,
+        progress: body.request.progress
+      }
+    ]
+  }
+  var options = {
+    method: 'PATCH',
+    url: learnerURL + 'course/v1/content/state/update',
+    headers: req.headers,
+    body: { request: requestBody },
+    json: true
+  }
+  console.log('Request to learner service for update progress:', JSON.stringify(options))
+  request(options, function (error, response, body) {
+    if (!error && body && body.responseCode === 'OK') {
+      rspObj.result = body.result
+      var successRspObj = successResponse(rspObj)
+      return callback(null, 200, successRspObj)
+    } else {
+      console.log('Error response from server', JSON.stringify(body))
+      rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_CONTENT_STATE_FAILED'
+      rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update content state failed, please try again later'
+      rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
+      rspObj.result = body && body.result
+      var httpStatus = body && body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500
+      var errRspObj = errorResponse(rspObj)
+      return callback(errRspObj, httpStatus, false)
+    }
+  })
 }
 
 /**
@@ -329,7 +464,7 @@ function getBadgeAssignUserAuthToken (callback) {
   var options = {
     method: 'POST',
     url: envVariables.PORTAL_AUTH_SERVER_URL + '/realms/' +
-    envVariables.PORTAL_REALM + '/protocol/openid-connect/token',
+      envVariables.PORTAL_REALM + '/protocol/openid-connect/token',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     json: true,
     form: {

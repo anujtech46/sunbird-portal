@@ -18,7 +18,7 @@ const uploadUtil = new UploadUtil(containerName)
 
 module.exports = function (app) {
   app.post('/course/certificate/download', bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
-    createCerticate)
+    createCertificate)
 }
 
 /**
@@ -161,7 +161,7 @@ function createPDF (data, filePath, callback) {
  * @param {*} req 
  * @param {*} res 
  */
-function createCerticate (req, res) {
+function createCertificate (req, res) {
   const data = req.body && req.body.request
   const rspObj = req.rspObj
 

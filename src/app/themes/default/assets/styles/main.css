@@ -2977,3 +2977,9 @@ html {
 .min-height-60 {
   min-height: 60px !important;
 }
+
+.fancy-tree-feedback {
+  display: inline-block;
+  padding-top: 4px;
+  padding-left: 20px;
+}
