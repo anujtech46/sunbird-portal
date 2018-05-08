@@ -34,7 +34,7 @@ angular.module('playerApp')
           toasterService.warning('Price is not defined for this course, Please contact admin...')
           return
         }
-        if(pay.upiId == ''){
+        if (pay.upiId === '') {
           toasterService.warning('Please enter UPI ID.')
           return
         }
@@ -166,7 +166,7 @@ angular.module('playerApp')
           })
         }, 4000)
 
-        setTimeout(() => {
+        setTimeout(function () {
           console.log('Clear timeout after 300 sec, if interval is pending', coursePayment.stateUpdateTimeInterval)
           if (coursePayment.stateUpdateTimeInterval) {
             pay.statusMessage = 'PAYMENT_FAILED'

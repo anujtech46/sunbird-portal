@@ -146,7 +146,7 @@ angular.module('playerApp')
             }
           })
         }, 4000)
-        setTimeout(() => {
+        setTimeout(function () {
           console.log('Clear timeout after 300 sec, if interval is pending', coursePayment.stateUpdateTimeInterval)
           if (coursePayment.stateUpdateTimeInterval) {
             courseBT.statusMessage = 'PAYMENT_FAILED'

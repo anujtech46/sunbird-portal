@@ -52,7 +52,7 @@ function createAndUploadFeedback (req, callback) {
   const data = req.body && req.body.request
   const rspObj = req.rspObj
   // Verify request and check all required fields
-  if (!data || !checkRequiredKeys(data, ['contentId', 'uid', 'courseId'])) {
+  if (!data || !checkRequiredKeys(data, ['contentId', 'uid', 'courseId', 'feedback'])) {
     rspObj.errCode = 'INVALID_REQUEST'
     rspObj.errMsg = 'Required fields are missing.'
     rspObj.responseCode = 'CLIENT_ERROR'

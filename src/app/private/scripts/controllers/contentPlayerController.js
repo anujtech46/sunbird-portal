@@ -56,7 +56,7 @@ angular.module('playerApp')
       $scope.adjustPlayerHeight = function () {
         var playerWidth = $('#contentViewerIframe').width()
         if (playerWidth) {
-          var height = playerWidth * (12 / 16)
+          var height = playerWidth * (8 / 14)
           $('#contentViewerIframe').css('height', height + 'px')
         }
       }

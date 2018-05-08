@@ -223,7 +223,9 @@ function updateStateAndFeedback (req, callback) {
   var rspObj = req.rspObj
   var progressUpdate, feedbackUpdate, scoreUpdate
   var result = []
-  console.log('User request body:', JSON.stringify(body))
+  var printBody = Object.assign({}, body.request)
+  delete printBody['feedback']
+  console.log('User request body:', JSON.stringify(printBody))
   console.log('User request header', JSON.stringify(req.headers))
   if (!body || !body.request || !checkRequiredKeys(body.request, ['contentId', 'courseId', 'progress', 'uid'])) {
     rspObj.errCode = 'INVALID_REQUEST'
@@ -324,11 +326,10 @@ function updateScore (req, feedbackData, callback) {
   if (optType) {
     requestBody.createddate = new Date()
   }
-  var url = optType ? 'data/v1/object/create' : 'data/v1/object/update'
 
   var options = {
     method: 'POST',
-    url: learnerURL + url,
+    url: learnerURL + 'data/v1/object/create',
     headers: req.headers,
     body: getObjectRequestData('coursescore', requestBody),
     json: true
