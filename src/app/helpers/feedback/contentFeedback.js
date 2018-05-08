@@ -17,6 +17,7 @@ function createFeedback (data, filePath, callback) {
   var base64 = data.feedback
   var strData = atob(base64)
   var htmlData = pako.inflate(strData, {to: 'string'})
+  htmlData = htmlData.replace(/^.+<!DOCTYPE html>/, '')
   FileSystem.writeFile(filePath, htmlData, function (err) {
     if (err) {
       console.log('Unable to content feedback file:', JSON.stringify(err))
