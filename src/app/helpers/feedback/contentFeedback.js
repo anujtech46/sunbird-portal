@@ -4,6 +4,8 @@ const atob = require('atob')
 const _ = require('lodash')
 const path = require('path')
 const async = require('async')
+const tar = require('tar-fs')
+const rimraf = require('rimraf')
 
 const UploadUtil = require('./../pdfCreator/uploadUtil')
 
@@ -13,18 +15,20 @@ const containerName = envVariables.CONTENT_FEEDBACK_STORE_CONTAINER_NAME || 'con
 console.log(containerName)
 const uploadUtil = new UploadUtil(containerName)
 
-function createFeedback (data, filePath, callback) {
+function createFeedback (data, folderName, filePath, callback) {
   var base64 = data.feedback
+  var fileName = data.feedback_file_name
   var strData = atob(base64)
   var htmlData = pako.inflate(strData, {to: 'string'})
-  htmlData = htmlData.replace(/^.+<!DOCTYPE html>/, '')
-  FileSystem.writeFile(filePath, htmlData, function (err) {
+  var tarFileName = path.join(filePath, folderName + '.tar')
+  FileSystem.writeFile(tarFileName, htmlData, function (err, data) {
     if (err) {
-      console.log('Unable to content feedback file:', JSON.stringify(err))
+      console.log('Unable to create tar file: ', JSON.stringify(err))
       callback(err, null)
     } else {
-      console.log('content feedback file create successfully')
-      callback(null, filePath)
+      FileSystem.createReadStream(tarFileName).pipe(tar.extract(filePath))
+      FileSystem.unlinkSync(tarFileName)
+      callback(null, fileName)
     }
   })
 }
@@ -53,7 +57,7 @@ function createAndUploadFeedback (req, callback) {
   const data = req.body && req.body.request
   const rspObj = req.rspObj
   // Verify request and check all required fields
-  if (!data || !checkRequiredKeys(data, ['contentId', 'uid', 'courseId', 'feedback'])) {
+  if (!data || !checkRequiredKeys(data, ['contentId', 'uid', 'courseId', 'feedback', 'feedback_file_name'])) {
     rspObj.errCode = 'INVALID_REQUEST'
     rspObj.errMsg = 'Required fields are missing.'
     rspObj.responseCode = 'CLIENT_ERROR'
@@ -64,14 +68,12 @@ function createAndUploadFeedback (req, callback) {
   const courseId = data.courseId
   const contentId = data.contentId
   // Create file name with course name and courseId and courseName date
-  const fileName = userId + '-' + courseId + '-' + contentId + '.html'
+  const folderName = userId + '-' + courseId + '-' + contentId
   // Create local file path
-  const filePath = path.join(__dirname, fileName)
-  // Create destination path (Azure bucket path)
-  var destPath = path.join('content_feedback', fileName)
+  const filePath = path.join(__dirname, folderName)
   async.waterfall([
     function (CB) {
-      createFeedback(data, filePath, function (err, result) {
+      createFeedback(data, folderName, filePath, function (err, fileName) {
         if (err) {
           console.log('Creating feedback failed, due to', JSON.stringify(err))
           rspObj.errCode = 'CREATE_FEEDBACK_FAILED'
@@ -79,12 +81,15 @@ function createAndUploadFeedback (req, callback) {
           rspObj.responseCode = 'SERVER_ERROR'
           return callback(rspObj, null)
         } else {
-          CB()
+          var htmlFilePath = path.join(filePath + '/' + fileName)
+          // Create destination path (Azure bucket path)
+          var destPath = path.join('content_feedback', folderName, fileName)
+          CB(null, destPath, htmlFilePath)
         }
       })
     },
-    function (CB) {
-      uploadUtil.uploadFile(destPath, filePath, function (err, result) {
+    function (destPath, htmlFilePath, CB) {
+      uploadUtil.uploadFile(destPath, htmlFilePath, function (err, result) {
         if (err) {
           console.log('Error while uploading feedback', JSON.stringify(err))
           rspObj.errCode = 'CREATE_CERTIFICATE_FAILED'
@@ -94,7 +99,7 @@ function createAndUploadFeedback (req, callback) {
         } else {
           console.log('File uploaded successfully', envVariables.AZURE_STORAGE_URL + containerName + '/' + destPath)
           rspObj.result = { fileUrl: envVariables.AZURE_STORAGE_URL + containerName + '/' + destPath }
-          FileSystem.unlink(filePath, function () { })
+          rimraf(filePath, function () { console.log('delete file after upload') })
           return callback(null, rspObj)
         }
       })
