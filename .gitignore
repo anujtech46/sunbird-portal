@@ -7,3 +7,5 @@
 /npm-debug.log
 .coverrun
 /src/mochawesome-report
+/src/out
+src/app/jsdoc\.conf\.json

@@ -1,3 +1,11 @@
+/*
+ * Filename: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src/app/helpers/paymentHelper.js
+ * Path: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src
+ * Created Date: Sunday, May 13th 2018, 5:43:40 pm
+ * Author: Anuj Gupta
+ * 
+ * Copyright (c) 2018 Your Company
+ */
 const envVariables = require('./environmentVariablesHelper.js')
 const learnerURL = envVariables.LEARNER_URL
 const request = require('request')
@@ -19,6 +27,10 @@ const REFUND_REQUEST_URI = envVariables.PAYMENT_PROVIDER_REFUND_REQUEST_URI
 const PAYMENT_REFUND_CALLBACK_URI = envVariables.PAYMENT_PROVIDER_REFUND_CALLBACK_URI
 const refundTxnIdMap = {}
 
+/**
+ * Exports all the routes related to payments
+ * @param {object} app 
+ */
 module.exports = function (app) {
   app.post('/payment' + COLLECT_REQUEST_URI, bodyParser.json({ limit: '1mb' }),
     createAndValidateRequestBody, collectPayment)
@@ -40,14 +52,15 @@ module.exports = function (app) {
  */
 function updatePaymentStatus (req, callback) {
   var rspObj = req.rspObj
+  // Check required fields and type
   if (typeof req !== 'object' || typeof callback !== 'function') {
     rspObj.errCode = 'INVALID_REQUEST'
     rspObj.errMsg = 'Invalid request received'
     rspObj.responseCode = 400
     return callback(errorResponse(rspObj), 400, null)
   }
-  const encodedData = req.body && req.body.response
-  const decodedData = JSON.parse(Buffer.from(encodedData, 'base64').toString())
+  const encodedData = req.body && req.body.response // extract properties
+  const decodedData = JSON.parse(Buffer.from(encodedData, 'base64').toString()) // decode request
   console.log('Decode data of payment callback:', JSON.stringify(decodedData))
   if (decodedData) {
     var body = {
@@ -69,12 +82,12 @@ function updatePaymentStatus (req, callback) {
     console.log('Update status of transaction', JSON.stringify(options))
     request(options, function (error, response, body) {
       if (!error && body && body.responseCode === 'OK') {
-        console.log('Payment status update successfully for transactionid: ', decodedData.data.transactionId)
+        console.log('Payment status update successfully for transaction id: ', decodedData.data.transactionId)
         return callback(null, 200, body.result)
       } else {
-        console.log('Payment status update failed for transactionid: ', decodedData.data.transactionId,
+        console.log('Payment status update failed for transaction id: ', decodedData.data.transactionId,
           JSON.stringify(body))
-        rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_PAYMENT_STATUD_FAILED'
+        rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_PAYMENT_STATUS_FAILED'
         rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update payment status failed'
         rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
         rspObj.result = body && body.result
@@ -96,7 +109,7 @@ function updatePaymentStatus (req, callback) {
 /**
  * Api wrapper to handle the payment callback, This api will call by  payment provider
  * @param {object} req: API request object 
- * @param {oject} res: API response object
+ * @param {object} res: API response object
  */
 function handleCollectPaymentCallback (req, res) {
   const xVerfiy = req && req.headers['x-verify']
@@ -115,7 +128,7 @@ function handleCollectPaymentCallback (req, res) {
       rspObj.errCode = 'INVALID_REQUEST_DATE'
       rspObj.errMsg = 'Requested data invalid.'
       rspObj.responseCode = 400
-      console.log('Invalid request received, xverify and response not matched')
+      console.log('Invalid request received, xVerify and response not matched')
       return res.status(400).send(errorResponse(rspObj))
     } else {
       console.log('Valid request received')
@@ -154,7 +167,7 @@ function getRequestBodyForCharge (req) {
 /**
  * Api wrapper to handle the collect payment
  * @param {object} req: API request object 
- * @param {oject} res: API response object
+ * @param {object} res: API response object
  */
 function collectPayment (req, res) {
   var rspObj = req.rspObj || {}
@@ -200,6 +213,12 @@ function collectPayment (req, res) {
   }
 }
 
+/**
+ * This middleware function is used to create and validate the request body
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {function} next 
+ */
 function createAndValidateRequestBody (req, res, next) {
   req.body = req.body || {}
   req.body.ts = new Date()
@@ -230,6 +249,10 @@ function createAndValidateRequestBody (req, res, next) {
   next()
 }
 
+/**
+ * This is util function. Which helps to get success response
+ * @param {object} data 
+ */
 function successResponse (data) {
   var response = {}
   response.id = data.apiId
@@ -257,6 +280,13 @@ function errorResponse (data) {
   return response
 }
 
+/**
+ * This is util function. Which helps to get params for response
+ * @param {string} msgId 
+ * @param {string} status 
+ * @param {string} errCode 
+ * @param {string} msg 
+ */
 function getParams (msgId, status, errCode, msg) {
   var params = {}
   params.resmsgid = uuidv1()
@@ -271,7 +301,7 @@ function getParams (msgId, status, errCode, msg) {
 /**
  * Api wrapper to handle the refund payment
  * @param {object} req: API request object
- * @param {oject} res: API response object
+ * @param {object} res: API response object
  */
 function refundPayment (req, res) {
   var rspObj = req.rspObj || {}
@@ -322,7 +352,7 @@ function refundPayment (req, res) {
 /**
  * Api wrapper to handle the payment refund callback, This api will call by payment provider
  * @param {object} req: API request object 
- * @param {oject} res: API response object
+ * @param {object} res: API response object
  */
 function handleRefundPaymentCallback (req, res) {
   const xVerfiy = req && req.headers['x-verify']
@@ -394,12 +424,12 @@ function updateRefundPaymentStatus (req, callback) {
     request(options, function (error, response, body) {
       delete refundTxnIdMap[decodedData.data && decodedData.data.transactionId]
       if (!error && body && body.responseCode === 'OK') {
-        console.log('Payment status update successfully for transactionid: ', decodedData.data.transactionId)
+        console.log('Payment status update successfully for transaction id: ', decodedData.data.transactionId)
         return callback(null, 200, body.result)
       } else {
-        console.log('Payment status update failed for transactionid: ', decodedData.data.transactionId,
+        console.log('Payment status update failed for transaction id: ', decodedData.data.transactionId,
           JSON.stringify(body))
-        rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_PAYMENT_STATUD_FAILED'
+        rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_PAYMENT_STATUS_FAILED'
         rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update payment status failed'
         rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
         rspObj.result = body && body.result

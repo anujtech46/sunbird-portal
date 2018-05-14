@@ -199,6 +199,5 @@ angular.module('playerApp')
           })
         }
       }
-
       courseBT.getCourseDetail()
     }])

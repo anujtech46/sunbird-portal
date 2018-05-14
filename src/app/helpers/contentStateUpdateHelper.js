@@ -1,4 +1,13 @@
-var async = require('async')
+/*
+ * Filename: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src/app/helpers/contentStateUpdateHelper.js
+ * Path: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src
+ * Created Date: Sunday, May 13th 2018, 5:11:21 pm
+ * Author: Anuj Gupta
+ * 
+ * Copyright (c) 2018 Your Company
+ */
+
+const async = require('async')
 const envVariables = require('./environmentVariablesHelper.js')
 const learnerURL = envVariables.LEARNER_URL
 const request = require('request')
@@ -8,11 +17,21 @@ const bodyParser = require('body-parser')
 const feedback = require('./feedback/contentFeedback')
 const courseCompletionBadgeId = envVariables.COURSE_COMPLETION_BADGE_ID
 
+/**
+ * Exports all the routes for update content state api
+ * @param {object} app 
+ */
 module.exports = function (app) {
   app.post('/update/content/state', bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
     updateContentState)
 }
 
+/**
+ * This is middleware function. Which is used to validate request body
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next 
+ */
 function createAndValidateRequestBody (req, res, next) {
   req.body = req.body || {}
   req.body.ts = new Date()
@@ -41,7 +60,11 @@ function createAndValidateRequestBody (req, res, next) {
   req.rspObj = rspObj
   next()
 }
-
+/**
+* This is util function. Which helps to get success response
+* @param {object} data
+* @returns {object} response object
+*/
 function successResponse (data) {
   var response = {}
   response.id = data.apiId
@@ -55,8 +78,8 @@ function successResponse (data) {
 
 /**
  * this function create error response body.
- * @param {Object} data
- * @returns {nm$_responseUtil.errorResponse.response}
+ * @param {object} data
+ * @return {object} response object
  */
 function errorResponse (data) {
   var response = {}
@@ -69,6 +92,14 @@ function errorResponse (data) {
   return response
 }
 
+/**
+ * This function is use to get params data for response
+ * @param {string} msgId 
+ * @param {string} status 
+ * @param {string} errCode 
+ * @param {string} msg 
+ * @return {object} response params object
+ */
 function getParams (msgId, status, errCode, msg) {
   var params = {}
   params.resmsgid = uuidv1()
@@ -76,10 +107,15 @@ function getParams (msgId, status, errCode, msg) {
   params.status = status
   params.err = errCode
   params.errmsg = msg
-
   return params
 }
 
+/**
+ * This function is use to get content list of a course
+ * @param {Object} contentData 
+ * @param {Object} contentList 
+ * @return {Array} 
+ */
 function getCourseContents (contentData, contentList) {
   if (contentData.mimeType !==
     'application/vnd.ekstep.content-collection') {
@@ -92,9 +128,17 @@ function getCourseContents (contentData, contentList) {
   return contentList
 }
 
+/**
+ * This function is use to update content state, create feedback and update score and feedback url
+ * it's also check user profile for badge, if user don't have badge, We are checking that user completed
+ * all the course module. Once course progress is 100 %, we are assigning the badge to user.
+ * @param {Object} req 
+ * @param {Object} response 
+ */
 function updateContentState (req, response) {
   async.waterfall([
     function (cb) {
+      // This function is use to update content state, feedback and score.
       updateStateAndFeedback(req, function (error, status, resp) {
         if (error) {
           console.log('Update fail: sending response back', JSON.stringify(error), status)
@@ -106,6 +150,7 @@ function updateContentState (req, response) {
       })
     },
     function (updateResp, cb) {
+      // This function is use to get user profile for checking the user has badge or not
       console.log('rspObj', JSON.stringify(req.rspObj))
       getUserProfile(req, function (error, status, resp) {
         if (error || (resp.response && resp.response.badgeAssertions && resp.response.badgeAssertions.length > 0 &&
@@ -119,8 +164,10 @@ function updateContentState (req, response) {
       })
     },
     function (updateResp, cb) {
+      // This function is use to get course hierarchy for get all the content modules
       getCourseHierarchy(req, function (error, status, resp) {
         if (error) {
+          console.log('Get course hierarchy failed, due to', JSON.stringify(error))
           return response.send(updateResp)
         } else {
           console.log('Got course hierarchy response')
@@ -131,6 +178,8 @@ function updateContentState (req, response) {
     function (data, updateResp, cb) {
       var contentList = getCourseContents(data.content, [])
       console.log('contentList: ', contentList.length)
+      // This function is use to get progress of all the content and check progress is 100 % or not
+      // If progress is completed, we are assigning badge
       getState(req, contentList, function (error, status, resp) {
         if (error) {
           return response.send(error)
@@ -145,17 +194,23 @@ function updateContentState (req, response) {
       })
     },
     function (updateResp, cb) {
+      // Assign badge
       assignBadge(req, function (error, res) {
-        console.log('eror:', error)
+        if (error) console.log('error:', error)
         cb(null, updateResp)
       })
     }
   ], function (err, resp) {
-    console.log('err:', err)
+    if (err) console.log('err:', err)
     return response.send(resp)
   })
 }
 
+/**
+ * This function is use to get user profile.
+ * @param {Object} req 
+ * @param {function} callback 
+ */
 function getUserProfile (req, callback) {
   var rspObj = req.rspObj
   var options = {
@@ -171,7 +226,6 @@ function getUserProfile (req, callback) {
     if (!error && body && body.responseCode === 'OK') {
       return callback(null, 200, body.result)
     } else {
-      console.log('sdfsdfs')
       rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_CONTENT_STATE_FAILED'
       rspObj.errMsg = body && body.params ? body.params.errmsg : 'Update content state failed, please try again later'
       rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
@@ -183,6 +237,12 @@ function getUserProfile (req, callback) {
   })
 }
 
+/**
+ * This function is use to check progress of all module is completed.
+ * @param {Object} data 
+ * @param {Array} contentList 
+ * @return {Boolean}
+ */
 function checkProgress (data, contentList) {
   var courseProgress = 0
   _.forEach(data.contentList, function (content) {
@@ -198,6 +258,12 @@ function checkProgress (data, contentList) {
   }
 }
 
+/**
+ * This function is use to check the required keys in data
+ * @param {Object} data 
+ * @param {Array} keys
+ * @returns {Boolean}
+ */
 function checkRequiredKeys (data, keys) {
   var isValid = true
   _.forEach(keys, function (key) {
@@ -208,6 +274,14 @@ function checkRequiredKeys (data, keys) {
   return isValid
 }
 
+/**
+ * This function is use to get response for all process, Which tells the response of all the operation
+ * @param {string} name: Name of the process 
+ * @param {boolean} success : Status
+ * @param {string} err
+ * @param {string} errMsg 
+ * @param {string} status 
+ */
 function getPartialResponseObj (name, success, err, errMsg, status) {
   return {
     name: name,
@@ -218,6 +292,14 @@ function getPartialResponseObj (name, success, err, errMsg, status) {
   }
 };
 
+/**
+ * In this function we are doing some operation
+ * Update content progress
+ * create and upload feedback
+ * update score and feedback url
+ * @param {object} req 
+ * @param {function} callback : if all are success the success resp, if any one failed then err response
+ */
 function updateStateAndFeedback (req, callback) {
   const body = req.body
   var rspObj = req.rspObj
@@ -236,6 +318,7 @@ function updateStateAndFeedback (req, callback) {
   } else {
     async.waterfall([
       function (cb) {
+        // This function is use to update state
         updateState(req, function (error, status, resp) {
           if (error) {
             progressUpdate = false
@@ -251,6 +334,7 @@ function updateStateAndFeedback (req, callback) {
         })
       },
       function (cb) {
+        // This function is use to create and upload feedback html file
         feedback.createAndUploadFeedback(req, function (error, resp) {
           if (error) {
             feedbackUpdate = false
@@ -267,6 +351,7 @@ function updateStateAndFeedback (req, callback) {
         })
       },
       function (data, cb) {
+        // This function is use to update score and feedback url
         updateScore(req, data, function (error, status, resp) {
           if (error) {
             scoreUpdate = false
@@ -295,6 +380,12 @@ function updateStateAndFeedback (req, callback) {
   }
 }
 
+/**
+ * This function is use to create request body for object api
+ * @param {String} schemaName 
+ * @param {Object} payload 
+ * @returns {Object}
+ */
 function getObjectRequestData (schemaName, payload) {
   return {
     request: {
@@ -305,6 +396,12 @@ function getObjectRequestData (schemaName, payload) {
   }
 }
 
+/**
+ * This function is use to update score and feedback
+ * @param {Object} req 
+ * @param {Object} feedbackData 
+ * @param {Function} callback 
+ */
 function updateScore (req, feedbackData, callback) {
   const body = req.body
   var rspObj = req.rspObj
@@ -353,6 +450,11 @@ function updateScore (req, feedbackData, callback) {
   })
 }
 
+/**
+ * This function is use to update content state and progress
+ * @param {String} req 
+ * @param {Function} callback 
+ */
 function updateState (req, callback) {
   const body = req.body
   var rspObj = req.rspObj
@@ -398,9 +500,9 @@ function updateState (req, callback) {
 }
 
 /**
- * Get content state
- * @param {*} req 
- * @param {*} callback 
+ * This function is use to get content state
+ * @param {Object} req 
+ * @param {Function} callback 
  */
 function getState (req, contentList, callback) {
   const body = req.body
@@ -434,6 +536,11 @@ function getState (req, contentList, callback) {
   })
 }
 
+/**
+ * This function is use to get course hierarchy
+ * @param {Object} req 
+ * @param {Function} callback 
+ */
 function getCourseHierarchy (req, callback) {
   const body = req && req.body
   var rspObj = req && req.rspObj
@@ -461,6 +568,10 @@ function getCourseHierarchy (req, callback) {
   })
 }
 
+/**
+ * This function is use to get auth token for user who will assign badge
+ * @param {Function} callback 
+ */
 function getBadgeAssignUserAuthToken (callback) {
   var options = {
     method: 'POST',
@@ -484,6 +595,11 @@ function getBadgeAssignUserAuthToken (callback) {
   })
 }
 
+/**
+ * This function is use to get badge detail
+ * @param {Object} req 
+ * @param {Function} callback 
+ */
 function getBadgeDetailWithID (req, callback) {
   var rspObj = req.rspObj
   var options = {
@@ -508,6 +624,13 @@ function getBadgeDetailWithID (req, callback) {
   })
 }
 
+/**
+ * This function is use to call api to assign badge
+ * @param {Object} req 
+ * @param {String} token 
+ * @param {Object} badgeDetail 
+ * @param {Function} callback 
+ */
 function assignBadgeToUser (req, token, badgeDetail, callback) {
   var rspObj = req.rspObj
   var reqBody = {
@@ -516,7 +639,7 @@ function assignBadgeToUser (req, token, badgeDetail, callback) {
     'recipientId': rspObj.userId,
     'recipientType': 'user'
   }
-  console.log('Issu: ', reqBody)
+  console.log('Issue: ', reqBody)
   var headers = Object.assign({}, req.headers)
   headers['x-authenticated-user-token'] = token
   var options = {
@@ -544,6 +667,14 @@ function assignBadgeToUser (req, token, badgeDetail, callback) {
   })
 }
 
+/**
+ * This function is use to assign badge, This function is doing multiple operation
+ * Get badge detail
+ * Get auth token of user who will assign badge
+ * Assign badge to user
+ * @param {Object} req 
+ * @param {Function} callback 
+ */
 function assignBadge (req, callback) {
   async.waterfall([
     function (cb) {

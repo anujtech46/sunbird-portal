@@ -329,6 +329,7 @@ angular.module('playerApp')
 
             // generate telemetry interact event//
             toc.objRollup = [contentId]
+            $rootScope.clearTimeOutOfStateChange()
             toc.storeContentProgressAndScore(contentId)
             toc.scrollToPlayer()
             toc.updateBreadCrumbs()

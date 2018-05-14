@@ -1,3 +1,9 @@
+/*
+ * Filename: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src/app/helpers/feedback/contentFeedback.js
+ * Path: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src
+ * Author: Anuj Gupta
+ */
+
 const pako = require('pako')
 const FileSystem = require('fs')
 const atob = require('atob')
@@ -12,9 +18,15 @@ const UploadUtil = require('./../pdfCreator/uploadUtil')
 const envVariables = require('./../environmentVariablesHelper.js')
 
 const containerName = envVariables.CONTENT_FEEDBACK_STORE_CONTAINER_NAME || 'container'
-console.log(containerName)
 const uploadUtil = new UploadUtil(containerName)
 
+/**
+ * This function is use to create feedback tar file and extract tar file and get the html file
+ * @param {Object} data : Request data from api
+ * @param {String} folderName : tar file folder name
+ * @param {String} filePath : File path, Where we have to create tar file
+ * @param {Function} callback : It have error or success params
+ */
 function createFeedback (data, folderName, filePath, callback) {
   var base64 = data.feedback
   var fileName = data.feedback_file_name
@@ -49,9 +61,9 @@ function checkRequiredKeys (data, keys) {
 }
 
 /**
- * API wrapper function to create feedback
- * @param {*} req 
- * @param {*} res 
+ * API wrapper function to create and upload feedback
+ * @param {Object} req 
+ * @param {Object} res 
  */
 function createAndUploadFeedback (req, callback) {
   const data = req.body && req.body.request

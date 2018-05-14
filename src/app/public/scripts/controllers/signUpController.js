@@ -145,16 +145,16 @@ angular.module('loginApp')
           errorMessage = $rootScope.messages.stmsg.m0085
         } else if (errorKey === 'USERNAME_EMAIL_IN_USE') {
           errorMessage = $rootScope.messages.stmsg.m0086
+        } else if (errorKey === 'INVALID_PHONE_NO_FORMAT') {
+          errorMessage = $rootScope.messages.stmsg.m0114
+        } else if (errorKey === 'EMAIL_IN_USE') {
+          errorMessage = $rootScope.messages.stmsg.m0115
         } else errorMessage = $rootScope.messages.emsg.m0005
         return errorMessage
       }
       newUser.signUp = function () {
-        var phoneverified_status = false
-        var emailverified_status = true
-        if(newUser.phone !== '') {
-          phoneverified_status = true
-          emailverified_status = false
-        }
+        var isPhoneVerified = true
+        isPhoneVerified = newUser.phone ? isPhoneVerified : false
         newUser.request = {
           params: {},
           request: {
@@ -165,8 +165,8 @@ angular.module('loginApp')
             userName: newUser.userName.trim(),
             phone: newUser.phone,
             provider: $rootScope.signUpUserProvider,
-            emailVerified: emailverified_status,
-            phoneVerified: phoneverified_status
+            emailVerified: !isPhoneVerified,
+            phoneVerified: isPhoneVerified
           }
         }
         newUser.loader = toasterService.loader('', $rootScope.messages.stmsg.m0084)

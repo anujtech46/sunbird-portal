@@ -1,3 +1,9 @@
+/*
+ * Filename: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src/app/helpers/pdfCreator/pdfCreator.js
+ * Path: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src
+ * Author: Anuj Gupta
+ */
+
 const PDFDocument = require('pdfkit')
 const FileSystem = require('fs')
 const bodyParser = require('body-parser')
@@ -23,7 +29,8 @@ module.exports = function (app) {
 
 /**
  * This function is useful to modify date for certificate
- * @param {Date string} reqDate 
+ * @param {String} reqDate 
+ * @return {String}
  */
 function getCertificateDate (reqDate) {
   var date = reqDate ? new Date(reqDate) : new Date()
@@ -32,9 +39,9 @@ function getCertificateDate (reqDate) {
 
 /**
  * This middleware function is used to validate request body and create response structure
- * @param {API object} req 
- * @param {API Object} res 
- * @param {API object} next 
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next : Middleware function, used to perform next operation
  */
 function createAndValidateRequestBody (req, res, next) {
   req.body = req.body || {}
@@ -68,6 +75,7 @@ function createAndValidateRequestBody (req, res, next) {
 /**
  * This function helps to return success response
  * @param {Object} data 
+ * @returns {Object} Success response object
  */
 function successResponse (data) {
   var response = {}
@@ -96,6 +104,14 @@ function errorResponse (data) {
   return response
 }
 
+/**
+ * This function is use to get params data for response
+ * @param {string} msgId 
+ * @param {string} status 
+ * @param {string} errCode 
+ * @param {string} msg 
+ * @return {object} response params object
+ */
 function getParams (msgId, status, errCode, msg) {
   var params = {}
   params.resmsgid = uuidv1()
@@ -122,44 +138,55 @@ function checkRequiredKeys (data, keys) {
   return isValid
 }
 
+/**
+ * This function is use to create certificate.
+ * @param {Object} data 
+ * @param {String} filePath 
+ * @param {Function} callback 
+ */
 function createPDF (data, filePath, callback) {
   // Extract all the data from request
-  var title = data.title
-  var name = data.name
-  var instructor = data.instructor || certificateInstructor
-  var courseCompletionDate = getCertificateDate(data.createdDate || new Date())
-  var courseName = data.courseName
+  if (data && filePath) {
+    var title = data.title
+    var name = data.name
+    var instructor = data.instructor || certificateInstructor
+    var courseCompletionDate = getCertificateDate(data.createdDate || new Date())
+    var courseName = data.courseName
 
-  var doc = new PDFDocument({ autoFirstPage: false })
+    var doc = new PDFDocument({ autoFirstPage: false })
 
-  var stream = doc.pipe(FileSystem.createWriteStream(filePath))
+    var stream = doc.pipe(FileSystem.createWriteStream(filePath))
 
-  doc.addPage({
-    layout: 'landscape'
-  })
+    doc.addPage({
+      layout: 'landscape'
+    })
 
-  doc.image(backgroundImg, {
-    width: 700
-  })
+    doc.image(backgroundImg, {
+      width: 700
+    })
 
-  doc.font('Helvetica-Bold').fontSize(15).text(title + ' ' + name, 200, 293, { align: 'center' })
-  doc.font('Helvetica-Bold').fontSize(15).text(courseName, 200, 376, { align: 'center' })
-  doc.text(courseCompletionDate, 340, 470, { align: 'left' })
-  doc.text(instructor, 385, 470, { align: 'center' })
+    doc.font('Helvetica-Bold').fontSize(15).text(title + ' ' + name, 200, 293, { align: 'center' })
+    doc.font('Helvetica-Bold').fontSize(15).text(courseName, 200, 376, { align: 'center' })
+    doc.text(courseCompletionDate, 340, 470, { align: 'left' })
+    doc.text(instructor, 385, 470, { align: 'center' })
 
-  doc.end()
-  stream.on('error', function (err) {
+    doc.end()
+    stream.on('error', function (err) {
+      callback(err, null)
+    })
+    stream.on('finish', function () {
+      callback(null, {filePath: filePath})
+    })
+  } else {
+    var err = {msg: 'Invalid params'}
     callback(err, null)
-  })
-  stream.on('finish', function () {
-    callback(null, {filePath: filePath})
-  })
+  }
 }
 
 /**
  * API wrapper function to create certificate
- * @param {*} req 
- * @param {*} res 
+ * @param {Object} req 
+ * @param {Object} res 
  */
 function createCertificate (req, res) {
   const data = req.body && req.body.request
