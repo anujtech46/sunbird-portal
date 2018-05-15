@@ -303,7 +303,8 @@ var paths = {
     'dist/private/scripts/services/restfulPlayerService.js',
     'dist/private/scripts/directives/certificate/courseCertificateDirective.js',
     'dist/private/scripts/services/coursePriceService.js',
-    'dist/private/scripts/directives/coursePriceDirective.js'
+    'dist/private/scripts/directives/coursePriceDirective.js',
+    'dist/private/scripts/directives/badge/courseBadgeDirective.js'
   ],
   telemetry_js: [
     'dist/private/scripts/telemetry/TelemetryEvent.js',

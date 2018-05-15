@@ -68,8 +68,8 @@
                                         <div ng-include=" 'views/course/carriculumCard.html'"></div>
                                     </div>
                                     <div ng-if="toc.courseType === 'ENROLLED_COURSE' && (toc.courseProgress * 100 / toc.courseTotal) == 100">
+                                        <course-badge courseid="toc.courseHierarchy.identifier" coursedata="toc.courseHierarchy" batchdata="toc.selectedBatchInfo"></course-badge>
                                         <course-benefit-transfer courseid="toc.courseHierarchy.identifier"></course-benefit-transfer>
-                                        <course-certificate coursedata="toc.courseHierarchy" batchdata="toc.selectedBatchInfo"></course-certificate>
                                     </div>
                                     <br>
                                     <!--<div ng-include=" 'views/course/facultyCard.html'" class="margin-bottom-15"></div>-->

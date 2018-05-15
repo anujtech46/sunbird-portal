@@ -1,25 +1,3 @@
-<div class="rightSideSectionCards ui card margin-top-15" ng-if="courseBT.userBadges && courseBT.userBadges.badgeClassName">
-  <div class="content" ng-init="badge = courseBT.userBadges">
-    <div class="header announcementCard-header">Certification
-    </div>
-    <div class="ui items margin-top-10">
-      <div class="item">
-        <img class="ui avatar image" ng-src="{{badge.image || badge.badgeClassImage}}">
-        <div class="middle aligned content padding-left-10" ng-init="badgeName = badge.name || badge.badgeClassName">
-          <div class="ui huge sub header secondary-text-color-sunbird">{{badgeName | limitTo : 70}}</div>
-          <i ng-if="badgeName && badgeName.length > 70" class="ellipsis horizontal icon" title="{{badgeName}}">
-          </i>
-          <div class="description">
-            <div class="secondary-text-color-sunbird">{{badge.issuerName | limitTo : 40}}
-              <i ng-if="issueName && issueName.length > 40" class="ellipsis horizontal icon" title="{{issueName}}">
-              </i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 <div ng-if="courseBT.isShowBTButton">
   <button class="ui fluid blue basic button margin-bottom-10 margin-right-10" ng-click="courseBT.getBenefit()">GET BENEFIT</button>
 </div>
