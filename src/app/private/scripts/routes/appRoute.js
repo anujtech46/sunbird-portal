@@ -1015,6 +1015,24 @@ angular.module('playerApp')
           batchId: null
         }
       })
+      .state('Purchase', {
+        url: '/PurchaseList',
+        views: {
+          mainView: {
+            templateUrl: '/views/course/payment/purchaseList.html',
+            controller: 'purchaseListCtrl as purchaseList'
+          }
+        },
+        onEnter: function ($rootScope, routeHelperService) {
+          $rootScope.homeActive = 'active'
+          $rootScope.myPurchaseMenuActive = 'active selected'
+          routeHelperService.loadRouteConfig('Home', null)
+        },
+        onExit: function ($rootScope, routeHelperService) {
+          $rootScope.homeActive = ''
+          $rootScope.myPurchaseMenuActive = ''
+        }
+      })
   })
   .run(function ($urlRouter, $http, $state, permissionsService, $rootScope, $location, config,
     toasterService, routeHelperService, userService) {

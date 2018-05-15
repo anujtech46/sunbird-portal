@@ -62,6 +62,8 @@ angular.module('playerApp')
             id: resp.transactionId,
             userid: pay.userId,
             courseid: pay.courseId,
+            coursename: pay.courseTitle,
+            courseprice: pay.coursePrice,
             batchid: pay.batchId,
             upiid: pay.upiId,
             createddate: (new Date()).toISOString(),

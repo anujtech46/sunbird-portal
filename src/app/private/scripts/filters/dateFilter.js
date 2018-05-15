@@ -22,3 +22,8 @@ angular.module('playerApp')
       return moment(date).format('MMM YYYY')
     }
   })
+  .filter('dateFilterDDMMYYYY', function () {
+    return function (date) {
+      return moment(date).format('DD/MM/YYYY')
+    }
+  })

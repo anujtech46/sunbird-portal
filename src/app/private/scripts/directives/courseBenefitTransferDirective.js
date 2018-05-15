@@ -33,7 +33,6 @@ angular.module('playerApp')
           courseBT.courseBenefit = priceDetail && priceDetail.coursebenefit
           courseBT.payment = (priceDetail && priceDetail.payment).toLowerCase()
         })
-        courseBT.getCourseBadge()
         courseBT.getUserCoursePaymentDetail()
       }
 
@@ -97,6 +96,7 @@ angular.module('playerApp')
       courseBT.updatePaymentDetail = function (resp) {
         var updatedReq = Object.assign({}, courseBT.userTransactionDetail)
         updatedReq.benefittransfertransactionid = resp.result.data.transactionId
+        updatedReq.coursebenefit = courseBT.courseBenefit
 
         var request = {
           entityName: 'userpayment',
@@ -162,42 +162,5 @@ angular.module('playerApp')
         $('#benefitModal').modal('hide other')
       }
 
-      courseBT.getCourseBadge = function () {
-        var badgeDetail = _.find(courseBT.currentUser.badgeAssertions, { 'badgeId': courseBT.ccBadgeId })
-        console.log('Checked badge, if not get from user profile again', badgeDetail)
-        if (badgeDetail) {
-          courseBT.userBadges = badgeDetail
-          if (!courseBT.userBadges.issuerName) {
-            courseBT.getIssuerName()
-          }
-        } else {
-          userService.getUserProfile(courseBT.userId).then(function (resp) {
-            if (resp && resp.responseCode === 'OK') {
-              var badge = _.find(resp.result.response.badgeAssertions,
-                { 'badgeId': $rootScope.course_completion_badge_id })
-              courseBT.userBadges = badge
-              courseBT.getIssuerName()
-            }
-          })
-        }
-      }
-
-      courseBT.getIssuerName = function () {
-        var issuerList = badgeService.getIssuerListDetail() || []
-        var issuer = _.find(issuerList, { 'issuerId': courseBT.userBadges.issuerId })
-        if (issuer) {
-          courseBT.userBadges.issuerName = issuer.name
-        } else {
-          badgeService.getIssuerList(courseBT.userBadges.issuerId).then(function (resp) {
-            if (resp && resp.responseCode === 'OK') {
-              var issuer = _.find(resp.result.issuers,
-                { 'issuerId': courseBT.userBadges.issuerId })
-              courseBT.userBadges.issuerName = issuer.name
-              issuerList.push(issuer)
-              badgeService.storeIssuerListDetail(issuerList)
-            }
-          })
-        }
-      }
       courseBT.getCourseDetail()
     }])
