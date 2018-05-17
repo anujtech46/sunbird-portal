@@ -21,7 +21,7 @@ angular.module('playerApp')
           pay.courseTitle = courseDetail && courseDetail.name
           pay.courseImage = courseDetail && courseDetail.appIcon
         })
-        coursePayment.getPaymentDetail(pay.courseId, function (priceDetail) {
+        coursePayment.getPaymentDetail(pay.courseId, pay.batchId, function (priceDetail) {
           pay.coursePrice = priceDetail && priceDetail.courseprice
           pay.coursePayment = (priceDetail && priceDetail.payment).toLowerCase()
         })
@@ -31,7 +31,7 @@ angular.module('playerApp')
 
       pay.collectPayment = function () {
         if (pay.coursePrice === undefined) {
-          toasterService.warning('Price is not defined for this course, Please contact admin...')
+          toasterService.warning('Price is not defined for this batch, Please contact admin...')
           return
         }
         if (pay.upiId === '') {

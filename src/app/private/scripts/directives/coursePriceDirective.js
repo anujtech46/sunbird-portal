@@ -8,10 +8,13 @@ angular.module('playerApp')
       controllerAs: 'coursePrice',
       scope: {
         courseid: '=',
-        viewtype: '=',
-        coursedata: '='
+        batchid: '=',
+        viewtype: '='
       },
-      link: function (scope, element, attrs, batch) {
+      link: function (scope, element, attrs, coursePrice) {
+        $rootScope.$on('batchPriceInfo', function (e, data) {
+          coursePrice.data = data
+        })
       },
       templateUrl: 'views/course/price/coursePrice.html'
     }
@@ -22,13 +25,13 @@ angular.module('playerApp')
       var coursePrice = this
       coursePrice.viewType = $scope.viewtype
       coursePrice.courseId = $scope.courseid
-      coursePrice.course = $scope.coursedata
+      coursePrice.batchId = $scope.batchid
       coursePrice.userId = $rootScope.userId
 
       coursePrice.getPriceDetail = function () {
         var request = {
           entityName: 'courseprice',
-          id: coursePrice.courseId
+          id: coursePrice.courseId + '+' + coursePrice.batchId
         }
 
         coursePriceService.getPrice(request).then(function (response) {
@@ -39,7 +42,7 @@ angular.module('playerApp')
             }
             coursePrice.titleMessage = coursePrice.data && coursePrice.data.id ? 'Update Price' : 'Add Price'
           } else {
-            toasterService.error('Unbale to get course price, Please try again later')
+            toasterService.error('Unable to get course price, Please try again later')
           }
         }).catch(function (err) {
           console.log('err', err)
@@ -93,8 +96,9 @@ angular.module('playerApp')
           entityName: 'courseprice',
           indexed: true,
           payload: {
-            id: coursePrice.courseId,
+            id: coursePrice.courseId + '+' + coursePrice.batchId,
             courseid: coursePrice.courseId,
+            batchid: coursePrice.batchId,
             payment: data.payment,
             courseprice: data.courseprice,
             coursebenefit: Number(data.coursebenefit),

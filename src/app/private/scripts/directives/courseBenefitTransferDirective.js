@@ -29,7 +29,7 @@ angular.module('playerApp')
         var isEnroled = _.find($rootScope.enrolledCourses, { courseId: courseBT.courseId })
         courseBT.batchId = isEnroled && isEnroled.batchId
         courseBT.courseImage = isEnroled.courseLogoUrl
-        coursePayment.getPaymentDetail(courseBT.courseId, function (priceDetail) {
+        coursePayment.getPaymentDetail(courseBT.courseId, courseBT.batchId, function (priceDetail) {
           courseBT.courseBenefit = priceDetail && priceDetail.coursebenefit
           courseBT.payment = (priceDetail && priceDetail.payment).toLowerCase()
         })

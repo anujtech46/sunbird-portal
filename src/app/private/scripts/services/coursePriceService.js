@@ -30,4 +30,9 @@ angular.module('playerApp')
         var url = config.URL.OBJECT.UPDATE
         return restfulLearnerService.post(url, this.getRequestBody(req))
       }
+
+      this.searchPrice = function (req) {
+        var url = config.URL.OBJECT.SEARCH
+        return restfulLearnerService.post(url, this.getRequestBody(req))
+      }
     }])

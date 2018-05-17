@@ -11,13 +11,13 @@ angular.module('playerApp')
       var courseDetail = {}
       var paymentDetail = {}
 
-      this.getPaymentDetail = function (courseId, callback) {
-        if (paymentDetail && paymentDetail.courseid === courseId) {
+      this.getPaymentDetail = function (courseId, batchId, callback) {
+        if (paymentDetail && paymentDetail.batchid === batchId) {
           callback(paymentDetail)
         } else {
           var request = {
             entityName: 'courseprice',
-            id: courseId
+            id: courseId + '+' + batchId
           }
           coursePriceService.getPrice(request).then(function (response) {
             if (response && response.responseCode === 'OK') {
@@ -58,7 +58,7 @@ angular.module('playerApp')
         }
       }
 
-      this.getReauestBody = function (req) {
+      this.getRequestBody = function (req) {
         return {
           'id': uuid4.generate(),
           'ts': new Date(),
@@ -69,22 +69,22 @@ angular.module('playerApp')
 
       this.searchCoursePayment = function (req) {
         var url = config.URL.OBJECT.SEARCH
-        return restfulLearnerService.post(url, this.getReauestBody(req))
+        return restfulLearnerService.post(url, this.getRequestBody(req))
       }
 
       this.getCoursePayment = function (req) {
         var url = config.URL.OBJECT.READ
-        return restfulLearnerService.post(url, this.getReauestBody(req))
+        return restfulLearnerService.post(url, this.getRequestBody(req))
       }
 
       this.createCoursePayment = function (req) {
         var url = config.URL.OBJECT.CREATE
-        return restfulLearnerService.post(url, this.getReauestBody(req))
+        return restfulLearnerService.post(url, this.getRequestBody(req))
       }
 
       this.updateCoursePayment = function (req) {
         var url = config.URL.OBJECT.UPDATE
-        return restfulLearnerService.post(url, this.getReauestBody(req))
+        return restfulLearnerService.post(url, this.getRequestBody(req))
       }
 
       this.collectPayment = function (req) {

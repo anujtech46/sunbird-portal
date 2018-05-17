@@ -3,10 +3,10 @@
 angular.module('playerApp')
   .controller('BatchController', ['$rootScope', '$timeout', '$state', '$scope', '$stateParams',
     'batchService', '$filter', 'permissionsService', 'toasterService', 'courseService',
-    'learnService', '$window', 'userService', 'telemetryService',
+    'learnService', '$window', 'userService', 'telemetryService', 'coursePriceService',
     function ($rootScope, $timeout, $state, $scope, $stateParams, batchService, $filter,
       permissionsService, toasterService, courseService, learnService, $window, userService,
-      telemetryService) {
+      telemetryService, coursePriceService) {
       var batch = this
       batch.userList = []
       batch.menterList = []
@@ -126,7 +126,6 @@ angular.module('playerApp')
           }
           batchService.create(request).then(function (response) {
             if (response && response.responseCode === 'OK') {
-
               if (data.users && data.users.length > 0) {
                 var userRequest = {
                   request: {
@@ -341,6 +340,9 @@ angular.module('playerApp')
           $rootScope.$broadcast('batchDetails', batchData)
           $('#batchDetails').modal('show')
         }
+        batch.batchPriceInfo = _.find(batch.courseBatchPriceList, {batchid: batchData.identifier})
+        console.log('batch.batchPriceInfo', batch.batchPriceInfo)
+        $rootScope.$broadcast('batchPriceInfo', batch.batchPriceInfo)
         // batchData.userList = batch.userNames;
         // console.log('batchData ', batchData);
         // $rootScope.$broadcast('batchDetails', batchData);
@@ -396,6 +398,25 @@ angular.module('playerApp')
         }
         initializeCourseEnrollEvent()
         $state.go('coursePayment', params)
+      }
+
+      batch.getCourseBatchesPrice = function () {
+        var request = {
+          entityName: 'courseprice',
+          filters: {
+            courseid: batch.courseId
+          }
+        }
+
+        coursePriceService.searchPrice(request).then(function (response) {
+          if (response && response.responseCode === 'OK') {
+            batch.courseBatchPriceList = response.result.response.content
+          } else {
+            toasterService.error('Unable to get course price, Please try again later')
+          }
+        }).catch(function (err) {
+          console.log('err', err)
+        })
       }
     }
   ])

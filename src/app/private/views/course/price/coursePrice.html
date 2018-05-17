@@ -1,6 +1,6 @@
-<div class="rightSideSectionCards ui card margin-bottom-10" ng-if="coursePrice.viewType === 'CARD'" ng-init="coursePrice.getPriceDetail()">
-  <div class="content">
-    <div class="header announcementCard-header">Course Price Detail
+<div class="rightSideSectionCards ui card margin-bottom-10" ng-if="coursePrice.viewType === 'CARD'">
+  <div class="content" ng-if="coursePrice.data">
+    <div class="header announcementCard-header">Price Detail
     </div>
     <div class="ui middle aligned list margin-top-0">
       <div class="item padding-top-10 padding-bottom-5">
@@ -28,17 +28,17 @@
         </div>
       </div>
     </div>
-
-    <div ng-if="coursePrice.course.createdBy === coursePrice.userId">
-        <div class="ui divider" ng-if="coursePrice.data"></div>
-        <button class="ui right floated blue mini basic button" ng-click="coursePrice.initializeModal();">{{coursePrice.data ? 'UPDATE PRICE' : 'ADD PRICE'}}</button>
+  </div>
+  <div class="ui warning message" ng-if="!coursePrice.data">
+    <div class="header">
+        Price is not defined for this batch, Please contact admin...
     </div>
   </div>
 </div>
 
 <span ng-if="coursePrice.viewType === 'ICON'" ng-click="coursePrice.initializeModal(); coursePrice.getPriceDetail()" class="ui mouse-pointer content-font"
-  title="Add Course Price">
-  <i class="rupee sign large icon"></i>&nbsp;
+  title="Add Price">
+  <i class="rupee sign blue large icon float-ContentRight cursor-pointer"></i>&nbsp;
 </span>
 
 <div class="ui small modal" id="coursePriceModal" ng-if="coursePrice.showCoursePriceModal">
@@ -58,11 +58,11 @@
     <form class="ui form">
       <div class="two fields">
         <div class="required field">
-          <label>Course Price (In Rs.)</label>
+          <label>Price (In Rs.)</label>
           <input type="number" name="course price" placeholder="Course Price" ng-model="coursePrice.data.courseprice">
         </div>
         <div class="required field">
-          <label>Course Benefit (In Rs.)</label>
+          <label>Benefit (In Rs.)</label>
           <input type="text" name="course benefit" placeholder="Course Benefit" ng-model="coursePrice.data.coursebenefit" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
         </div>
       </div>

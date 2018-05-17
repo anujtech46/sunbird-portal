@@ -14,6 +14,9 @@ angular.module('playerApp')
           // batch.batchInfo = {data: dataObj.data, names: dataObj.names};
           batch.batchInfo = data
         })
+        $rootScope.$on('batchPriceInfo', function (e, data) {
+          batch.isDisableEnrolButton = !(data && data.courseprice)
+        })
       },
       replace: true,
       templateUrl: 'views/batch/batchDetails.html'
