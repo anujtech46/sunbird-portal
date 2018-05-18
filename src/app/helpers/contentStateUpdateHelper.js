@@ -180,11 +180,12 @@ function updateContentState (req, response) {
       console.log('contentList: ', contentList.length)
       // This function is use to get progress of all the content and check progress is 100 % or not
       // If progress is completed, we are assigning badge
+      var batchId = req.body && req.body.request && req.body.request.batchId
       getState(req, contentList, function (error, status, resp) {
         if (error) {
           return response.send(error)
         } else {
-          if (checkProgress(resp, contentList)) {
+          if (checkProgress(resp, batchId, contentList)) {
             console.log('Progress 100, Now assign badge')
             cb(null, updateResp)
           } else {
@@ -240,17 +241,18 @@ function getUserProfile (req, callback) {
 /**
  * This function is use to check progress of all module is completed.
  * @param {Object} data 
+ * @param {String} batchId
  * @param {Array} contentList 
  * @return {Boolean}
  */
-function checkProgress (data, contentList) {
+function checkProgress (data, batchId, contentList) {
   var courseProgress = 0
   _.forEach(data.contentList, function (content) {
-    if (content.status === 2) {
+    if (content.status === 2 && content.batchId === batchId) {
       courseProgress += 1
     }
   })
-  console.log('Completed module: ', courseProgress)
+  console.log('Completed module: ', courseProgress, batchId)
   if (courseProgress >= contentList.length) {
     return true
   } else {
@@ -372,7 +374,8 @@ function updateStateAndFeedback (req, callback) {
         var successRspObj = successResponse(rspObj)
         return callback(null, 200, successRspObj)
       } else if (progressUpdate || feedbackUpdate || scoreUpdate) {
-        return callback(errorResponse(rspObj), 207, null)
+        var partialSuccessRspObj = successResponse(rspObj)
+        return callback(null, 207, partialSuccessRspObj)
       } else {
         return callback(errorResponse(rspObj), 500, null)
       }
@@ -412,6 +415,7 @@ function updateScore (req, feedbackData, callback) {
     userid: body.request.uid,
     contentid: body.request.contentId,
     courseid: body.request.courseId,
+    batchid: body.request.batchId,
     userscore: Number((body.request.score).toFixed(0)),
     maxscore: Number((body.request.max_score).toFixed(0)),
     updateddate: new Date()
@@ -508,6 +512,7 @@ function getState (req, contentList, callback) {
   const body = req.body
   var rspObj = req.rspObj
   var requestBody = {
+    batchId: body.request.batchId,
     userId: rspObj.userId,
     courseIds: [body.request.courseId],
     contentIds: _.map(contentList, 'identifier')
