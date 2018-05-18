@@ -15,20 +15,25 @@ angular.module('playerApp')
     }
   }])
   .controller('courseBenefitTransferCtrl', ['$rootScope', '$scope', 'coursePayment', '$state', 'userService',
-    'toasterService', 'badgeService', function ($rootScope, $scope, coursePayment, $state, userService,
-      toasterService, badgeService) {
+    'toasterService', 'badgeService', 'sessionService',
+    function ($rootScope, $scope, coursePayment, $state, userService, toasterService, badgeService, sessionService) {
       var courseBT = this
       courseBT.courseId = $scope.courseid
       courseBT.userId = $rootScope.userId
-      courseBT.progress = $rootScope.enrolledCourseIds[courseBT.courseId] &&
-        $rootScope.enrolledCourseIds[courseBT.courseId].progress
       courseBT.currentUser = userService.getCurrentUserProfile()
       courseBT.ccBadgeId = $rootScope.course_completion_badge_id
 
       courseBT.getCourseDetail = function () {
-        var isEnroled = _.find($rootScope.enrolledCourses, { courseId: courseBT.courseId })
-        courseBT.batchId = isEnroled && isEnroled.batchId
-        courseBT.courseImage = isEnroled.courseLogoUrl
+        var courseBatchIdData = sessionService.getSessionData('COURSE_BATCH_ID')
+        if (courseBatchIdData && (courseBatchIdData.courseId === courseBT.courseId)) {
+          courseBT.batchId = courseBatchIdData.batchId
+        } else {
+          return
+        }
+        var isEnrolled = _.find($rootScope.enrolledCourses, { batchId: courseBT.batchId })
+        courseBT.progress = $rootScope.enrolledBatchIds[courseBT.batchId] &&
+        $rootScope.enrolledBatchIds[courseBT.batchId].progress
+        courseBT.courseImage = isEnrolled.courseLogoUrl
         coursePayment.getPaymentDetail(courseBT.courseId, courseBT.batchId, function (priceDetail) {
           courseBT.courseBenefit = priceDetail && priceDetail.coursebenefit
           courseBT.payment = (priceDetail && priceDetail.payment).toLowerCase()

@@ -13,6 +13,11 @@ angular.module('playerApp')
         sessionData[key] = value
         $window.sessionStorage
           .setItem('sbConfig', JSON.stringify(sessionData))
+      },
+      deleteSessionData: function (key) {
+        delete sessionData[key]
+        $window.sessionStorage
+          .setItem('sbConfig', JSON.stringify(sessionData))
       }
 
     }

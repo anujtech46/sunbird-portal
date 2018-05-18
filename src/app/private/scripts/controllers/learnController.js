@@ -23,10 +23,12 @@ angular.module('playerApp')
           progress: course.progress,
           total: $rootScope.enrolledCourseIds[course.courseId].leafNodesCount,
           courseName: course.courseName || course.name,
-          lastReadContentId: course.lastReadContentId
+          lastReadContentId: course.lastReadContentId,
+          batchId: course.batchId
         }
 
         sessionService.setSessionData('COURSE_PARAMS', params)
+        sessionService.setSessionData('COURSE_BATCH_ID', {courseId: params.courseId, batchId: course.batchId})
         $rootScope.isPlayerOpen = true
         $state.go('Toc', params)
         telemetryService.interactTelemetryData('course', course.courseId, 'course',
@@ -42,10 +44,13 @@ angular.module('playerApp')
           if (successResponse && successResponse.responseCode === 'OK') {
             learn[api].loader.showLoader = false
             $rootScope.enrolledCourses = successResponse.result.courses
-            // successResponse.ver
-            $rootScope.enrolledCourseIds = $rootScope
-              .arrObjsToObject($rootScope.enrolledCourses, 'courseId')
-            learn.enrolledCourses = $rootScope.enrolledCourses
+            learnService.mapBatchNameWithCourse($rootScope.enrolledCourses, function (enrolledCourses) {
+              $rootScope.enrolledCourses = enrolledCourses
+              // successResponse.ver
+              $rootScope.enrolledCourseIds = $rootScope.arrObjsToObject($rootScope.enrolledCourses, 'courseId')
+              $rootScope.enrolledBatchIds = $rootScope.arrObjsToObject($rootScope.enrolledCourses, 'batchId')
+              learn.enrolledCourses = $rootScope.enrolledCourses
+            })
           } else {
             learn[api].loader.showLoader = false
             toasterService.error(

@@ -80,9 +80,11 @@ angular.module('playerApp')
           total: course.total,
           courseRecordId: course.id,
           courseName: course.courseName || course.name,
-          lastReadContentId: course.lastReadContentId
+          lastReadContentId: course.lastReadContentId,
+          batchId: course.batchId
         }
         sessionService.setSessionData('COURSE_PARAMS', params)
+        sessionService.setSessionData('COURSE_BATCH_ID', {courseId: params.courseId, batchId: course.batchId})
         $state.go('Toc', params)
       }
 

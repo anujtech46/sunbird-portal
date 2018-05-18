@@ -214,14 +214,14 @@ angular.module('playerApp')
         var uid = mydata.ENROLLED_COURSES.uid
         var contentId = mydata.COURSE_PARAMS.contentId
         var courseId = mydata.COURSE_PARAMS.courseId
-        var batchId = ''
-        var course
-        while (course = mydata.ENROLLED_COURSES.courseArr.pop()) { // eslint-disable-line no-cond-assign
-          if (courseId === course.courseId) {
-            batchId = course.batchId
-            break
-          }
-        }
+        var batchId = mydata.COURSE_PARAMS.batchId
+        // var course
+        // while (course = mydata.ENROLLED_COURSES.courseArr.pop()) { // eslint-disable-line no-cond-assign
+        //   if (courseId === course.courseId) {
+        //     batchId = course.batchId
+        //     break
+        //   }
+        // }
         var courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
                                  '&batchId=' + batchId + '&uid=' + uid
         // alert("course_details_str = " + course_details_str);

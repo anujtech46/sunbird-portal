@@ -6,6 +6,7 @@
             </div>
             <div class="ui fluid image" ng-click="homeCtrl.generateInteractEvent('home',item.courseId,'course', '1.0','home-course','home')">
                 <a class="ui black right ribbon label">{{$root.frmelmnts.bdge.course}}</a>
+                <a nf-if="item.batchName" class="ui dark blue left ribbon label">{{item.batchName | limitTo: 15}}</a>
                 <img ng-src="{{item.appIcon || item.courseLogoUrl || '/common/images/default.png'}}">
             </div>
             <div class="cardImageText center aligned ">

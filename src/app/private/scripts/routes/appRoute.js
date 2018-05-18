@@ -21,9 +21,10 @@ angular.module('playerApp')
             controller: 'HomeController as homeCtrl'
           }
         },
-        onEnter: function ($rootScope, routeHelperService) {
+        onEnter: function ($rootScope, routeHelperService, sessionService) {
           $rootScope.homeActive = 'active'
           routeHelperService.loadRouteConfig('Home', null)
+          sessionService.deleteSessionData('COURSE_BATCH_ID')
         },
         onExit: function ($rootScope, telemetryService) {
           telemetryService.impressionTelemetryData('home', '', 'home',
@@ -50,11 +51,12 @@ angular.module('playerApp')
             controller: 'LearnCtrl as learn'
           }
         },
-        onEnter: function ($rootScope, telemetryService, routeHelperService) {
+        onEnter: function ($rootScope, telemetryService, routeHelperService, sessionService) {
           $rootScope.isLearnPage = true
           $rootScope.courseActive = 'active'
           routeHelperService.loadRouteConfig('Courses')
           telemetryService.setConfigData('env', 'course')
+          sessionService.deleteSessionData('COURSE_BATCH_ID')
         },
         onExit: function ($rootScope, telemetryService) {
           telemetryService.impressionTelemetryData('course', '', 'course',

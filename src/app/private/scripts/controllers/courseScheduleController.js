@@ -51,17 +51,20 @@ angular.module('playerApp')
 
       toc.getContentState = function (cb) {
         var isEnroled = _.find($rootScope.enrolledCourses, function (o) {
-          return o.courseId === toc.courseId
+          return o.courseId === toc.courseId && o.batchId === toc.batchId
         })
         var req = {
           request: {
             userId: toc.userId,
             courseIds: [toc.courseId],
+            batchId: toc.batchId,
             contentIds: _.map(toc.courseContents, 'identifier')
           }
         }
         toc.courseProgress = 0
-        contentStateService.getContentsState(req, function (contentRes) {
+        contentStateService.getContentsState(req, function (res) {
+          var contentRes = _.filter(res, {batchId: req.request.batchId})
+          console.log('contentRes', contentRes)
           toc.contentProgressDetail = contentRes
           _.forEach(contentRes, function (content) {
             // object 'contentStatusList' has status of each content
@@ -78,18 +81,20 @@ angular.module('playerApp')
 
       toc.checkProgressContinuous = function () {
         var isEnroled = _.find($rootScope.enrolledCourses, function (o) {
-          return o.courseId === toc.courseId
+          return o.courseId === toc.courseId && o.batchId === toc.batchId
         })
         toc.stateUpdateTimeInterval = setInterval(function () {
           var req = {
             request: {
               userId: toc.userId,
               courseIds: [toc.courseId],
+              batchId: toc.batchId,
               contentIds: _.map(toc.courseContents, 'identifier')
             },
             contentType: 'html'
           }
-          contentStateService.getContentsState(req, function (contentRes) {
+          contentStateService.getContentsState(req, function (res) {
+            var contentRes = _.filter(res, {batchId: req.request.batchId})
             toc.courseProgress = 0
             toc.contentProgressDetail = contentRes
             _.forEach(contentRes, function (content) {
@@ -227,18 +232,17 @@ angular.module('playerApp')
           })
         }, 500)
         var curCourse = _.find(
-          $rootScope.enrolledCourses, { courseId: toc.courseId }
+          $rootScope.enrolledCourses, { courseId: toc.courseId, batchId: toc.batchId }
         )
         if (curCourse && toc.itemIndex >= 0) {
-          curCourse.lastReadContentId =
-            toc.courseContents[toc.itemIndex].identifier
-          $rootScope.enrolledCourseIds[toc.courseId]
-            .lastReadContentId = curCourse.lastReadContentId
+          curCourse.lastReadContentId = toc.courseContents[toc.itemIndex].identifier
+          $rootScope.enrolledBatchIds[toc.batchId].lastReadContentId = curCourse.lastReadContentId
           curCourse.progress = toc.courseProgress
-          $rootScope.enrolledCourseIds[toc.courseId]
-            .progress = curCourse.progress
+          $rootScope.enrolledBatchIds[toc.batchId].progress = curCourse.progress
         }
         if (toc.courseProgress === toc.courseContents.length) {
+          $rootScope.$broadcast('currentCourseBatchCompleted')
+          $rootScope.currentBatchCourseProgress = 100
           clearTimeout(toc.stateUpdateTimeInterval)
           localStorage.removeItem('contentStatusAndScore')
         }
@@ -265,7 +269,7 @@ angular.module('playerApp')
 
       toc.showBatchCardList = function () {
         var isEnroled = _.find($rootScope.enrolledCourses, function (o) {
-          return o.courseId === toc.courseId
+          return o.courseId === toc.courseId && o.batchId === toc.batchId
         })
         if (!_.isUndefined(isEnroled)) {
           toc.batchCardShow = false
@@ -365,6 +369,7 @@ angular.module('playerApp')
           toc.courseParams.contentIndex = toc.itemIndex
           toc.courseParams.courseId = toc.courseId
           toc.courseParams.lectureView = $stateParams.lectureView
+          toc.courseParams.batchId = toc.batchId
           var contentCrumb = {
             name: curContentName,
             link: ''
@@ -411,7 +416,15 @@ angular.module('playerApp')
 
       toc.init = function () {
         toc.courseId = $stateParams.courseId
-        toc.courseType = ($rootScope.enrolledCourseIds[toc.courseId])
+        var courseBatchIdData = sessionService.getSessionData('COURSE_BATCH_ID')
+        if (courseBatchIdData && (courseBatchIdData.courseId === toc.courseId)) {
+          toc.batchId = courseBatchIdData.batchId
+        } else {
+          toc.batchId = $rootScope.enrolledCourseIds && $rootScope.enrolledCourseIds[toc.courseId] &&
+            $rootScope.enrolledCourseIds[toc.courseId].batchId
+        }
+
+        toc.courseType = _.find($rootScope.enrolledCourses, { courseId: toc.courseId })
           ? 'ENROLLED_COURSE' : 'OTHER_COURSE'
         toc.playContent = false
 
@@ -433,6 +446,7 @@ angular.module('playerApp')
         if (currentUserRoles.indexOf('COURSE_MENTOR') !== -1) {
           toc.isCourseMentor = true
         }
+        $rootScope.currentBatchCourseProgress = 0
         toc.getCourseToc()
       }
 
@@ -441,7 +455,8 @@ angular.module('playerApp')
           entityName: 'coursescore',
           filters: {
             userid: $rootScope.userId,
-            courseid: toc.courseId
+            courseid: toc.courseId,
+            batchid: toc.batchId
           }
         }
         toc.contentScoreProgress = false
@@ -449,7 +464,6 @@ angular.module('playerApp')
           toc.contentScoreProgress = false
           if (res && res.responseCode === 'OK') {
             toc.courseScoreFeedback = res.result.response.content
-            toc.initTocView()
           } else {
             console.log('err fetch in content feedback', JSON.stringify(res))
           }
@@ -464,7 +478,7 @@ angular.module('playerApp')
         if (scoreData) {
           if (scoreData.userscore) {
             title = title + '<span class="fancy-tree-feedback">( Score: ' +
-            scoreData.userscore + '/' + scoreData.maxscore + ' ) </span>'
+              scoreData.userscore + '/' + scoreData.maxscore + ' ) </span>'
           }
           if (scoreData.feedback) {
             var feedbackLinkHtml = '<a href=' + scoreData.feedback + ' target="_blank" return false; > Feedback </a>'
@@ -482,24 +496,27 @@ angular.module('playerApp')
       toc.storeContentProgressAndScore = function (contentId) {
         console.log('toc.contentProgressDetail', toc.contentProgressDetail)
         console.log('toc.courseScoreFeedback', toc.courseScoreFeedback)
-        var scoreData = _.find(toc.courseScoreFeedback, {contentid: contentId})
-        var progressData = _.find(toc.contentProgressDetail, {contentId: contentId})
+        var scoreData = _.find(toc.courseScoreFeedback, { contentid: contentId })
+        var progressData = _.find(toc.contentProgressDetail, { contentId: contentId })
         var data = {
           contentId: contentId,
           status: progressData && progressData.status,
           score: scoreData && scoreData.userscore
         }
-        localStorage.setItem('contentStatusAndScore', JSON.stringify(data))
+        sessionService.deleteSessionData('contentStatusAndScore')
+        sessionService.setSessionData('contentStatusAndScore', data)
       }
 
       toc.checkForTocUpdate = function () {
-        var previousData = JSON.parse(localStorage.getItem('contentStatusAndScore'))
-        var scoreData = _.find(toc.courseScoreFeedback, {contentid: previousData.contentId})
-        var progressData = _.find(toc.contentProgressDetail, {contentId: previousData.contentId})
-        if ((scoreData.userscore !== previousData.score) || (progressData.status !== previousData.status)) {
+        var previousData = sessionService.getSessionData('contentStatusAndScore')
+        var scoreData = _.find(toc.courseScoreFeedback, { contentid: previousData.contentId })
+        var progressData = _.find(toc.contentProgressDetail, { contentId: previousData.contentId })
+        if (!scoreData || !progressData) {
           console.log('Update toc')
-          toc.initTocView()
-          localStorage.removeItem('contentStatusAndScore')
+          // toc.initTocView()
+        } else if ((scoreData.userscore !== previousData.score) || (progressData.status !== previousData.status)) {
+          console.log('Update toc')
+          // toc.initTocView()
         }
       }
 

@@ -33,8 +33,7 @@
                                     <!-- <course-discussions showaskquestion="true"></course-discussions> -->
                                 </div>
                                 <div class='three wide column'>
-                                    <course-price coursedata="toc.courseHierarchy" courseid="toc.courseHierarchy.identifier" viewtype="'CARD'"></course-price>
-                                    <batch-card ng-show="toc.batchCardShow" showbatchcard="true" coursecreatedby="toc.courseHierarchy.createdBy"></batch-card>
+                                    <batch-card ng-show="toc.batchCardShow || true" showbatchcard="true" coursecreatedby="toc.courseHierarchy.createdBy"></batch-card>
                                     <div ng-show="toc.batchDetailsShow">
                                         <div class="rightSideSectionCards ui card">
                                             <div class="content">

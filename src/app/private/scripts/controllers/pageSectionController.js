@@ -36,7 +36,9 @@ angular.module('playerApp')
           progress: course.progress,
           total: course.total,
           courseRecordId: course.id,
-          courseName: course.courseName || course.name }
+          courseName: course.courseName || course.name,
+          batchId: $rootScope.enrolledCourseIds[courseId] && $rootScope.enrolledCourseIds[courseId].batchId
+        }
         sessionService.setSessionData('COURSE_PARAMS', params)
         $state.go('Toc', params)
         telemetryService.interactTelemetryData($scope.type, courseId, courseType, $rootScope.version,

@@ -171,14 +171,16 @@ angular.module('playerApp').controller('SearchResultController', [
       } else {
         showLectureView = 'yes'
       }
+      var courseId = course.courseId || course.identifier
       var params = {
         courseType: courseType,
-        courseId: course.courseId || course.identifier,
+        courseId: courseId,
         lectureView: showLectureView,
         progress: course.progress,
         total: course.total,
         courseName: course.courseName || course.name,
-        lastReadContentId: course.lastReadContentId
+        lastReadContentId: course.lastReadContentId,
+        batchId: $rootScope.enrolledCourseIds[courseId] && $rootScope.enrolledCourseIds[courseId].batchId
       }
       sessionService.setSessionData('COURSE_PARAMS', params)
       $state.go('Toc', params)

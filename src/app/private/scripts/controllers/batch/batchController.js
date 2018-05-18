@@ -3,10 +3,10 @@
 angular.module('playerApp')
   .controller('BatchController', ['$rootScope', '$timeout', '$state', '$scope', '$stateParams',
     'batchService', '$filter', 'permissionsService', 'toasterService', 'courseService',
-    'learnService', '$window', 'userService', 'telemetryService', 'coursePriceService',
+    'learnService', '$window', 'userService', 'telemetryService', 'coursePriceService', 'sessionService',
     function ($rootScope, $timeout, $state, $scope, $stateParams, batchService, $filter,
       permissionsService, toasterService, courseService, learnService, $window, userService,
-      telemetryService, coursePriceService) {
+      telemetryService, coursePriceService, sessionService) {
       var batch = this
       batch.userList = []
       batch.menterList = []
@@ -176,12 +176,18 @@ angular.module('playerApp')
           batch.isMentor = true
           request.request.filters.createdBy = batch.userId
         } else {
+          batch.getAllBatchIdInCourse = _.map(sessionService.getSessionData('ENROLLED_COURSES').courseArr, 'batchId')
           request.request.filters.enrollmentType = 'open'
         }
         batchService.getAllBatchs(request).then(function (response) {
           if (response && response.responseCode === 'OK') {
             batch.userList = []
             batch.userNames = {}
+
+            response.result.response.content = _.filter(response.result.response.content, function (content) {
+              return !(_.indexOf(batch.getAllBatchIdInCourse, content.identifier) > -1)
+            })
+
             _.forEach(response.result.response.content, function (val) {
               batch.userList.push(val.createdBy)
             })
@@ -312,6 +318,27 @@ angular.module('playerApp')
       }
 
       batch.showBatchDetails = function (batchData) {
+        var enrolledCoursesList = sessionService.getSessionData('ENROLLED_COURSES') &&
+                                sessionService.getSessionData('ENROLLED_COURSES').courseArr
+        var enrolledCourseBatchList = _.filter(enrolledCoursesList, function (content) {
+          return content.courseId === batch.courseId
+        })
+        var courseBatchIdData = sessionService.getSessionData('COURSE_BATCH_ID')
+        if (courseBatchIdData && (courseBatchIdData.courseId === batchData.courseId)) {
+          batch.currentCourseBatchId = courseBatchIdData.batchId
+        } else {
+          console.log('Invalid batch id')
+        }
+        var batchListExceptCurrentBatch = _.filter(enrolledCourseBatchList, function (content) {
+          return content.batchId !== batch.currentCourseBatchId
+        })
+        var completeBatchCourse = _.filter(batchListExceptCurrentBatch, {status: 2})
+        if ((!((completeBatchCourse.length === batchListExceptCurrentBatch.length) &&
+              $rootScope.currentBatchCourseProgress === 100)) && enrolledCourseBatchList.length > 0) {
+          toasterService.warning('You can not enroll this batch,' +
+            'First complete other course batch which you enrolled...')
+          return ''
+        }
         batch.participants = {}
         if (!_.isUndefined(batchData.participant)) {
           var req = {
@@ -360,6 +387,7 @@ angular.module('playerApp')
         courseService.enrollUserToCourse(req).then(function (response) {
           if (response && response.responseCode === 'OK') {
             batch.showEnroll = false
+            sessionService.setSessionData('COURSE_BATCH_ID', {courseId: batch.courseId, batchId: batchId})
             toasterService.success($rootScope.messages.smsg.m0036)
             $timeout(function () {
               $window.location.reload()

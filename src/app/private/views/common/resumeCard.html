@@ -4,6 +4,7 @@
             <div ng-if="item.leafNodesCount  && item.progress > 0" class="ui tiny progress course-progress progressBar-margin orange" data-value="{{item.progress}}" data-total="{{item.leafNodesCount}}">
                 <div class="bar"></div>
             </div>
+            <a nf-if="item.batchName" class="ui dark blue left ribbon label">{{item.batchName | limitTo: 15}}</a>
             <img ng-src="{{item.appIcon || item.courseLogoUrl || '/common/images/default.png'}}">
             <div class="cardImageText center aligned ">
                 <span class="sliderCardHeading text-cencapitalize">{{item.courseName | limitTo:14}}

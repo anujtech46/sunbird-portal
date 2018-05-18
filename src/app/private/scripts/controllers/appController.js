@@ -19,6 +19,7 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
     $rootScope.frmelmnts = frmelmnts[$rootScope.language]
     $rootScope.searchKey = ''
     $rootScope.enrolledCourseIds = {}
+    $rootScope.enrolledBatchIds = {}
     telemetryService.setConfigData('env', 'home')
     telemetryService.setConfigData('message', 'Content read')
     org.sunbird.portal.appid = $('#producerId').attr('value')
@@ -202,17 +203,25 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
       learnService.enrolledCourses($rootScope.userId).then(function (successResponse) {
         if (successResponse && successResponse.responseCode === 'OK') {
           $rootScope.enrolledCourses = successResponse.result.courses
-          $rootScope.enrolledCourseIds =
+          learnService.mapBatchNameWithCourse($rootScope.enrolledCourses, function (enrolledCourses) {
+            $rootScope.enrolledCourses = enrolledCourses
+            $rootScope.enrolledCourseIds =
                                 $rootScope.arrObjsToObject($rootScope.enrolledCourses, 'courseId')
-          sessionService.setSessionData('ENROLLED_COURSES', {
-            uid: $rootScope.userId,
-            courseArr: $rootScope.enrolledCourses,
-            courseObj: $rootScope.enrolledCourseIds
+            $rootScope.enrolledBatchIds =
+                                  $rootScope.arrObjsToObject($rootScope.enrolledCourses, 'batchId')
+            sessionService.setSessionData('ENROLLED_COURSES', {
+              uid: $rootScope.userId,
+              courseArr: $rootScope.enrolledCourses,
+              courseObj: $rootScope.enrolledCourseIds,
+              batchObj: $rootScope.enrolledBatchIds
+            })
           })
         } else {
           $rootScope.enrolledCourses = undefined
           sessionService.setSessionData('ENROLLED_COURSES', undefined)
         }
+      }).catch(function (err) {
+        console.log('enroll error', err)
       })
     }
     $rootScope.arrObjsToObject = function (array, key) {

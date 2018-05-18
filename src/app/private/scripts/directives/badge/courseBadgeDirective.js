@@ -18,27 +18,36 @@ angular.module('playerApp')
         coursedata: '=',
         batchdata: '='
       },
-      link: function (scope, element, attrs, batch) {
+      link: function (scope, element, attrs, courseBadge) {
+        $rootScope.$on('currentCourseBatchCompleted', function (e, data) {
+          console.log('currentCourseBatchCompleted')
+          courseBadge.getCourseBadge()
+        })
       },
       templateUrl: 'views/course/courseBadge.html'
     }
   }])
   .controller('courseBadgeCtrl', ['$rootScope', '$scope', '$state', 'userService',
-    'toasterService', 'badgeService', function ($rootScope, $scope, $state, userService,
-      toasterService, badgeService) {
+    'toasterService', 'badgeService', 'sessionService', function ($rootScope, $scope, $state, userService,
+      toasterService, badgeService, sessionService) {
       var courseBadge = this
       courseBadge.courseId = $scope.courseid
       courseBadge.userId = $rootScope.userId
-      courseBadge.progress = $rootScope.enrolledCourseIds[courseBadge.courseId] &&
-        $rootScope.enrolledCourseIds[courseBadge.courseId].progress
+      courseBadge.batchData = $scope.batchdata
       courseBadge.currentUser = userService.getCurrentUserProfile()
       courseBadge.ccBadgeId = $rootScope.course_completion_badge_id
       courseBadge.courseData = $scope.coursedata
-      courseBadge.batchData = $scope.batchdata
 
       courseBadge.getCourseDetail = function () {
-        var isEnrolled = _.find($rootScope.enrolledCourses, { courseId: courseBadge.courseId })
-        courseBadge.batchId = isEnrolled && isEnrolled.batchId
+        var courseBatchIdData = sessionService.getSessionData('COURSE_BATCH_ID')
+        if (courseBatchIdData && (courseBatchIdData.courseId === courseBadge.courseId)) {
+          courseBadge.batchId = courseBatchIdData.batchId
+        } else {
+          return
+        }
+        var isEnrolled = _.find($rootScope.enrolledCourses, { batchId: courseBadge.batchId })
+        courseBadge.progress = $rootScope.enrolledBatchIds[courseBadge.batchId] &&
+        $rootScope.enrolledBatchIds[courseBadge.batchId].progress
         courseBadge.courseImage = isEnrolled.courseLogoUrl
         courseBadge.getCourseBadge()
       }
