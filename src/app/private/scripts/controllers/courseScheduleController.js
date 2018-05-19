@@ -24,7 +24,6 @@ angular.module('playerApp')
               toc.contentCountByType = _.countBy(toc.courseContents, 'mimeType')
               // if enrolled course then load batch details also after content status
               if (toc.courseType === 'ENROLLED_COURSE') {
-                toc.getContentScoreAndFeedback(false)
                 toc.getContentState(function () {
                   toc.courseHierarchy = res.result.content
                   toc.showBatchCardList()
@@ -105,7 +104,6 @@ angular.module('playerApp')
                 toc.courseProgress += 1
               }
             })
-            toc.getContentScoreAndFeedback(true)
             console.log('called update state')
             toc.updateCourseProgress()
             toc.checkForTocUpdate()
@@ -450,38 +448,16 @@ angular.module('playerApp')
         toc.getCourseToc()
       }
 
-      toc.getContentScoreAndFeedback = function (status) {
-        var request = {
-          entityName: 'coursescore',
-          filters: {
-            userid: $rootScope.userId,
-            courseid: toc.courseId,
-            batchid: toc.batchId
-          }
-        }
-        toc.contentScoreProgress = false
-        courseService.getContentScore(request).then(function (res) {
-          toc.contentScoreProgress = false
-          if (res && res.responseCode === 'OK') {
-            toc.courseScoreFeedback = res.result.response.content
-          } else {
-            console.log('err fetch in content feedback', JSON.stringify(res))
-          }
-        }).catch(function (err) {
-          console.log('err fetch in content feedback', JSON.stringify(err))
-        })
-      }
-
       toc.updateNodeTitle = function (data) {
         var title = ''
-        var scoreData = _.find(toc.courseScoreFeedback, { 'contentid': data.node.key })
+        var scoreData = _.find(toc.contentProgressDetail, { 'contentId': data.node.key })
         if (scoreData) {
-          if (scoreData.userscore) {
+          if (scoreData.grade) {
             title = title + '<span class="fancy-tree-feedback">( Score: ' +
-              scoreData.userscore + '/' + scoreData.maxscore + ' ) </span>'
+              scoreData.grade + '/' + scoreData.score + ' ) </span>'
           }
-          if (scoreData.feedback) {
-            var feedbackLinkHtml = '<a href=' + scoreData.feedback + ' target="_blank" return false; > Feedback </a>'
+          if (scoreData.result) {
+            var feedbackLinkHtml = '<a href=' + scoreData.result + ' target="_blank" return false; > Feedback </a>'
             title = title + feedbackLinkHtml
           }
         }
@@ -494,14 +470,12 @@ angular.module('playerApp')
       }
 
       toc.storeContentProgressAndScore = function (contentId) {
-        console.log('toc.contentProgressDetail', toc.contentProgressDetail)
         console.log('toc.courseScoreFeedback', toc.courseScoreFeedback)
-        var scoreData = _.find(toc.courseScoreFeedback, { contentid: contentId })
         var progressData = _.find(toc.contentProgressDetail, { contentId: contentId })
         var data = {
           contentId: contentId,
           status: progressData && progressData.status,
-          score: scoreData && scoreData.userscore
+          score: progressData && progressData.grade
         }
         sessionService.deleteSessionData('contentStatusAndScore')
         sessionService.setSessionData('contentStatusAndScore', data)
@@ -509,12 +483,11 @@ angular.module('playerApp')
 
       toc.checkForTocUpdate = function () {
         var previousData = sessionService.getSessionData('contentStatusAndScore')
-        var scoreData = _.find(toc.courseScoreFeedback, { contentid: previousData.contentId })
         var progressData = _.find(toc.contentProgressDetail, { contentId: previousData.contentId })
-        if (!scoreData || !progressData) {
+        if (!progressData) {
           console.log('Update toc')
           // toc.initTocView()
-        } else if ((scoreData.userscore !== previousData.score) || (progressData.status !== previousData.status)) {
+        } else if ((progressData.grade !== previousData.score) || (progressData.status !== previousData.status)) {
           console.log('Update toc')
           // toc.initTocView()
         }

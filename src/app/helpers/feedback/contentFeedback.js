@@ -32,15 +32,23 @@ function createFeedback (data, folderName, filePath, callback) {
   var fileName = data.feedback_file_name
   var strData = atob(base64)
   var htmlData = pako.inflate(strData, {to: 'string'})
-  var tarFileName = path.join(filePath, folderName + '.tar')
+  var tarFileName = path.join(__dirname, folderName + '.tar')
   FileSystem.writeFile(tarFileName, htmlData, function (err, data) {
     if (err) {
       console.log('Unable to create tar file: ', JSON.stringify(err))
       callback(err, null)
     } else {
-      FileSystem.createReadStream(tarFileName).pipe(tar.extract(filePath))
-      FileSystem.unlinkSync(tarFileName)
-      callback(null, fileName)
+      // FileSystem.createReadStream(tarFileName).pipe(tar.extract(filePath))
+      // FileSystem.unlinkSync(tarFileName)
+      // callback(null, fileName)
+
+      var stream = FileSystem.createReadStream(tarFileName, {bufferSize: 64 * 1024})
+      stream.pipe(tar.extract(filePath))
+
+      stream.on('close', function () {
+        FileSystem.unlinkSync(tarFileName)
+        callback(null, fileName)
+      })
     }
   })
 }
@@ -104,7 +112,7 @@ function createAndUploadFeedback (req, callback) {
       uploadUtil.uploadFile(destPath, htmlFilePath, function (err, result) {
         if (err) {
           console.log('Error while uploading feedback', JSON.stringify(err))
-          rspObj.errCode = 'CREATE_CERTIFICATE_FAILED'
+          rspObj.errCode = 'CREATE_FEEDBACK_FAILED'
           rspObj.errMsg = 'Create feedback failed, Please try again later...'
           rspObj.responseCode = 'SERVER_ERROR'
           return callback(rspObj, null)

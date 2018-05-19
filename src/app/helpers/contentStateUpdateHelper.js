@@ -305,7 +305,7 @@ function getPartialResponseObj (name, success, err, errMsg, status) {
 function updateStateAndFeedback (req, callback) {
   const body = req.body
   var rspObj = req.rspObj
-  var progressUpdate, feedbackUpdate, scoreUpdate
+  var progressUpdate, feedbackUpdate
   var result = []
   var printBody = Object.assign({}, body.request)
   delete printBody['feedback']
@@ -319,22 +319,6 @@ function updateStateAndFeedback (req, callback) {
     return callback(errRspObj, 400, false)
   } else {
     async.waterfall([
-      function (cb) {
-        // This function is use to update state
-        updateState(req, function (error, status, resp) {
-          if (error) {
-            progressUpdate = false
-            result.push(getPartialResponseObj('Progress Update', progressUpdate, error.params.err,
-              error.params.errmsg, error.params.status))
-            console.log('Update state fail:', JSON.stringify(error), status)
-          } else {
-            progressUpdate = true
-            result.push(getPartialResponseObj('Progress Update', progressUpdate, '', '', ''))
-            console.log('Update state success:', JSON.stringify(resp), status)
-          }
-          cb()
-        })
-      },
       function (cb) {
         // This function is use to create and upload feedback html file
         feedback.createAndUploadFeedback(req, function (error, resp) {
@@ -353,27 +337,27 @@ function updateStateAndFeedback (req, callback) {
         })
       },
       function (data, cb) {
-        // This function is use to update score and feedback url
-        updateScore(req, data, function (error, status, resp) {
+        // This function is use to update state
+        updateState(req, data, function (error, status, resp) {
           if (error) {
-            scoreUpdate = false
-            result.push(getPartialResponseObj('Score_Feedback Update', scoreUpdate, error.params.err,
+            progressUpdate = false
+            result.push(getPartialResponseObj('Progress Update', progressUpdate, error.params.err,
               error.params.errmsg, error.params.status))
-            console.log('Update score fail:', JSON.stringify(error), status)
+            console.log('Update state fail:', JSON.stringify(error), status)
           } else {
-            scoreUpdate = true
-            result.push(getPartialResponseObj('Score_Feedback Update', scoreUpdate, '', '', ''))
-            console.log('Update score success:', JSON.stringify(resp), status)
+            progressUpdate = true
+            result.push(getPartialResponseObj('Progress Update', progressUpdate, '', '', ''))
+            console.log('Update state success:', JSON.stringify(resp), status)
           }
           cb()
         })
       }
     ], function () {
       rspObj.result = result
-      if (progressUpdate && feedbackUpdate && scoreUpdate) {
+      if (progressUpdate && feedbackUpdate) {
         var successRspObj = successResponse(rspObj)
         return callback(null, 200, successRspObj)
-      } else if (progressUpdate || feedbackUpdate || scoreUpdate) {
+      } else if (progressUpdate || feedbackUpdate) {
         var partialSuccessRspObj = successResponse(rspObj)
         return callback(null, 207, partialSuccessRspObj)
       } else {
@@ -384,82 +368,11 @@ function updateStateAndFeedback (req, callback) {
 }
 
 /**
- * This function is use to create request body for object api
- * @param {String} schemaName 
- * @param {Object} payload 
- * @returns {Object}
- */
-function getObjectRequestData (schemaName, payload) {
-  return {
-    request: {
-      entityName: schemaName,
-      indexed: true,
-      payload: payload
-    }
-  }
-}
-
-/**
- * This function is use to update score and feedback
- * @param {Object} req 
- * @param {Object} feedbackData 
- * @param {Function} callback 
- */
-function updateScore (req, feedbackData, callback) {
-  const body = req.body
-  var rspObj = req.rspObj
-  rspObj.userId = body.request.uid
-  var optType = body.request.first_submission // Operation type
-  var requestBody = {
-    id: body.request.uid + '+' + body.request.courseId + '+' + body.request.contentId,
-    userid: body.request.uid,
-    contentid: body.request.contentId,
-    courseid: body.request.courseId,
-    batchid: body.request.batchId,
-    userscore: Number((body.request.score).toFixed(0)),
-    maxscore: Number((body.request.max_score).toFixed(0)),
-    updateddate: new Date()
-  }
-  if (feedbackData && feedbackData.result) {
-    requestBody.feedback = feedbackData.result.fileUrl
-  }
-  optType = (optType === 'true' || typeof (optType) === 'boolean') ? JSON.parse(optType) : false
-  if (optType) {
-    requestBody.createddate = new Date()
-  }
-
-  var options = {
-    method: 'POST',
-    url: learnerURL + 'data/v1/object/create',
-    headers: req.headers,
-    body: getObjectRequestData('coursescore', requestBody),
-    json: true
-  }
-  console.log('Request to learner service for course score:', JSON.stringify(options))
-  request(options, function (error, response, body) {
-    if (!error && body && body.responseCode === 'OK') {
-      rspObj.result = body.result
-      var successRspObj = successResponse(rspObj)
-      return callback(null, 200, successRspObj)
-    } else {
-      console.log('Error response from server to update score', JSON.stringify(body))
-      rspObj.errCode = body && body.params ? body.params.err : 'UPDATE_SCORE_FAILED'
-      rspObj.errMsg = body && body.params ? body.params.errmsg : 'Updating score failed, please try again later'
-      rspObj.responseCode = body && body.responseCode ? body.responseCode : 500
-      rspObj.result = body && body.result
-      var httpStatus = body && body.statusCode >= 100 && body.statusCode < 600 ? response.statusCode : 500
-      var errRspObj = errorResponse(rspObj)
-      return callback(errRspObj, httpStatus, false)
-    }
-  })
-}
-
-/**
  * This function is use to update content state and progress
  * @param {String} req 
  * @param {Function} callback 
  */
-function updateState (req, callback) {
+function updateState (req, feedbackData, callback) {
   const body = req.body
   var rspObj = req.rspObj
   rspObj.userId = body.request.uid
@@ -473,9 +386,15 @@ function updateState (req, callback) {
         courseId: body.request.courseId,
         batchId: body.request.batchId,
         status: status,
-        progress: body.request.progress
+        progress: body.request.progress,
+        grade: String(body.request.score),
+        score: String(body.request.max_score)
       }
     ]
+  }
+
+  if (feedbackData && feedbackData.result) {
+    requestBody.contents[0].result = feedbackData.result.fileUrl
   }
   var options = {
     method: 'PATCH',
