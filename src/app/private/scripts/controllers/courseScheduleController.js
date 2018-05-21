@@ -486,10 +486,10 @@ angular.module('playerApp')
         var progressData = _.find(toc.contentProgressDetail, { contentId: previousData.contentId })
         if (!progressData) {
           console.log('Update toc')
-          // toc.initTocView()
+          toc.initTocView()
         } else if ((progressData.grade !== previousData.score) || (progressData.status !== previousData.status)) {
           console.log('Update toc')
-          // toc.initTocView()
+          toc.initTocView()
         }
       }
 

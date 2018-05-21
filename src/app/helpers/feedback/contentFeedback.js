@@ -38,10 +38,6 @@ function createFeedback (data, folderName, filePath, callback) {
       console.log('Unable to create tar file: ', JSON.stringify(err))
       callback(err, null)
     } else {
-      // FileSystem.createReadStream(tarFileName).pipe(tar.extract(filePath))
-      // FileSystem.unlinkSync(tarFileName)
-      // callback(null, fileName)
-
       var stream = FileSystem.createReadStream(tarFileName, {bufferSize: 64 * 1024})
       stream.pipe(tar.extract(filePath))
 

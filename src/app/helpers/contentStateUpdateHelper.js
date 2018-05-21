@@ -281,7 +281,7 @@ function checkRequiredKeys (data, keys) {
  * @param {string} name: Name of the process 
  * @param {boolean} success : Status
  * @param {string} err
- * @param {string} errMsg 
+ * @param {string} errMsg
  * @param {string} status 
  */
 function getPartialResponseObj (name, success, err, errMsg, status) {
