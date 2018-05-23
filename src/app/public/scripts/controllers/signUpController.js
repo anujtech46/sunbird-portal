@@ -62,6 +62,7 @@ angular.module('loginApp')
           .dropdown()
       }
       newUser.showModal = function () {
+        newUser.apiCallCount = 0
         newUser.firstName = ''
         newUser.lastName = ''
         newUser.password = ''
@@ -175,10 +176,9 @@ angular.module('loginApp')
         $('#signupModal').modal({
           closable: false
         })
-
+        newUser.apiCallCount += 1
         signUpService.signUp(req).then(function (successResponse) {
-          if (successResponse &&
-                        successResponse.responseCode === 'OK') {
+          if (successResponse && successResponse.responseCode === 'OK') {
             newUser.loader.showLoader = false
 
             $location.path('/private/index')
@@ -187,6 +187,10 @@ angular.module('loginApp')
             $timeout(function () {
               $('.ui .modal').modal('hide')
             }, 2000)
+          } else if (successResponse && successResponse.responseCode === 'SERVER_ERROR' &&
+            newUser.apiCallCount === 1) {
+            console.log('Call signup api again ', successResponse.responseCode, newUser.apiCallCount)
+            newUser.signUp()
           } else {
             newUser.loader.showLoader = false
             var errorMessage = newUser.getErrorMsg(successResponse.params.err)
