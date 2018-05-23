@@ -19,6 +19,9 @@ angular.module('playerApp')
           purchaseList.loader.showLoader = false
           if (resp && resp.responseCode === 'OK') {
             purchaseList.purchaseList = (resp.result.response && resp.result.response.content) || []
+            if (purchaseList.purchaseList.length === 0) {
+              purchaseList.error = showErrorMessage(false, 'You don\'t have any purchase item...', 'info')
+            }
           } else {
             purchaseList.error = showErrorMessage(true,
               $rootScope.messages.stmsg.m0012,

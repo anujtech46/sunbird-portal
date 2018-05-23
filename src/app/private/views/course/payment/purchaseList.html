@@ -1,13 +1,13 @@
 <div class="ui grid">
   <div class="one wide column"></div>
   <div class="ten wide column">
-    <div ng-if="purchaseList.purchaseList">
+    <div>
       <div class="padding-top-10 padding-bottom-10 margin-top-10">
         <div class="ui small header">
           <span class="cardsHeading">My Purchases</span>
         </div>
       </div>
-      <div class="content padding-top-10">
+      <div class="content padding-top-10" ng-if="purchaseList.purchaseList && purchaseList.purchaseList.length > 0">
         <table class="ui fixed table">
           <thead>
             <tr>
