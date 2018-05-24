@@ -1,4 +1,4 @@
-<div class="rightSideSectionCards ui card margin-top-15" ng-if="courseBadge.userBadges && courseBadge.userBadges.badgeClassName">
+<div class="rightSideSectionCards ui card margin-top-15" ng-init="courseBadge.loadDigiLockerScript(); courseBadge.download()" ng-if="courseBadge.userBadges && courseBadge.userBadges.badgeClassName">
   <div class="content" ng-init="badge = courseBadge.userBadges">
     <div class="header announcementCard-header">Certification
       <course-certificate coursedata="courseBadge.courseData" batchdata="courseBadge.batchData"></course-certificate>
@@ -21,27 +21,9 @@
     </div>
   </div>
   <div class="content extra">
-    <span class="ui right floated cursor-pointer cardsKnowMore" ng-click="courseBadge.addToDigiLocker()">Add to Digilocker</span>
+    <span class="ui right floated cursor-pointer cardsKnowMore">
+        <a href="{{courseBadge.fileUrl}}" id="{{courseBadge.addToDigiLockerId}}" class="locker_saver"></a>
+      </span>
   </div>
 </div>
-<div>
-  <div class="ui modal" id="addToDigiLocker">
-    <i class="close icon" ng-click="courseBadge.close()"></i>
-    <div class="header">
-      Add To DigiLocker
-    </div>
-    <div class="image content">
-      <div class="ui description" ng-if="courseBadge.progress">
-        <h2 class="ui center aligned icon header">
-          <i class="notched circle loading icon"></i>
-          <p>We will implement asap.</p>
-        </h2>
-      </div>
-    </div>
-    <div class="actions">
-      <div class="ui black deny button" ng-click="courseBadge.close()">
-        close
-      </div>
-    </div>
-  </div>
-</div>
+<div></div>

@@ -163,7 +163,8 @@ var paths = {
     'dist/thirdparty/bower_components/angular-chart.js/dist/angular-chart.min.js',
     'dist/thirdparty/semantic-tree-picker/semantic-ui-tree-picker.js',
     'dist/thirdparty/libs/generateAndDownloadCSV.min.js',
-    'dist/thirdparty/bower_components/file-upload/fine-uploader/fine-uploader.js'
+    'dist/thirdparty/bower_components/file-upload/fine-uploader/fine-uploader.js',
+    'dist/thirdparty/bower_components/crypto-js/crypto-js.js'
   ],
   private_bower_css: [
     'dist/thirdparty/libs/semantic-ui-tree-picker/semantic-ui-tree-picker.css',

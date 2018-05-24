@@ -13,7 +13,8 @@
         "testData": true,
         "EkTelemetry": true,
         "inject": true,
-        "setFixtures": true
+        "setFixtures": true,
+        "CryptoJS": true
     },
     "rules": {
         "indent": ["error", 2],

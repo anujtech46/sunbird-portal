@@ -153,7 +153,8 @@
       "org",
       "alasql",
       "md5",
-      "EkTelemetry"
+      "EkTelemetry",
+      "CryptoJS"
     ],
     "ignore": [
       "./../Dockerfile"

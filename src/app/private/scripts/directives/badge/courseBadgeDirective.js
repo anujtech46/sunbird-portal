@@ -28,8 +28,9 @@ angular.module('playerApp')
     }
   }])
   .controller('courseBadgeCtrl', ['$rootScope', '$scope', '$state', 'userService',
-    'toasterService', 'badgeService', 'sessionService', function ($rootScope, $scope, $state, userService,
-      toasterService, badgeService, sessionService) {
+    'toasterService', 'badgeService', 'sessionService', 'restfulPlayerService', 'config',
+    function ($rootScope, $scope, $state, userService, toasterService, badgeService, sessionService,
+      restfulPlayerService, config) {
       var courseBadge = this
       courseBadge.courseId = $scope.courseid
       courseBadge.userId = $rootScope.userId
@@ -52,8 +53,19 @@ angular.module('playerApp')
         courseBadge.getCourseBadge()
       }
 
-      courseBadge.addToDigiLocker = function () {
-        $('#addToDigiLocker').modal({ closable: false }).modal('show')
+      courseBadge.loadDigiLockerScript = function () {
+        courseBadge.addToDigiLockerId = String(Date.now())
+        var digiLockerScript = document.createElement('script')
+        var timeStamp = Date.now()
+        var appId = $('#addToDigiLockerAppID').attr('value')
+        var hash = CryptoJS.SHA256(appId + $('#addToDigiLockerAppKey').attr('value') + timeStamp).toString()
+        digiLockerScript.setAttribute('type', 'text/javascript')
+        digiLockerScript.setAttribute('src', $('#addToDigiLockerUrl').attr('value'))
+        digiLockerScript.setAttribute('id', 'dlshare')
+        digiLockerScript.setAttribute('data-app-id', appId)
+        digiLockerScript.setAttribute('data-app-hash', hash)
+        digiLockerScript.setAttribute('time-stamp', timeStamp)
+        document.head.appendChild(digiLockerScript)
       }
 
       courseBadge.close = function () {
@@ -98,6 +110,49 @@ angular.module('playerApp')
             }
           })
         }
+      }
+
+      function getUserTitle (gender) {
+        if (gender) {
+          gender = gender.toLowerCase()
+          return gender === 'male' ? 'Mr.' : gender === 'female' ? 'Mrs.' : ''
+        } else {
+          return ''
+        }
+      }
+
+      function firstLetterUpperCase (string) {
+        return string.charAt(0).toUpperCase() + string.slice(1)
+      }
+
+      function getUserFullName (userData) {
+        if (userData) {
+          return firstLetterUpperCase(courseBadge.currentUser.firstName) + ' ' +
+              firstLetterUpperCase(courseBadge.currentUser.lastName)
+        } else {
+          return ''
+        }
+      }
+
+      courseBadge.download = function () {
+        var request = {
+          title: getUserTitle(courseBadge.currentUser && courseBadge.currentUser.gender),
+          name: getUserFullName(courseBadge.currentUser),
+          courseName: courseBadge.courseData.name,
+          userId: courseBadge.userId,
+          courseId: courseBadge.courseData && courseBadge.courseData.identifier,
+          createdDate: new Date()
+        }
+
+        restfulPlayerService.post(config.URL.CERTIFICATE.COURSE, {request: request}).then(function (response) {
+          if (response && response.responseCode === 'OK') {
+            courseBadge.fileUrl = response.result && response.result.fileUrl
+          } else {
+            toasterService.error('Unable to download file, Please try again later...')
+          }
+        }).catch(function () {
+          toasterService.error('Unable to download file, Please try again later...')
+        })
       }
       courseBadge.getCourseDetail()
     }])
