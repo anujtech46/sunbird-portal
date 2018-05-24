@@ -252,7 +252,7 @@ app.all('/private/*', keycloak.protect(), permissionsHelper.checkPermission(), f
   res.locals.contentChannelFilterType = envHelper.CONTENT_CHANNEL_FILTER_TYPE
   res.locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
   res.locals.producerId = producerId
-  res.locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_WEB_URL
+  res.locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_APP_URL
   res.locals.addToDigiLockerAppID = envHelper.ADD_TO_DIGILOCKER_APP_ID
   res.locals.addToDigiLockerAppKey = envHelper.ADD_TO_DIGILOCKER_APP_KEY
   res.render(path.join(__dirname, 'private', 'index.ejs'))
