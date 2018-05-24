@@ -203,6 +203,7 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
       learnService.enrolledCourses($rootScope.userId).then(function (successResponse) {
         if (successResponse && successResponse.responseCode === 'OK') {
           $rootScope.enrolledCourses = successResponse.result.courses
+          checkForRedirectToCoursePage()
           learnService.mapBatchNameWithCourse($rootScope.enrolledCourses, function (enrolledCourses) {
             $rootScope.enrolledCourses = enrolledCourses
             $rootScope.enrolledCourseIds =
@@ -290,6 +291,18 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
 
     $scope.openProfileView = function () {
       $state.go('Profile')
+    }
+
+    function checkForRedirectToCoursePage () {
+      if ($rootScope.enrolledCourses && $rootScope.enrolledCourses.length === 0) {
+        var data = sessionService.getSessionData('USER_ENROLL_VISIT_COUNT')
+        if (data && data.count !== 0) {
+          sessionService.setSessionData('USER_ENROLL_VISIT_COUNT', {count: data.count + 1})
+        } else {
+          sessionService.setSessionData('USER_ENROLL_VISIT_COUNT', {count: 1})
+          $state.go('Courses')
+        }
+      }
     }
 
     // telemetry interact event
