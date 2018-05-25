@@ -3,13 +3,21 @@ angular.module('playerApp')
   .config(function ($stateProvider, $urlRouterProvider, $qProvider) {
     $qProvider.errorOnUnhandledRejections(false) // To handle error rejection
     $urlRouterProvider.deferIntercept()
-    $urlRouterProvider.otherwise('/home')
+    $urlRouterProvider.otherwise('/partialHome')
     $stateProvider
       .state('LandingPage', {
         url: '/',
         views: {
           mainView: {
             templateUrl: '/views/home/landingPage.html'
+          }
+        }
+      })
+      .state('PartialHomePage', {
+        url: '/partialHome',
+        views: {
+          mainView: {
+            controller: 'HomeController as homeCtrl'
           }
         }
       })
@@ -23,6 +31,7 @@ angular.module('playerApp')
         },
         onEnter: function ($rootScope, routeHelperService, sessionService) {
           $rootScope.homeActive = 'active'
+          $rootScope.courseActive = ''
           routeHelperService.loadRouteConfig('Home', null)
           sessionService.deleteSessionData('COURSE_BATCH_ID')
         },
@@ -53,15 +62,17 @@ angular.module('playerApp')
         },
         onEnter: function ($rootScope, telemetryService, routeHelperService, sessionService) {
           $rootScope.isLearnPage = true
+          $rootScope.homeActive = ''
           $rootScope.courseActive = 'active'
           routeHelperService.loadRouteConfig('Courses')
           telemetryService.setConfigData('env', 'course')
           sessionService.deleteSessionData('COURSE_BATCH_ID')
         },
-        onExit: function ($rootScope, telemetryService) {
+        onExit: function ($rootScope, telemetryService, sessionService) {
           telemetryService.impressionTelemetryData('course', '', 'course',
             $rootScope.version, 'pageexit', 'course-read', '/learn', '', telemetryService.getVisitData())
           $rootScope.courseActive = ''
+          $rootScope.homeActive = ''
           $rootScope.isLearnPage = false
         },
         params: {

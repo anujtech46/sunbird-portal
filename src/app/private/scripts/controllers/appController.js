@@ -296,12 +296,14 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
     function checkForRedirectToCoursePage () {
       if ($rootScope.enrolledCourses && $rootScope.enrolledCourses.length === 0) {
         var data = sessionService.getSessionData('USER_ENROLL_VISIT_COUNT')
-        if (data && data.count !== 0) {
-          sessionService.setSessionData('USER_ENROLL_VISIT_COUNT', {count: data.count + 1})
+        if (data && data[$rootScope.userId] !== 0) {
         } else {
-          sessionService.setSessionData('USER_ENROLL_VISIT_COUNT', {count: 1})
+          sessionService.setSessionData('USER_ENROLL_VISIT_COUNT', {[$rootScope.userId]: 1})
           $state.go('Courses')
         }
+      } else {
+        sessionService.deleteSessionData('USER_ENROLL_VISIT_COUNT')
+        $state.go('Home')
       }
     }
 
@@ -322,6 +324,11 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
       pageId, mode) {
       telemetryService.endTelemetryData(env, objId, objType, objVer, startContentType,
         pageId, mode)
+    }
+
+    $rootScope.logout = function () {
+      sessionService.deleteSessionData('USER_ENROLL_VISIT_COUNT')
+      window.location.href = '/logoff'
     }
 
     $scope.getOrgTypes()
