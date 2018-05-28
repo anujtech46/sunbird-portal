@@ -16,13 +16,14 @@ const _ = require('lodash')
 const bodyParser = require('body-parser')
 const feedback = require('./feedback/contentFeedback')
 const courseCompletionBadgeId = envVariables.COURSE_COMPLETION_BADGE_ID
+const apiLimitSize = envVariables.API_REQUEST_LIMIT_SIZE
 
 /**
  * Exports all the routes for update content state api
  * @param {object} app 
  */
 module.exports = function (app) {
-  app.post('/update/content/state', bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
+  app.post('/update/content/state', bodyParser.json({ limit: apiLimitSize }), createAndValidateRequestBody,
     updateContentState)
 }
 

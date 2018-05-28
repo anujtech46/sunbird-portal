@@ -303,7 +303,6 @@ angular.module('playerApp').controller('AppCtrl', ['$scope', 'permissionsService
         }
       } else {
         sessionService.deleteSessionData('USER_ENROLL_VISIT_COUNT')
-        $state.go('Home')
       }
     }
 
