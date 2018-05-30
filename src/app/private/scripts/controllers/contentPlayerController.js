@@ -49,6 +49,7 @@ angular.module('playerApp')
         configuration.metadata = $scope.contentData
         configuration.data = $scope.contentData.mimeType !== config.MIME_TYPE.ecml ? {} : data.body
         configuration.config.overlay = config.ekstep_CP_config.config.overlay || {}
+        configuration.config.splash = config.ekstep_CP_config.config.splash || {}
         configuration.config.overlay.showUser = false
         return configuration
       }

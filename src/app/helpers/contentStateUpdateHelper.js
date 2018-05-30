@@ -270,7 +270,7 @@ function checkProgress (data, batchId, contentList) {
 function checkRequiredKeys (data, keys) {
   var isValid = true
   _.forEach(keys, function (key) {
-    if (!data[key]) {
+    if (!data[key] && data[key] !== 0 && data[key] !== '') {
       isValid = false
     }
   })
@@ -310,7 +310,7 @@ function updateStateAndFeedback (req, callback) {
   var result = []
   var printBody = Object.assign({}, body.request)
   delete printBody['feedback']
-  console.log('User request body:', JSON.stringify(printBody))
+  console.log('User request body:', JSON.stringify(printBody), new Date())
   console.log('User request header', JSON.stringify(req.headers))
   if (!body || !body.request || !checkRequiredKeys(body.request, ['contentId', 'courseId', 'progress', 'uid'])) {
     rspObj.errCode = 'INVALID_REQUEST'

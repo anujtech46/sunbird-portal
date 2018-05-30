@@ -315,6 +315,12 @@
                         "showTeachersInstruction": false
                     }
                 },
+                "splash": {
+                    "text": "",
+                    "icon": "",
+                    "bgImage": "assets/icons/background_1.png",
+                    "webLink": ""
+                },
                 "plugins": [{ "id": "org.sunbird.iframeEvent", "ver": 1.0, "type": "plugin" }, { "id": "org.sunbird.player.endpage", "ver": 1.0, "type": "plugin" }]
             },
             "baseURL": "/content/preview/preview.html?webview=true"
