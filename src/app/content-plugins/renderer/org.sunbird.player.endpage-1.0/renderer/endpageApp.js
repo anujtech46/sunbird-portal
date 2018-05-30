@@ -11,7 +11,7 @@ endPage.controller("endPageController", function($scope, $rootScope, $state,$ele
         return (_.isString(array)) ? array : (!_.isEmpty(array) && _.isArray(array)) ? array.join(", ") : "";
     };
     $scope.setLicense = function(){
-        $scope.licenseAttribute = $scope.playerMetadata.license || 'Licensed under CC By 4.0 license'
+        // $scope.licenseAttribute = $scope.playerMetadata.license || 'Licensed under CC By 4.0 license'
     };
 
     $scope.replayContent = function() {
