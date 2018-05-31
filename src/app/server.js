@@ -317,6 +317,9 @@ keycloak.authenticated = function (request) {
       permissionsHelper.getPermissions(request)
       callback()
     },
+    checkAndCreateUserData: function (callback) {
+      userHelper.createUserIfNotExist(request, callback)
+    },
     getUserData: function (callback) {
       permissionsHelper.getCurrentUserRoles(request, callback)
     },
