@@ -268,8 +268,8 @@
         },
         "SEARCH": {
             "search": {
-                "All": "/search/All",
-                "home": "/search/All",
+                "All": "/search/Courses",
+                "home": "/search/Courses",
                 "learn": "/search/Courses",
                 "Courses": "/search/Courses",
                 "resources": "/search/Library",
@@ -279,7 +279,7 @@
                 "Organisations": "/search/Organisations"
             },
             "searchUrl": {
-                "home": "All",
+                "home": "Courses",
                 "learn": "Courses",
                 "resources": "Library",
                 "profile": "Users"
