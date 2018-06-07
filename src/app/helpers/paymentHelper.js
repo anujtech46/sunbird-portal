@@ -3,7 +3,7 @@
  * Path: /home/anujkumar/Desktop/public-sunbird/sunbird-portal/src
  * Created Date: Sunday, May 13th 2018, 5:43:40 pm
  * Author: Anuj Gupta
- * 
+ *
  * Copyright (c) 2018 Your Company
  */
 const envVariables = require('./environmentVariablesHelper.js')
@@ -29,7 +29,7 @@ const refundTxnIdMap = {}
 
 /**
  * Exports all the routes related to payments
- * @param {object} app 
+ * @param {object} app
  */
 module.exports = function (app) {
   app.post('/payment' + COLLECT_REQUEST_URI, bodyParser.json({ limit: '1mb' }),
@@ -47,7 +47,7 @@ module.exports = function (app) {
 
 /**
  * This function helps to update the payment status
- * @param {object} req: API req object 
+ * @param {object} req: API req object
  * @param {*} callback: Callback have 3 params(error, statusCode, successResp)
  */
 function updatePaymentStatus (req, callback) {
@@ -108,7 +108,7 @@ function updatePaymentStatus (req, callback) {
 
 /**
  * Api wrapper to handle the payment callback, This api will call by  payment provider
- * @param {object} req: API request object 
+ * @param {object} req: API request object
  * @param {object} res: API response object
  */
 function handleCollectPaymentCallback (req, res) {
@@ -144,7 +144,7 @@ function handleCollectPaymentCallback (req, res) {
 
 /**
  * This function helps to return base64 data to make collect payment
- * @param {object} req 
+ * @param {object} req
  */
 function getRequestBodyForCharge (req) {
   if (!req) {
@@ -166,7 +166,7 @@ function getRequestBodyForCharge (req) {
 
 /**
  * Api wrapper to handle the collect payment
- * @param {object} req: API request object 
+ * @param {object} req: API request object
  * @param {object} res: API response object
  */
 function collectPayment (req, res) {
@@ -215,9 +215,9 @@ function collectPayment (req, res) {
 
 /**
  * This middleware function is used to create and validate the request body
- * @param {Object} req 
- * @param {Object} res 
- * @param {function} next 
+ * @param {Object} req
+ * @param {Object} res
+ * @param {function} next
  */
 function createAndValidateRequestBody (req, res, next) {
   req.body = req.body || {}
@@ -251,7 +251,7 @@ function createAndValidateRequestBody (req, res, next) {
 
 /**
  * This is util function. Which helps to get success response
- * @param {object} data 
+ * @param {object} data
  */
 function successResponse (data) {
   var response = {}
@@ -282,10 +282,10 @@ function errorResponse (data) {
 
 /**
  * This is util function. Which helps to get params for response
- * @param {string} msgId 
- * @param {string} status 
- * @param {string} errCode 
- * @param {string} msg 
+ * @param {string} msgId
+ * @param {string} status
+ * @param {string} errCode
+ * @param {string} msg
  */
 function getParams (msgId, status, errCode, msg) {
   var params = {}
@@ -351,7 +351,7 @@ function refundPayment (req, res) {
 
 /**
  * Api wrapper to handle the payment refund callback, This api will call by payment provider
- * @param {object} req: API request object 
+ * @param {object} req: API request object
  * @param {object} res: API response object
  */
 function handleRefundPaymentCallback (req, res) {
@@ -388,7 +388,7 @@ function handleRefundPaymentCallback (req, res) {
 
 /**
  * This function helps to update the payment status
- * @param {object} req: API req object 
+ * @param {object} req: API req object
  * @param {*} callback: Callback have 3 params(error, statusCode, successResp)
  */
 function updateRefundPaymentStatus (req, callback) {

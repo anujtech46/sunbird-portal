@@ -143,6 +143,8 @@ angular.module('playerApp')
               if (data.targetType === 'title') {
                 data.targetType = 'expander'
                 toc.openContent(data.node.key)
+              } else if (!toc.playContent) {
+                toasterService.info('Please enroll the course to access the content...')
               }
             },
             renderNode: function (event, data) {
