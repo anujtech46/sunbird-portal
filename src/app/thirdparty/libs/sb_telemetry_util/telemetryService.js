@@ -296,7 +296,7 @@ telemetryService.prototype.generateApiCallLogEvent = function (data) {
   const edata = this.logEventData('INFO', level, message, telemetryData.params)
   this.log({
     edata: edata,
-    context: telemetry.getContextData(telemetryData.context),
+    context: telemetryService.getContextData(telemetryData.context),
     actor: telemetryData && telemetryData.actor,
     tags: telemetryData && telemetryData.tags,
     object: telemetryData && telemetryData.object

@@ -239,7 +239,11 @@ app.all('/v1/user/session/create', function (req, res) {
   trampolineServiceHelper.handleRequest(req, res, keycloak)
 })
 
-require('./helpers/paymentHelper.js')(app)
+// require('./helpers/paymentHelper.js')(app)
+const PaymentPlugin = require('sb_collect_payment_plugin')
+const paymentPlugin = new PaymentPlugin()
+paymentPlugin.init(app, envHelper)
+
 require('./helpers/pdfCreator/pdfCreator.js')(app)
 
 app.all('/private/*', keycloak.protect(), permissionsHelper.checkPermission(), function (req, res) {

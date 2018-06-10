@@ -1,0 +1,17 @@
+{
+  "name": "sb_collect_payment_plugin",
+  "version": "1.0.0",
+  "description": "Expose api's for collect payment through VPA and connect with payment provider",
+  "main": "index.js",
+  "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sunbird",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "request": "^2.83.0",
+    "sha256": "^0.2.0",
+    "uuid": "^3.1.0"
+  }
+}
