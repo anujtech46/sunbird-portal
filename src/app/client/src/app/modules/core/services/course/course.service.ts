@@ -6,6 +6,8 @@ import { UserService } from './../user/user.service';
 import { ConfigService, ServerResponse } from '@sunbird/shared';
 import { IEnrolledCourses } from './../../interfaces';
 import { ContentService } from '../content/content.service';
+import * as _ from 'lodash';
+import { SearchParam } from '@sunbird/core';
 /**
  *  Service for course API calls.
  */
@@ -63,13 +65,53 @@ export class CoursesService {
     };
     return this.learnerService.get(option).map(
       (apiResponse: ServerResponse) => {
-        this._enrolledCourseData$.next({ err: null, enrolledCourses: apiResponse.result.courses });
-        return apiResponse;
+        this.getEnrolledCourseWithBatchName(apiResponse.result.courses, (enrolledCourses) => {
+          this._enrolledCourseData$.next({ err: null, enrolledCourses: enrolledCourses });
+          return apiResponse;
+        });
       }).catch((err) => {
         this._enrolledCourseData$.next({ err: err, enrolledCourses: undefined });
         return err;
       }
     );
+  }
+
+  getEnrolledCourseWithBatchName = (enrolledCourses, cb) => {
+    const courseIds = _.map(enrolledCourses, 'courseId');
+    const req = {
+      filters: {
+        courseId: courseIds
+      }
+    };
+    this.batchSearch(req).subscribe((data: ServerResponse) => {
+      if (data.result.response.content && data.result.response.content.length > 0) {
+          enrolledCourses = _.map(enrolledCourses, (course) => {
+            const batchData: any = _.find(data.result.response.content, {identifier: course.batchId});
+            course['batchName'] = batchData && batchData.name;
+            return course;
+          });
+          cb(enrolledCourses);
+        } else {
+        cb(enrolledCourses);
+      }
+    },
+    (err: ServerResponse) => {
+      cb(enrolledCourses);
+    });
+  }
+
+  batchSearch(requestParam: SearchParam): Observable<ServerResponse> {
+    const option = {
+      url: this.config.urlConFig.URLS.BATCH.GET_BATCHS,
+      data: {
+        request: {
+          filters: requestParam.filters,
+          limit: requestParam.limit,
+          sort_by: requestParam.sort_by
+        }
+      }
+    };
+    return this.learnerService.post(option);
   }
   /**
    *  call enroll course api and subscribe. Behavior subject will emit enrolled course data

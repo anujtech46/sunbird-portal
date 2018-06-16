@@ -6,6 +6,7 @@
             </div>
             <div class="ui fluid image" (click)="onAction(enrolledCourses)" appTelemetryInteract  [telemetryInteractEdata]="courseIntractEdata" [telemetryInteractObject]="telemetryInteractObject">
                 <a class="ui black right ribbon label">{{resourceService.frmelmnts?.bdge?.course}}</a>
+                <a class="ui blue left ribbon label">{{enrolledCourses.batchName}}</a>
 
                 <img src="{{ enrolledCourses.appIcon || enrolledCourses.courseLogoUrl || 'assets/images/default.png' | cdnprefixurl }}">
             </div>
