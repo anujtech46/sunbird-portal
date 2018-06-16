@@ -8,6 +8,7 @@ import { UserService } from '@sunbird/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EditorService } from './../../../services';
 import { state } from './../../../classes/state';
+import { environment } from '@sunbird/environment';
 
 @Component({
   selector: 'app-collection-editor',
@@ -188,7 +189,7 @@ export class CollectionEditorComponent implements OnInit, AfterViewInit, OnDestr
     };
 
     window.config = { ...editorWindowConfig, ...dynamicConfig };
-
+    window.config.enableTelemetryValidation = environment.enableTelemetryValidation; // telemetry validation
 
     if (this.type.toLowerCase() === 'textbook') {
       window.config.plugins.push({
@@ -224,7 +225,7 @@ export class CollectionEditorComponent implements OnInit, AfterViewInit, OnDestr
 
     if (this.state === state.UP_FOR_REVIEW &&
       _.intersection(this.userProfile.userRoles,
-        ['CONTENT_REVIEWER', 'CONTENT_REVIEW']).length > 0) {
+        ['CONTENT_REVIEWER', 'CONTENT_REVIEW', 'BOOK_REVIEWER']).length > 0) {
       window.config.editorConfig.publishMode = true;
     } else if (this.state === state.FLAGGED &&
       _.intersection(this.userProfile.userRoles,
@@ -339,6 +340,9 @@ export class CollectionEditorComponent implements OnInit, AfterViewInit, OnDestr
     if (status.toLowerCase() === 'flagged') {
       window.config.editorConfig.mode = 'Read';
       window.config.editorConfig.contentStatus = 'flagged';
+    }
+    if ( status.toLowerCase() === 'unlisted') {
+      window.config.editorConfig.mode = 'Edit';
     }
   }
 

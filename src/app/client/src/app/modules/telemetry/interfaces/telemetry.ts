@@ -201,6 +201,7 @@ export interface ITelemetry {
   'tags'?: Array<string>;
   'cdata'?: Array<{}>;
   'dispatcher'?: undefined;
+  'enableValidation': boolean;
 }
 
 export interface IUserOrgDetails {

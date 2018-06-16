@@ -2717,3 +2717,16 @@ iframe.iziModal-iframe {
 .remove-outline {
   outline: none !important;
 }
+
+.capitalize-text {
+  text-transform: capitalize;
+}
+.left-float {
+  float: left !important;
+}
+.padding-top-15 {
+  padding-top: 15px !important;
+}
+.ui.icon.input>i.icon.dialcode-search-icon:not(.link) {
+  pointer-events: auto;
+}

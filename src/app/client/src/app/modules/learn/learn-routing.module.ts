@@ -7,26 +7,28 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { ResourceService } from '@sunbird/shared';
-import { FlagContentComponent } from '@sunbird/core';
+import { FlagContentComponent , AuthGuard} from '@sunbird/core';
 import { CourseProgressComponent } from '@sunbird/dashboard';
-
 const telemetryEnv = 'course';
 const objectType = 'course';
 const routes: Routes = [
   {
-    path: 'learn', component: LearnPageComponent,
+    path: '', component: LearnPageComponent,
     data: {
       breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '' }],
       telemetry: { env: telemetryEnv, pageid: 'learn', type: 'view' }
     }
   },
   {
-    path: 'learn/course', component: CourseConsumptionPageComponent,
-     data: {  telemetry: { env: telemetryEnv }},
+    path: 'course', component: CourseConsumptionPageComponent,
+    data: { telemetry: { env: telemetryEnv } },
     children: [
       {
         path: ':courseId', component: CoursePlayerComponent,
         data: {
+          telemetry: {
+            env: telemetryEnv, pageid: 'course-player', type: 'view', object: { ver: '1.0', type: 'batch' }
+          },
           breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '/learn' }]
         },
         children: [
@@ -38,14 +40,15 @@ const routes: Routes = [
             }
           },
           {
-            path: 'update/batch/:batchId', component: UpdateCourseBatchComponent,
+            path: 'update/batch/:batchId', component: UpdateCourseBatchComponent, canActivate: [AuthGuard],
             data: {
-              telemetry: { env: telemetryEnv, pageid: 'batch-edit', type: 'view', object: { ver: '1.0', type: 'batch' } }
+              telemetry: { env: telemetryEnv, pageid: 'batch-edit', type: 'view', object: { ver: '1.0', type: 'batch' } },
+              roles: 'coursebacthesRole'
             }
           },
           {
-            path: 'create/batch', component: CreateBatchComponent,
-            data: { telemetry: { env: telemetryEnv, pageid: 'batch-create', type: 'view' } }
+            path: 'create/batch', component: CreateBatchComponent, canActivate: [AuthGuard],
+            data: { telemetry: { env: telemetryEnv, pageid: 'batch-create', type: 'view' } ,  roles: 'coursebacthesRole' }
           }
         ]
       },
@@ -65,6 +68,15 @@ const routes: Routes = [
       },
       {
         path: ':courseId/batch/:batchId/notes', component: NoteListComponent,
+        data: {
+          telemetry: {
+            env: telemetryEnv, pageid: 'content-note-read', type: 'list', object: { type: objectType, ver: '1.0' }
+          }, breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '/learn' }]
+        },
+        children: [{ path: 'flag', component: FlagContentComponent }]
+      },
+      {
+        path: ':courseId/batch/:batchId/notes/:contentId', component: NoteListComponent,
         data: {
           telemetry: {
             env: telemetryEnv, pageid: 'content-note-read', type: 'list', object: { type: objectType, ver: '1.0' }

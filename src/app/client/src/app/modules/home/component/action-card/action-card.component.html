@@ -7,7 +7,7 @@
             <div class="ui fluid image" (click)="onAction(enrolledCourses)" appTelemetryInteract  [telemetryInteractEdata]="courseIntractEdata" [telemetryInteractObject]="telemetryInteractObject">
                 <a class="ui black right ribbon label">{{resourceService.frmelmnts?.bdge?.course}}</a>
 
-                <img src="{{ enrolledCourses.appIcon || enrolledCourses.courseLogoUrl || '/assets/images/default.png' }}">
+                <img src="{{ enrolledCourses.appIcon || enrolledCourses.courseLogoUrl || 'assets/images/default.png' | cdnprefixurl }}">
             </div>
             <div class="cardImageText center aligned " suiPopup popupText="{{enrolledCourses.courseName}}"> 
                 <span class="sliderCardHeading text-cencapitalize">
@@ -17,8 +17,8 @@
             </div>
         </div>
         <div class="sliderCards content">
-            <div class="sliderCardDesc fixedRatingCard" *ngIf="enrolledCourses.description"> 
-                {{ enrolledCourses.description | slice:0:55 }}
+            <div class="sliderCardDesc fixedRatingCard" > 
+               <span *ngIf="enrolledCourses.description">{{ enrolledCourses.description | slice:0:55 }}</span> 
                 <i *ngIf="enrolledCourses.description && enrolledCourses.description.length >= 55" class="ellipsis horizontal icon popup-button link" [attr.data-content]="enrolledCourses.description"
                     [attr.data-variation]="wide"></i>
             </div>

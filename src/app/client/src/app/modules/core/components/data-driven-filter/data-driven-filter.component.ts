@@ -64,7 +64,7 @@ export class DataDrivenFilterComponent implements OnInit {
   public permissionService: PermissionService;
 
   selectedConcepts: Array<object>;
-  showFilter = false;
+  showConcepts = false;
   refresh = true;
   isShowFilterPlaceholder = true;
   contentTypes: any;
@@ -111,20 +111,21 @@ export class DataDrivenFilterComponent implements OnInit {
     this.conceptPickerService.conceptData$.subscribe(conceptData => {
       if (conceptData && !conceptData.err) {
         this.selectedConcepts = conceptData.data;
-        this.activatedRoute.queryParams.subscribe((params) => {
-          this.queryParams = { ...params };
-          _.forIn(params, (value, key) => {
-            if (typeof value === 'string' && key !== 'key' && key !== 'language') {
-              this.queryParams[key] = [value];
-            }
-          });
-          this.formInputData = _.pickBy(this.queryParams);
-          if (this.formInputData && this.formInputData.concept) {
-            this.formInputData.concept = this.conceptPickerService.processConcepts(this.formInputData.concept, this.selectedConcepts);
-          }
-          this.showFilter = true;
-        });
       }
+    });
+
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.queryParams = { ...params };
+      _.forIn(params, (value, key) => {
+        if (typeof value === 'string' && key !== 'key' && key !== 'language') {
+          this.queryParams[key] = [value];
+        }
+      });
+      this.formInputData = _.pickBy(this.queryParams);
+      if (this.formInputData && this.formInputData.concepts) {
+        this.formInputData.concepts = this.conceptPickerService.processConcepts(this.formInputData.concepts, this.selectedConcepts);
+      }
+      this.showConcepts = true;
     });
   }
   /**
@@ -187,7 +188,7 @@ export class DataDrivenFilterComponent implements OnInit {
     this._cacheService.set(this.filterEnv + this.formAction, this.formFieldProperties,
       {
         maxAge: this.configService.appConfig.cacheServiceConfig.setTimeInMinutes *
-          this.configService.appConfig.cacheServiceConfig.setTimeInSeconds
+        this.configService.appConfig.cacheServiceConfig.setTimeInSeconds
       });
   }
 
@@ -207,7 +208,7 @@ export class DataDrivenFilterComponent implements OnInit {
  * to get selected concepts from concept picker.
  */
   concepts(events) {
-    this.formInputData['concept'] = events;
+    this.formInputData['concepts'] = events;
   }
   /**
  * To check filterType.
@@ -218,7 +219,7 @@ export class DataDrivenFilterComponent implements OnInit {
     this.queryParams = _.pickBy(this.formInputData, value => value.length > 0);
     let queryParams = {};
     _.forIn(this.queryParams, (value, key) => {
-      if (key === 'concept') {
+      if (key === 'concepts') {
         queryParams[key] = [];
         value.forEach((conceptDetails) => {
           queryParams[key].push(conceptDetails.identifier);
