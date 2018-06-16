@@ -9,7 +9,7 @@ let envVariables = {
   PORTAL_AUTH_SERVER_URL: env.sunbird_portal_auth_server_url || 'https://staging.open-sunbird.org/auth',
   PORTAL_AUTH_SERVER_CLIENT: env.sunbird_portal_auth_server_client || 'portal',
   APPID: process.env.sunbird_environment + '.' + process.env.sunbird_instance + '.portal',
-  DEFAUULT_TENANT: env.sunbird_default_tenant,
+  DEFAUULT_TENANT: env.sunbird_default_tenant || 'aiprohub',
   EKSTEP_ENV: env.ekstep_env || 'qa',
   PORTAL_PORT: env.sunbird_port || 3000,
   PORTAL_API_AUTH_TOKEN: env.sunbird_api_auth_token,
@@ -36,7 +36,7 @@ let envVariables = {
   learner_Service_Local_BaseUrl: env.sunbird_learner_service_local_base_url || 'http://learner-service:9000',
   content_Service_Local_BaseUrl: env.sunbird_content_service_local_base_url || 'http://content_service_content_service:5000',
   ANDROID_APP_URL: env.sunbird_android_app_url || 'http://www.sunbird.org',
-  EXPLORE_BUTTON_VISIBILITY: env.sunbird_explore_button_visibility || true
+  EXPLORE_BUTTON_VISIBILITY: env.sunbird_explore_button_visibility || false
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

@@ -45,6 +45,7 @@ const ejs = require('ejs');
 const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const MobileDetect = require('mobile-detect');
 let memoryStore = null
+const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -379,6 +380,9 @@ keycloak.authenticated = function (request) {
   async.series({
     getUserData: function (callback) {
       permissionsHelper.getCurrentUserRoles(request, callback)
+    },
+    checkAndCreateUserData: function (callback) {
+      socialLoginHelper.createUserIfNotExist(request, callback)
     },
     getPermissionData: function (callback) {
       permissionsHelper.getPermissions(request)
