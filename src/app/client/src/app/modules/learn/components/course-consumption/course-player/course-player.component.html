@@ -46,6 +46,7 @@
                                     </div>
                                 </div>
                                 <br>
+                                <app-course-badge></app-course-badge>
                                 <app-carriculum-card *ngIf="curriculum && curriculum.length > 0" [curriculum]="curriculum"></app-carriculum-card>
                                 <br>
                                 <div class="courseupdate">
@@ -75,7 +76,7 @@
                                     </div>
                                     <div class="ui grid">
                                         <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
-                                            <app-player (contentProgressEvent)="contentProgressEventnew($event)" class="content-player" [playerConfig]="playerConfig"></app-player>
+                                            <app-player (contentProgressEvent)="contentProgressEventnew($event)" class="content-player" [playerConfig]="playerConfig" [externalContentData]="externalContentData"></app-player>
                                         </div>
                                     </div>
                                 </div>

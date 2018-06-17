@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
   CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
-  UpdateCourseBatchComponent, CarriculumCardComponent } from './components';
+  UpdateCourseBatchComponent, CarriculumCardComponent, CourseBadgeComponent } from './components';
 import { CourseConsumptionService, CourseBatchService, CourseProgressService } from './services';
 import { CoreModule } from '@sunbird/core';
 import { DiscussionModule } from '@sunbird/discussion';
@@ -19,7 +19,7 @@ import { DashboardModule } from '@sunbird/dashboard';
 
 @NgModule({
   imports: [
-    CommonModule,
+  CommonModule,
     SharedModule,
     SuiModule,
     DashboardModule,
@@ -36,6 +36,6 @@ import { DashboardModule } from '@sunbird/dashboard';
   providers: [CourseConsumptionService, CourseBatchService, CourseProgressService],
   declarations: [LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
     CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
-    UpdateCourseBatchComponent, CarriculumCardComponent]
+    UpdateCourseBatchComponent, CarriculumCardComponent, CourseBadgeComponent]
 })
 export class LearnModule { }

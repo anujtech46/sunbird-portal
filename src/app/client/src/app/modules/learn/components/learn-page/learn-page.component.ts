@@ -113,10 +113,11 @@ export class LearnPageComponent implements OnInit {
             this.enrolledCourses = data.enrolledCourses;
             const constantData = this.configService.appConfig.Course.enrolledCourses.constantData;
             const metaData = { metaData: this.configService.appConfig.Course.enrolledCourses.metaData };
-            const dynamicFields = {
+            let dynamicFields = {
               'maxCount': this.configService.appConfig.Course.enrolledCourses.maxCount,
-              'progress': this.configService.appConfig.Course.enrolledCourses.progress
+              'progress': this.configService.appConfig.Course.enrolledCourses.progress,
             };
+            dynamicFields = { ...this.configService.appConfig.Course.enrolledCourses.dynamicFields, ...dynamicFields};
             const courses = this.utilService.getDataForCard(data.enrolledCourses,
               constantData, dynamicFields, metaData);
             this.caraouselData.unshift({
@@ -204,14 +205,14 @@ export class LearnPageComponent implements OnInit {
           } else {
             const constantData = this.configService.appConfig.Course.otherCourse.constantData;
             const metaData = this.configService.appConfig.Course.otherCourse.metaData;
-            const dynamicFields = {};
+            const dynamicFields = this.configService.appConfig.Course.otherCourse.dynamicFields;
             sections[index].contents[index2] = this.utilService.processContent(sections[index].contents[index2],
               constantData, dynamicFields, metaData);
           }
         } else {
           const constantData = this.configService.appConfig.Course.otherCourse.constantData;
           const metaData = this.configService.appConfig.Course.otherCourse.metaData;
-          const dynamicFields = {};
+          const dynamicFields = this.configService.appConfig.Course.otherCourse.dynamicFields;
           sections[index].contents[index2] = this.utilService.processContent(sections[index].contents[index2],
             constantData, dynamicFields, metaData);
         }

@@ -3,10 +3,16 @@
     "otherCourse": {
       "constantData": {
         "action": {
-            "onImage": { "eventName": "onImage" }
+          "onImage": { "eventName": "onImage" }
+        },
+        "ribbon": {
+          "left": {
+            "class":  "ui blue left ribbon label"
+          }
         }
       },
-      "metaData": {"metaData": ["identifier", "mimeType", "framework", "contentType"]}
+      "metaData": {"metaData": ["identifier", "mimeType", "framework", "contentType"]},
+      "dynamicFields": {"ribbon.left.name": "batchName"}
     },
     "enrolledCourses": {
       "constantData": {
@@ -18,11 +24,17 @@
             "text": "Resume"
           },
           "onImage": {"eventName": "onImage"}
+        },
+        "ribbon": {
+          "left": {
+            "class":  "ui blue left ribbon label"
+          }
         }
       },
       "metaData": ["batchId", "courseId"],
       "maxCount": "leafNodesCount",
-      "progress": "progress"
+      "progress": "progress",
+      "dynamicFields": {"ribbon.left.name": "batchName"}
     }
   },
   "Library": {
@@ -59,11 +71,17 @@
   "CourseSearch": {
     "otherCourses":{
       "constantData":{
-      "action": {
+        "action": {
           "onImage": {"eventName": "onImage" }
+        },
+        "ribbon": {
+          "left": {
+            "class":  "ui blue left ribbon label"
+          }
         }
        }
-    },"enrolledCourses": {
+    },
+    "enrolledCourses": {
       "constantData": {
         "action": {
           "right": {
@@ -75,10 +93,16 @@
           "onImage": {
             "eventName": "onImage"
           }
+        },
+        "ribbon": {
+          "left": {
+            "class":  "ui blue left ribbon label"
+          }
         }
       }
     },
-   "metaData": {"metaData": ["identifier", "mimeType", "framework", "contentType"]}
+    "metaData": {"metaData": ["identifier", "mimeType", "framework", "contentType"]},
+    "dynamicFields": {"ribbon.left.name": "batchName"}
   },
   "LibrarySearch":{
     "constantData":{

@@ -133,6 +133,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     }
   };
 
+  externalContentData: any;
+
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
     router: Router, public navigationHelperService: NavigationHelperService, private userService: UserService,
@@ -218,6 +220,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
       };
       this.loader = false;
       this.playerConfig = config;
+      this.externalContentData = {
+        batchId: this.batchId,
+        courseId: this.courseId,
+        contentId: this.contentId,
+        userId: this.userService.userid
+      };
       this.enableContentPlayer = true;
       this.contentTitle = data.title;
       this.breadcrumbsService.setBreadcrumbs([{ label: this.contentTitle, url: '' }]);

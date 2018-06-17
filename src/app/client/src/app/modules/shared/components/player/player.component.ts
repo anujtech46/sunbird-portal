@@ -10,11 +10,14 @@ import {PlayerConfig} from './../../interfaces';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
-export class PlayerComponent implements OnInit, OnChanges {
+export class PlayerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() playerConfig: PlayerConfig;
+  @Input() externalContentData: any;
   @Output() contentProgressEvent = new EventEmitter<any>();
   @ViewChild('contentIframe') contentIframe: ElementRef;
-  constructor(public configService: ConfigService) { }
+  constructor(public configService: ConfigService) {
+    (<any>window).open_notebook = this.open_notebook.bind(this);
+  }
   /**
    * showPlayer method will be called
    */
@@ -53,5 +56,25 @@ export class PlayerComponent implements OnInit, OnChanges {
       const height = playerWidth * (9 / 16);
       $('#contentPlayer').css('height', height + 'px');
     }
+  }
+
+  loadCourseDetails () {
+    const uid = this.externalContentData.userId;
+    const contentId = this.externalContentData.contentId;
+    const courseId = this.externalContentData.courseId;
+    const batchId = this.externalContentData.batchId;
+    const courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
+                             '&batchId=' + batchId + '&uid=' + uid;
+    return courseDetailsStr;
+  }
+
+  open_notebook = (url) => {
+    const newUrl = url + this.loadCourseDetails();
+    console.log('Open notebook link:', newUrl);
+    window.open(newUrl);
+  }
+
+  ngOnDestroy() {
+    window.open_noteBook = null;
   }
 }
