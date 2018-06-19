@@ -9,7 +9,7 @@ export interface PaymentResponseI {
 export interface PaymentRequestI {
   txnId: string,
   amount: string,
-  from: string,
+  from?: string,
   currency?: string,
   to?: string,
   paymentType: string
