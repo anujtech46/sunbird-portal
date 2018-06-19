@@ -21,6 +21,6 @@ export interface PaymentCollectorI {
 }
 
 export interface PaymentSenderI {
-  sendPayment(req: CollectRequestI, callback: (err?: ResponseI, res?: ResponseI) => {})
+  sendPayment(req: PaymentRequestI, callback: (err?: ResponseI, res?: ResponseI) => {})
   sendPaymentCallback(reqBody: any, reqHeader: any, callback: (err?: ResponseI, res?: ResponseI) => {})
 }
