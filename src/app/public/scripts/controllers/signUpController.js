@@ -70,6 +70,7 @@ angular.module('loginApp')
         newUser.userName = ''
         newUser.phone = ''
         newUser.language = []
+        newUser.isSocialRegister = false
 
         $timeout(function () {
           // Resets form input fields from data values
@@ -167,7 +168,8 @@ angular.module('loginApp')
             phone: newUser.phone,
             provider: $rootScope.signUpUserProvider,
             emailVerified: !isPhoneVerified,
-            phoneVerified: isPhoneVerified
+            phoneVerified: isPhoneVerified,
+            isSocialRegister: false
           }
         }
         newUser.loader = toasterService.loader('', $rootScope.messages.stmsg.m0084)
