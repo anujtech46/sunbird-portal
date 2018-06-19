@@ -1,0 +1,27 @@
+{
+  "name": "sb_phone_pe_plugin",
+  "version": "0.0.1",
+  "description": "This plugin provides payment method",
+  "main": "dist/index",
+  "typings": "dist/index",
+  "scripts": {
+    "compile": "npm run clean && tsc -p .",
+    "watch": "tsc -w -p .",
+    "clean": "rm -rf dist"
+  },
+  "author": "Anuj Gupta <anujtech46@gmail.com>",
+  "devDependencies": {
+    "@types/node": "^8.0.0",
+    "typescript": "^2.6.1",
+    "@types/request": "^2.47.0"
+  },
+  "dependencies": {
+    "request": "^2.81.0",
+    "sb_payment_interface": "file:../sb_payment_interface"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts",
+    "dist/lib"
+  ]
+}
