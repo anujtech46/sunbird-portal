@@ -1,0 +1,29 @@
+{
+  "name": "sb_payment_plugin",
+  "version": "0.0.1",
+  "description": "This plugin provides the api's for payment",
+  "main": "dist/index",
+  "typings": "dist/index",
+  "scripts": {
+    "compile": "npm run clean && tsc -p .",
+    "watch": "tsc -w -p .",
+    "clean": "rm -rf dist"
+  },
+  "author": "Anuj Gupta <anujtech46@gmail.com>",
+  "devDependencies": {
+    "@types/node": "^8.0.0",
+    "@types/body-parser": "^1.17.0",
+    "typescript": "^2.6.1",
+    "@types/request": "^2.47.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "request": "^2.81.0",
+    "sb_phone_pe_plugin": "file:../sb_phone_pe_plugin"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts",
+    "dist/lib"
+  ]
+}

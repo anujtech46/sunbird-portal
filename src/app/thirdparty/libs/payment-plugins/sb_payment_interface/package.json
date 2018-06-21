@@ -1,0 +1,25 @@
+{
+  "name": "sb_payment_interface",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Provide interface for payment providers",
+  "main": "dist/index",
+  "typings": "dist/index",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^8.0.0",
+    "typescript": "^2.6.1"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ],
+  "scripts": {
+    "compile": "npm run clean && tsc -p .",
+    "watch": "tsc -w -p .",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [],
+  "author": "Anuj Gupta",
+  "license": "ISC"
+}
