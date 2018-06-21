@@ -805,7 +805,7 @@ th {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  width: 290px;
+  width: 95%;
   min-height: 0;
   background: #ffffff;
   padding: 0;
