@@ -66,7 +66,7 @@
                                     <div>
                                         <div ng-include=" 'views/course/carriculumCard.html'"></div>
                                     </div>
-                                    <div ng-if="toc.courseType === 'ENROLLED_COURSE' && (toc.courseProgress * 100 / toc.courseTotal) == 100">
+                                    <div ng-if="toc.courseType === 'ENROLLED_COURSE' && (toc.courseProgress * 100 / toc.courseTotal) == 100" class="margin-top-10">
                                         <course-badge courseid="toc.courseHierarchy.identifier" coursedata="toc.courseHierarchy" batchdata="toc.selectedBatchInfo"></course-badge>
                                         <course-benefit-transfer courseid="toc.courseHierarchy.identifier"></course-benefit-transfer>
                                     </div>

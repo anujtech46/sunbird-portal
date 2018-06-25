@@ -37,8 +37,8 @@ angular.module('playerApp')
         coursePayment.getPaymentDetail(courseBT.courseId, courseBT.batchId, function (priceDetail) {
           courseBT.courseBenefit = priceDetail && priceDetail.coursebenefit
           courseBT.payment = (priceDetail && priceDetail.payment).toLowerCase()
+          courseBT.getUserCoursePaymentDetail()
         })
-        courseBT.getUserCoursePaymentDetail()
       }
 
       courseBT.getUserCoursePaymentDetail = function () {
@@ -87,6 +87,7 @@ angular.module('playerApp')
         $('#benefitModal').modal({ closable: false }).modal('show')
         coursePayment.refundPayment({request: req}).then(function (resp) {
           if (resp && resp.responseCode === 'OK') {
+            console.log('Update payment response', JSON.stringify(resp))
             courseBT.updatePaymentDetail(resp)
           } else {
             courseBT.close()
@@ -101,6 +102,7 @@ angular.module('playerApp')
       courseBT.updatePaymentDetail = function (resp) {
         var updatedReq = Object.assign({}, courseBT.userTransactionDetail)
         updatedReq.benefittransfertransactionid = resp.result.data.transactionId
+        updatedReq.benefittransferstatus = resp.result.code
         updatedReq.coursebenefit = courseBT.courseBenefit
 
         var request = {
@@ -111,10 +113,16 @@ angular.module('playerApp')
         if (!courseBT.userTransactionDetail.coursecomplete) {
           request.payload.coursecomplete = true
         }
+        if (updatedReq.benefittransferstatus === 'PAYMENT_SUCCESS') {
+          updatedReq.benefittransfer = true
+        }
         coursePayment.updateCoursePayment(request).then(function (resp) {
-          courseBT.checkPaymentStatusAfterRequest()
+          // courseBT.checkPaymentStatusAfterRequest()
           if (resp && resp.responseCode === 'OK') {
             courseBT.userTransactionDetail = request.payload
+            courseBT.progress = false
+            courseBT.isShowBTButton = false
+            courseBT.statusMessage = updatedReq.benefittransferstatus
           } else {
             courseBT.userTransactionDetail = {}
           }
@@ -138,7 +146,6 @@ angular.module('playerApp')
             if (resp && resp.responseCode === 'OK') {
               var result = resp.result.response[0]
               courseBT.userTransactionDetail = result
-              console.log('Payment status: ', result.benefittransferstatus)
               if (result.benefittransferstatus) {
                 courseBT.statusMessage = result.benefittransferstatus
                 courseBT.progress = false
