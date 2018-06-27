@@ -206,6 +206,143 @@ angular.module('playerApp')
         }, 500)
       }
 
+      function comm (url, type, data, success, error) {
+        $.ajax({
+          url: url,
+          type: type,
+          contentType: 'application/json',
+          data: data,
+          success: function (d) { console.log('Success with ' + url); success(d) },
+          error: error
+        })
+      }
+
+      var warnShown = false
+
+      function ping () {
+        var s = function (r) {
+          console.log('Ping received by server')
+
+          var activeTime = Math.floor(Date.now() / 1000) - r['create_time']
+          var timeout = r['timeout']
+
+          if (activeTime > timeout - 60) {
+            $('#jupyter-frame').remove()
+            clearInterval(notebook.pingId)
+            toasterService.error('Your session on notebooks has timed out. Please close notebook tab(s) ' +
+            'and relanch the same.')
+          } else if (activeTime > timeout - 900 && !warnShown) {
+            toasterService.error('You have 15 minutes left on your notebook session. ' +
+            'Please save your open notebooks to avoid losing data.')
+            warnShown = true
+          }
+        }
+
+        var f = function () { console.log('Ping failed') }
+        comm('/jbox/ping', 'GET', {}, s, f)
+      }
+
+      function loadNotebook () {
+        var s = function (r) {
+          notebook.poll()
+        }
+
+        var f = function () { console.log('Failed to load notebook') }
+
+        var data = { }
+
+        comm('/jbox/loadNotebook', 'POST', data, s, f)
+      }
+
+      var notebook = {
+        num_fail: 0,
+        num_pending: 0,
+        pingId: -1,
+
+        poll: function () {
+          comm('/jbox/nb_status', 'GET', {}, notebook.poll_success, notebook.poll_fail)
+        },
+
+        repoll: function () {
+          setTimeout(notebook.poll, 5000)
+        },
+
+        poll_fail: function () {
+          if (notebook.num_fail >= 5) {
+            console.log('Notebook status poll failed')
+            notebook.show_error()
+          } else {
+            console.log('Notebook status poll failed, retrying...')
+            notebook.num_fail += 1
+            notebook.repoll()
+          }
+        },
+
+        show_error: function () {
+          toasterService.error('There was an error creating notebook. Please try after some time.')
+        },
+
+        /*
+        hide_loading: function () {
+            $('#loading-div').css('display', 'none');
+        },
+    
+        show_loading: function () {
+            $('#loading-div').css('display', 'block');
+        },
+        */
+
+        poll_success: function (d) {
+          var st = d['status']
+
+          console.log('Notebook poll status: ' + st)
+          if (st === 'error') {
+            notebook.poll_fail()
+          } else if (st === 'ready') {
+            var url = '/notebook?X-JuliaRun-notebook=' + d['nburl']
+            var startTime = Math.floor(Date.now() / 1000)
+
+            var startNb = function (url) {
+              notebook.pingId = setInterval(ping, 60000)
+            }
+
+            var renderNotebook = function () {
+              var timeout = 60
+              var s = function (r) {
+                console.log('Jupyter server is up!')
+                clearTimeout(notebook.check_timer)
+                startNb(url)
+              }
+
+              var f = function () {
+                console.log('Waiting for jupyter server to load...')
+                var spentTime = Math.floor(Date.now() / 1000) - startTime
+                if (spentTime > timeout) {
+                  clearTimeout(notebook.check_timer)
+                  startNb(url)
+                } else {
+                  notebook.check_timer = setTimeout(renderNotebook, 2000)
+                }
+              }
+
+              $.ajax(url)
+                .done(s)
+                .fail(f)
+            }
+
+            notebook.check_timer = setTimeout(renderNotebook, 4000)
+          } else {
+            if (notebook.num_pending >= 100) {
+              notebook.show_error()
+            } else {
+              notebook.num_fail = 0
+              notebook.num_pending += 1
+              notebook.repoll()
+            }
+          }
+        }
+      }
+
       function loadCourseDetails () {
         var mydata = JSON.parse(sessionStorage.getItem('sbConfig'))
         if (typeof mydata.ENROLLED_COURSES === 'undefined') {
@@ -224,7 +361,7 @@ angular.module('playerApp')
         //   }
         // }
         var courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
-                                 '&batchId=' + batchId + '&uid=' + uid
+                                     '&batchId=' + batchId + '&uid=' + uid
         // alert("course_details_str = " + course_details_str);
         return courseDetailsStr
       }
@@ -235,4 +372,8 @@ angular.module('playerApp')
         console.log('Open notebook link:', newUrl)
         $window.open(newUrl)
       }
+
+      $(document).ready(function () {
+        loadNotebook()
+      })
     }])
