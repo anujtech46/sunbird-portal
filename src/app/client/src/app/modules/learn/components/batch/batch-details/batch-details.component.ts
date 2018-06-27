@@ -91,7 +91,9 @@ export class BatchDetailsComponent implements OnInit {
     }
     this.courseBatchService.getAllBatchDetails(searchParams).subscribe((data: ServerResponse) => {
       if (data.result.response.content && data.result.response.content.length > 0) {
-        this.batchList = data.result.response.content;
+        this.batchList = _.filter(data.result.response.content, (batchData) => {
+          return batchData.batchId !== this.batchId;
+        });
         this.fetchUserDetails();
       } else {
         this.showBatchList = true;
