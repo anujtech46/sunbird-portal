@@ -147,6 +147,9 @@ export class CourseProgressService {
       return this.getCourseStateFromAPI(reqData).map(
         (res: ServerResponse) => {
           if (res.result.contentList.length > 0) {
+            res.result.contentList = _.filter(res.result.contentList, (content) => {
+              return content.batchId === req.batchId;
+            });
             this.prepareContentObject(res.result.contentList, courseId_batchId);
             const resContentIds = [];
             _.forEach(res.result.contentList, (contentList) => {

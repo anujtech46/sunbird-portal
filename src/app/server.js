@@ -139,6 +139,7 @@ function getLocals(req) {
   locals.defaultTenant = envHelper.DEFAUULT_TENANT
   locals.contentChannelFilter = envHelper.CONTENT_CHANNEL_FILTER_TYPE;
   locals.exploreButtonVisibility = envHelper.EXPLORE_BUTTON_VISIBILITY;
+  locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
   return locals;
 }
 
