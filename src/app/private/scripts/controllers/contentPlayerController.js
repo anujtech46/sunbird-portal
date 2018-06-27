@@ -2,9 +2,9 @@
 
 angular.module('playerApp')
   .controller('contentPlayerCtrl', ['$state', '$scope', 'contentService', '$timeout', '$stateParams',
-    'config', '$rootScope', '$location', '$anchorScroll', 'toasterService', '$window',
+    'config', '$rootScope', '$location', '$anchorScroll', 'toasterService', '$window', '$http',
     function ($state, $scope, contentService, $timeout, $stateParams, config, $rootScope,
-      $location, $anchorScroll, toasterService, $window) {
+      $location, $anchorScroll, toasterService, $window, $http) {
       $scope.isClose = $scope.isclose
       $scope.isHeader = $scope.isheader
       $scope.showModalInLectureView = true
@@ -206,15 +206,22 @@ angular.module('playerApp')
         }, 500)
       }
 
-      function comm (url, type, data, success, error) {
-        $.ajax({
-          url: url,
-          type: type,
-          contentType: 'application/json',
-          data: data,
-          success: function (d) { console.log('Success with ' + url); success(d) },
-          error: error
+      function httpCall (url, method, data, headers) {
+        var URL = config.URL.BASE_PREFIX + config.URL.JULIA_PREFIX + url
+
+        return $http({
+          method: method,
+          url: URL,
+          headers: headers,
+          data: { request: data }
+        // data: data
         })
+      }
+
+      function comm (url, type, data, success, error) {
+        var headers = { 'content-type': 'application/json' }
+        var request = httpCall(url, type, data, headers)
+        return (request.then(success, error))
       }
 
       var warnShown = false
@@ -232,26 +239,26 @@ angular.module('playerApp')
             toasterService.error('Your session on notebooks has timed out. Please close notebook tab(s) ' +
             'and relanch the same.')
           } else if (activeTime > timeout - 900 && !warnShown) {
-            toasterService.error('You have 15 minutes left on your notebook session. ' +
-            'Please save your open notebooks to avoid losing data.')
+            toasterService.error('You have 15 minutes left on your notebook session. Please save your ' +
+            'open notebooks to avoid losing data.')
             warnShown = true
           }
         }
 
-        var f = function () { console.log('Ping failed') }
+        var f = function (error) { console.log('Ping failed', JSON.stringify(error)) }
         comm('/jbox/ping', 'GET', {}, s, f)
       }
 
-      function loadNotebook () {
+      function loadNotebook (url) {
         var s = function (r) {
-          notebook.poll()
+          notebook.poll(url)
         }
 
-        var f = function () { console.log('Failed to load notebook') }
+        var f = function (error) { console.log('Failed to load notebook', JSON.stringify(error)) }
 
         var data = { }
 
-        comm('/jbox/loadNotebook', 'POST', data, s, f)
+        comm('/jbox/load_notebook', 'POST', data, s, f)
       }
 
       var notebook = {
@@ -259,22 +266,23 @@ angular.module('playerApp')
         num_pending: 0,
         pingId: -1,
 
-        poll: function () {
-          comm('/jbox/nb_status', 'GET', {}, notebook.poll_success, notebook.poll_fail)
+        poll: function (url) {
+          comm('/jbox/nb_status', 'GET', {}, function () { notebook.poll_success(url) },
+            function () { notebook.poll_fail(url) })
         },
 
-        repoll: function () {
-          setTimeout(notebook.poll, 5000)
+        repoll: function (url) {
+          setTimeout(function () { notebook.poll(url) }, 5000)
         },
 
-        poll_fail: function () {
+        poll_fail: function (url) {
           if (notebook.num_fail >= 5) {
             console.log('Notebook status poll failed')
             notebook.show_error()
           } else {
             console.log('Notebook status poll failed, retrying...')
             notebook.num_fail += 1
-            notebook.repoll()
+            notebook.repoll(url)
           }
         },
 
@@ -292,17 +300,17 @@ angular.module('playerApp')
         },
         */
 
-        poll_success: function (d) {
+        poll_success: function (d, url) {
           var st = d['status']
 
           console.log('Notebook poll status: ' + st)
           if (st === 'error') {
             notebook.poll_fail()
           } else if (st === 'ready') {
-            var url = '/notebook?X-JuliaRun-notebook=' + d['nburl']
+            var nburl = '/notebook?X-JuliaRun-notebook=' + d['nburl']
             var startTime = Math.floor(Date.now() / 1000)
 
-            var startNb = function (url) {
+            var startNb = function (nburl) {
               notebook.pingId = setInterval(ping, 60000)
             }
 
@@ -311,7 +319,10 @@ angular.module('playerApp')
               var s = function (r) {
                 console.log('Jupyter server is up!')
                 clearTimeout(notebook.check_timer)
-                startNb(url)
+                startNb(nburl)
+                var newUrl = url + loadCourseDetails()
+                console.log('Open notebook link:', newUrl)
+                $window.open(newUrl)
               }
 
               var f = function () {
@@ -319,13 +330,13 @@ angular.module('playerApp')
                 var spentTime = Math.floor(Date.now() / 1000) - startTime
                 if (spentTime > timeout) {
                   clearTimeout(notebook.check_timer)
-                  startNb(url)
+                  startNb(nburl)
                 } else {
                   notebook.check_timer = setTimeout(renderNotebook, 2000)
                 }
               }
 
-              $.ajax(url)
+              $.ajax(nburl)
                 .done(s)
                 .fail(f)
             }
@@ -337,7 +348,7 @@ angular.module('playerApp')
             } else {
               notebook.num_fail = 0
               notebook.num_pending += 1
-              notebook.repoll()
+              notebook.repoll(url)
             }
           }
         }
@@ -368,12 +379,6 @@ angular.module('playerApp')
 
       $window.open_notebook = function (url) {
         // alert("open_notebook called");
-        var newUrl = url + loadCourseDetails()
-        console.log('Open notebook link:', newUrl)
-        $window.open(newUrl)
+        loadNotebook(url)
       }
-
-      $(document).ready(function () {
-        loadNotebook()
-      })
     }])

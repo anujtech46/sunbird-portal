@@ -28,8 +28,8 @@ const contentURL = envHelper.CONTENT_URL
 const realm = envHelper.PORTAL_REALM
 const authServerUrl = envHelper.PORTAL_AUTH_SERVER_URL
 const keycloakResource = envHelper.PORTAL_AUTH_SERVER_CLIENT
-const reqDataLimitOfContentEditor = '50mb'
-const reqDataLimitOfContentUpload = '50mb'
+const reqDataLimitOfContentEditor = envHelper.API_REQUEST_LIMIT_SIZE
+const reqDataLimitOfContentUpload = envHelper.API_REQUEST_LIMIT_SIZE
 const ekstepEnv = envHelper.EKSTEP_ENV
 const appId = envHelper.APPID
 const defaultTenant = envHelper.DEFAUULT_TENANT
@@ -40,6 +40,7 @@ const telemetry = new Telemetry()
 const telemtryEventConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'helpers/telemetryEventConfig.json')))
 const producerId = process.env.sunbird_environment + '.' + process.env.sunbird_instance + '.portal'
 let cassandraCP = envHelper.PORTAL_CASSANDRA_URLS
+const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
 
 let memoryStore = null
 
@@ -228,6 +229,20 @@ app.all('/private/service/v1/content/*',
         return require('url').parse(contentURL + urlParam + '?' + query).path
       } else {
         return require('url').parse(contentURL + urlParam).path
+      }
+    }
+  }))
+
+app.all('/private/service/v1/juliabox/*',
+  proxy(juliaBoxBaseUrl, {
+    limit: reqDataLimitOfContentUpload,
+    proxyReqPathResolver: function (req) {
+      let urlParam = req.params['0']
+      let query = require('url').parse(req.url).query
+      if (query) {
+        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
+      } else {
+        return require('url').parse(juliaBoxBaseUrl + urlParam).path
       }
     }
   }))
