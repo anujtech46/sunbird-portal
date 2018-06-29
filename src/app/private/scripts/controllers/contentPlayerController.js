@@ -90,7 +90,7 @@ angular.module('playerApp')
          * from renderer
          * Player controller dispatching the event sunbird
          */
-        document.getElementById('contentPlayer').addEventListener('renderer:telemetry:event',function (event, data) { // eslint-disable-line
+        document.getElementById('contentPlayer').addEventListener('renderer:telemetry:event', function (event, data) { // eslint-disable-line
           org.sunbird.portal.eventManager.dispatchEvent('sunbird:player:telemetry',
             event.detail.telemetryData)
         })
@@ -114,15 +114,15 @@ angular.module('playerApp')
         var req = { contentId: contentId }
         var qs = {
           fields: 'body,editorState,templateId,languageCode,template,' +
-                        'gradeLevel,status,concepts,versionKey,name,appIcon,contentType,owner,' +
-                        'domain,code,visibility,createdBy,description,language,mediaType,' +
-                        'osId,languageCode,createdOn,lastUpdatedOn,audience,ageGroup,' +
-                        'attributions,artifactUrl,mimeType,medium,year,publisher'
+            'gradeLevel,status,concepts,versionKey,name,appIcon,contentType,owner,' +
+            'domain,code,visibility,createdBy,description,language,mediaType,' +
+            'osId,languageCode,createdOn,lastUpdatedOn,audience,ageGroup,' +
+            'attributions,artifactUrl,mimeType,medium,year,publisher'
         }
         contentService.getById(req, qs).then(function (response) {
           if (response && response.responseCode === 'OK') {
             if (response.result.content.status === 'Live' || response.result.content.status === 'Unlisted' ||
-             $scope.isworkspace) {
+              $scope.isworkspace) {
               $scope.errorObject = {}
               showPlayer(response.result.content)
             } else {
@@ -214,7 +214,7 @@ angular.module('playerApp')
           url: URL,
           headers: headers,
           data: { request: data }
-        // data: data
+          // data: data
         })
       }
 
@@ -235,123 +235,17 @@ angular.module('playerApp')
 
           if (activeTime > timeout - 60) {
             $('#jupyter-frame').remove()
-            clearInterval(notebook.pingId)
             toasterService.error('Your session on notebooks has timed out. Please close notebook tab(s) ' +
-            'and relanch the same.')
+              'and relanch the same.')
           } else if (activeTime > timeout - 900 && !warnShown) {
             toasterService.error('You have 15 minutes left on your notebook session. Please save your ' +
-            'open notebooks to avoid losing data.')
+              'open notebooks to avoid losing data.')
             warnShown = true
           }
         }
 
         var f = function (error) { console.log('Ping failed', JSON.stringify(error)) }
         comm('/jbox/ping', 'GET', {}, s, f)
-      }
-
-      function loadNotebook (url) {
-        var s = function (r) {
-          notebook.poll(url)
-        }
-
-        var f = function (error) { console.log('Failed to load notebook', JSON.stringify(error)) }
-
-        var data = { }
-
-        comm('/jbox/load_notebook', 'POST', data, s, f)
-      }
-
-      var notebook = {
-        num_fail: 0,
-        num_pending: 0,
-        pingId: -1,
-
-        poll: function (url) {
-          comm('/jbox/nb_status', 'GET', {}, function () { notebook.poll_success(url) },
-            function () { notebook.poll_fail(url) })
-        },
-
-        repoll: function (url) {
-          setTimeout(function () { notebook.poll(url) }, 5000)
-        },
-
-        poll_fail: function (url) {
-          if (notebook.num_fail >= 5) {
-            console.log('Notebook status poll failed')
-            notebook.show_error()
-          } else {
-            console.log('Notebook status poll failed, retrying...')
-            notebook.num_fail += 1
-            notebook.repoll(url)
-          }
-        },
-
-        show_error: function () {
-          toasterService.error('There was an error creating notebook. Please try after some time.')
-        },
-
-        /*
-        hide_loading: function () {
-            $('#loading-div').css('display', 'none');
-        },
-    
-        show_loading: function () {
-            $('#loading-div').css('display', 'block');
-        },
-        */
-
-        poll_success: function (d, url) {
-          var st = d['status']
-
-          console.log('Notebook poll status: ' + st)
-          if (st === 'error') {
-            notebook.poll_fail()
-          } else if (st === 'ready') {
-            var nburl = '/notebook?X-JuliaRun-notebook=' + d['nburl']
-            var startTime = Math.floor(Date.now() / 1000)
-
-            var startNb = function (nburl) {
-              notebook.pingId = setInterval(ping, 60000)
-            }
-
-            var renderNotebook = function () {
-              var timeout = 60
-              var s = function (r) {
-                console.log('Jupyter server is up!')
-                clearTimeout(notebook.check_timer)
-                startNb(nburl)
-                var newUrl = url + loadCourseDetails()
-                console.log('Open notebook link:', newUrl)
-                $window.open(newUrl)
-              }
-
-              var f = function () {
-                console.log('Waiting for jupyter server to load...')
-                var spentTime = Math.floor(Date.now() / 1000) - startTime
-                if (spentTime > timeout) {
-                  clearTimeout(notebook.check_timer)
-                  startNb(nburl)
-                } else {
-                  notebook.check_timer = setTimeout(renderNotebook, 2000)
-                }
-              }
-
-              $.ajax(nburl)
-                .done(s)
-                .fail(f)
-            }
-
-            notebook.check_timer = setTimeout(renderNotebook, 4000)
-          } else {
-            if (notebook.num_pending >= 100) {
-              notebook.show_error()
-            } else {
-              notebook.num_fail = 0
-              notebook.num_pending += 1
-              notebook.repoll(url)
-            }
-          }
-        }
       }
 
       function loadCourseDetails () {
@@ -372,13 +266,14 @@ angular.module('playerApp')
         //   }
         // }
         var courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
-                                     '&batchId=' + batchId + '&uid=' + uid
+          '&batchId=' + batchId + '&uid=' + uid
         // alert("course_details_str = " + course_details_str);
         return courseDetailsStr
       }
 
       $window.open_notebook = function (url) {
-        // alert("open_notebook called");
-        loadNotebook(url)
+        var newUrl = url + loadCourseDetails()
+        $window.open(newUrl)
+        setInterval(ping, 60000)
       }
     }])
