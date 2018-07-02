@@ -37,7 +37,17 @@ let envVariables = {
   content_Service_Local_BaseUrl: env.sunbird_content_service_local_base_url || 'http://content_service_content_service:5000',
   ANDROID_APP_URL: env.sunbird_android_app_url || 'http://www.sunbird.org',
   EXPLORE_BUTTON_VISIBILITY: env.sunbird_explore_button_visibility || false,
-  COURSE_COMPLETION_BADGE_ID: env.sunbird_course_completion_badgeid || 'badgeslug-2'
+  COURSE_COMPLETION_BADGE_ID: env.sunbird_course_completion_badgeid,
+  BADGE_ASSIGN_USERNAME: env.sunbird_badge_assign_username,
+  BADGE_ASSIGN_USER_PASSWORD: env.sunbird_badge_assign_user_password,
+  AZURE_ACCOUNT_NAME: env.julia_azure_account_name,
+  AZURE_ACCOUNT_KEY: env.julia_azure_account_key,
+  AZURE_STORAGE_URL: env.julia_azure_storage_url,
+  CERTIFICATE_STORE_CONTAINER_NAME: env.julia_certificate_storage_container_name || 'certificate',
+  CERTIFICATE_PROVIDER_NAME: env.julia_certificate_provider_name || 'Julia Computing, Inc.',
+  CERTIFICATE_INSTRUCTOR_NAME: env.julia_certificate_instructor_name || 'Alan Edelman',
+  CONTENT_FEEDBACK_STORE_CONTAINER_NAME: env.julia_content_feedback_storage_container_name || 'feedback',
+  JULIA_BOX_BASE_URL: env.julia_server_base_url || 'https://staging.juliabox.com/'
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

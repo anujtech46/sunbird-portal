@@ -46,6 +46,8 @@ const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const MobileDetect = require('mobile-detect');
 let memoryStore = null
 const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
+//require course price plugin
+var CoursePrice = require('sb_course_price_plugin').PriceRoutes
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -210,6 +212,18 @@ app.all('/play/*', indexPage)
 // Mobile redirection to app
 require('./helpers/mobileAppHelper.js')(app)
 
+// Add content State update wrapper api and pdf creator
+require('./helpers/contentStateUpdateHelper.js')(app)
+require('./helpers/pdfCreator/pdfCreator.js')(app)
+
+// Initialize course price plugin
+const coursePrice = new CoursePrice()
+const config = { 
+  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
+  baseUrl: envHelper.LEARNER_URL
+}
+coursePrice.init(app, config)
+
 app.all('/content-editor/telemetry', bodyParser.urlencoded({ extended: false }),
   bodyParser.json({ limit: reqDataLimitOfContentEditor }), keycloak.protect(), telemetryHelper.logSessionEvents)
 
@@ -366,7 +380,6 @@ require('./helpers/shareUrlHelper.js')(app)
 
 app.use('/resourcebundles/v1', bodyParser.urlencoded({ extended: false }),
   bodyParser.json({ limit: '50mb' }), require('./helpers/resourceBundles')(express))
-
 
 // redirect to home if nothing found
 app.all('*', function (req, res) {
