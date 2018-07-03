@@ -65,9 +65,7 @@ export class CourseBadgeComponent implements OnInit {
       this.userService.getUserProfile();
       const userDataUnsubscribe = this.userService.userData$.first().subscribe((user: IUserData) => {
         if (user && !user.err) {
-          if (userDataUnsubscribe) {
-            userDataUnsubscribe.unsubscribe();
-          }
+          userDataUnsubscribe.unsubscribe();
           const badge = _.find(user.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
           this.userBadges = badge;
           this.getIssuerName();
