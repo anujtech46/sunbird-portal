@@ -140,10 +140,10 @@ export class CourseProgressService {
     _.forEach(req.contentIds, (contentId) => {
       reqContentIds.push({ 'contentId': contentId });
     });
-    if (courseProgress !== undefined) {
-      this.courseProgressData.emit(courseProgress);
-      return Observable.of(courseProgress);
-    } else {
+    // if (courseProgress !== undefined) {
+    //   this.courseProgressData.emit(courseProgress);
+    //   return Observable.of(courseProgress);
+    // } else {
       return this.getCourseStateFromAPI(reqData).map(
         (res: ServerResponse) => {
           if (res.result.contentList.length > 0) {
@@ -180,7 +180,7 @@ export class CourseProgressService {
           this.courseProgressData.emit({lastPlayedContentId: reqData.contentIds[0]});
             return err;
         });
-    }
+    // }
   }
 
   public updateContentsState(req) {

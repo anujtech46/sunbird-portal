@@ -80,7 +80,7 @@ export class CourseConsumptionHeaderComponent implements OnInit, AfterViewInit {
       if (this.onPageLoadResume && !this.flaggedCourse) {
         this.onPageLoadResume = false;
         this.showResumeCourse = false;
-        this.resumeCourse();
+        // this.resumeCourse();
       }
     });
   }

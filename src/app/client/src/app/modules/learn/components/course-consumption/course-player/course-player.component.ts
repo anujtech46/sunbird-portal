@@ -117,6 +117,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     loaderMessage: 'Fetching content details!'
   };
 
+  /**
+   * Time interval of pulling status
+   */
+  statePullingClearTimeInterval: any;
+  statePullingTimeInterval = 4000;
+
   public collectionTreeOptions: ICollectionTreeOptions = {
     fileIcon: 'fa fa-file-o fa-lg',
     customFileIcon: {
@@ -358,7 +364,29 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
       };
       this.enableContentPlayer = false;
       this.router.navigate([], navigationExtras);
+      this.startPullingContentStatus();
     }
+  }
+
+  /**
+   * This function is use to start pulling content status
+   */
+  startPullingContentStatus = () => {
+    console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
+    if (this.courseHierarchy.progress !== 2) {
+      this.statePullingClearTimeInterval = setInterval(() => {
+        console.log('Time', Date.now());
+        this.fetchContentStatus({});
+      }, this.statePullingTimeInterval);
+    }
+  }
+
+  /**
+   * This function is use to stop pulling content status
+   */
+  stopPullingContentStatus = () => {
+    console.log('Stop pulling status', this.statePullingClearTimeInterval);
+    clearTimeout(this.statePullingClearTimeInterval);
   }
 
   createEventEmitter(data) {
@@ -378,6 +406,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     }
     if (this.updateContentsStateSubscription) {
       this.updateContentsStateSubscription.unsubscribe();
+    }
+
+    if (this.statePullingClearTimeInterval) {
+      this.stopPullingContentStatus();
     }
   }
 
