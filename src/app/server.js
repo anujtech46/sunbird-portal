@@ -212,18 +212,6 @@ app.all('/play/*', indexPage)
 // Mobile redirection to app
 require('./helpers/mobileAppHelper.js')(app)
 
-// Add content State update wrapper api and pdf creator
-require('./helpers/contentStateUpdateHelper.js')(app)
-require('./helpers/pdfCreator/pdfCreator.js')(app)
-
-// Initialize course price plugin
-const coursePrice = new CoursePrice()
-const config = { 
-  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
-  baseUrl: envHelper.LEARNER_URL
-}
-coursePrice.init(app, config)
-
 app.all('/content-editor/telemetry', bodyParser.urlencoded({ extended: false }),
   bodyParser.json({ limit: reqDataLimitOfContentEditor }), keycloak.protect(), telemetryHelper.logSessionEvents)
 
@@ -375,6 +363,18 @@ app.all('/:tenantName', function (req, res) {
 
 // Handle content share request
 require('./helpers/shareUrlHelper.js')(app)
+
+// Add content State update wrapper api and pdf creator
+require('./helpers/contentStateUpdateHelper.js')(app)
+require('./helpers/pdfCreator/pdfCreator.js')(app)
+
+// Initialize course price plugin
+const coursePrice = new CoursePrice()
+const config = { 
+  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
+  baseUrl: envHelper.LEARNER_URL
+}
+coursePrice.init(app, config)
 
 // Resource bundles apis
 
