@@ -8,7 +8,7 @@ import {
   ICollectionTreeOptions, NavigationHelperService, ToasterService, ResourceService
 } from '@sunbird/shared';
 import { Subscription } from 'rxjs/Subscription';
-import { CourseConsumptionService } from './../../../services';
+import { CourseConsumptionService, JuliaNoteBookService } from './../../../services';
 import { PopupEditorComponent, NoteCardComponent, INoteData } from '@sunbird/notes';
 import { IInteractEventInput, IImpressionEventInput, IEndEventInput,
   IStartEventInput,  IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
@@ -141,11 +141,16 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
 
   externalContentData: any;
 
+  /**
+   * This variable is use for note book ping
+   */
+  private warnShown = false;
+
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
     router: Router, public navigationHelperService: NavigationHelperService, private userService: UserService,
     private toasterService: ToasterService, private resourceService: ResourceService, public breadcrumbsService: BreadcrumbsService,
-     private  cdr: ChangeDetectorRef) {
+     private  cdr: ChangeDetectorRef, public juliaNoteBookService: JuliaNoteBookService) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -446,4 +451,24 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     };
   }
 
+  public startJuliaNoteBookPing = () => {
+    setInterval(() => {
+      this.juliaNoteBookService.getPing().subscribe((r) => {
+        console.log('Ping received by server');
+        const activeTime = Math.floor(Date.now() / 1000) - r['create_time'];
+        const timeout = r['timeout'];
+        if (activeTime > timeout - 60) {
+          $('#jupyter-frame').remove();
+          this.toasterService.error('Your session on notebooks has timed out. Please close notebook tab(s) ' +
+            'and relanch the same.');
+        } else if (activeTime > timeout - 900 && !this.warnShown) {
+          this.toasterService.error('You have 15 minutes left on your notebook session. Please save your ' +
+            'open notebooks to avoid losing data.');
+            this.warnShown = true;
+        }
+      }, (err) => {
+        console.log('Ping failed', JSON.stringify(err));
+      });
+    }, 60000);
+  }
 }

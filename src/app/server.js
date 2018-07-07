@@ -28,8 +28,8 @@ const contentURL = envHelper.CONTENT_URL
 const realm = envHelper.PORTAL_REALM
 const authServerUrl = envHelper.PORTAL_AUTH_SERVER_URL
 const keycloakResource = envHelper.PORTAL_AUTH_SERVER_CLIENT
-const reqDataLimitOfContentEditor = '50mb'
-const reqDataLimitOfContentUpload = '50mb'
+const reqDataLimitOfContentEditor = envHelper.API_REQUEST_LIMIT_SIZE
+const reqDataLimitOfContentUpload = envHelper.API_REQUEST_LIMIT_SIZE
 const ekstepEnv = envHelper.EKSTEP_ENV
 const appId = envHelper.APPID
 const defaultTenant = envHelper.DEFAUULT_TENANT
@@ -48,6 +48,7 @@ let memoryStore = null
 const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
 //require course price plugin
 var CoursePrice = require('sb_course_price_plugin').PriceRoutes
+const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -321,6 +322,21 @@ app.all('/content/*',
       }
     }
   }))
+
+app.all('/juliabox/*',
+  proxy(juliaBoxBaseUrl, {
+    limit: reqDataLimitOfContentUpload,
+    proxyReqPathResolver: function (req) {
+      let urlParam = req.params['0']
+      let query = require('url').parse(req.url).query
+      if (query) {
+        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
+      } else {
+        return require('url').parse(juliaBoxBaseUrl + urlParam).path
+      }
+    }
+  })
+)
 
 // Local proxy for content and learner service
 require('./proxy/localProxy.js')(app)

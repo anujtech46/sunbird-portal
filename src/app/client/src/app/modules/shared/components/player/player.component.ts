@@ -14,6 +14,7 @@ export class PlayerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() playerConfig: PlayerConfig;
   @Input() externalContentData: any;
   @Output() contentProgressEvent = new EventEmitter<any>();
+  @Output() public startNoteBookPing: EventEmitter<any> = new EventEmitter();
   @ViewChild('contentIframe') contentIframe: ElementRef;
   constructor(public configService: ConfigService) {
     (<any>window).open_notebook = this.open_notebook.bind(this);
@@ -71,6 +72,7 @@ export class PlayerComponent implements OnInit, OnChanges, OnDestroy {
   open_notebook = (url) => {
     const newUrl = url + this.loadCourseDetails();
     console.log('Open notebook link:', newUrl);
+    this.startNoteBookPing.emit();
     window.open(newUrl);
   }
 
