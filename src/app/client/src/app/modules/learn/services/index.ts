@@ -3,3 +3,4 @@ export * from './course-batch/course-batch.service';
 export * from './courseProgress/course-progress.service';
 export * from './course-badge/course-badge.service';
 export * from './julia-note-book/julia-note-book.service';
+export * from './course-price/course-price.service';

@@ -87,9 +87,11 @@ export class CourseBadgeComponent implements OnInit {
         if (resp && resp.responseCode === 'OK') {
           issuer = _.find(resp.result.issuers,
             { 'issuerId': this.userBadges.issuerId });
-          this.userBadges.issuerName = issuer.name;
-          issuerList.push(issuer);
-          this.courseBadgeService.storeIssuerListDetail(issuerList);
+          if (issuer) {
+            this.userBadges.issuerName = issuer.name;
+            issuerList.push(issuer);
+            this.courseBadgeService.storeIssuerListDetail(issuerList);
+          }
         }
       }, (err) => {
         console.log('Unable to get user issue list');

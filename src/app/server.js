@@ -129,6 +129,14 @@ app.all('/logoff', endSession, function (req, res) {
   res.redirect('/logout')
 })
 
+// Initialize course price plugin
+const coursePrice = new CoursePrice()
+const config = { 
+  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
+  baseUrl: envHelper.LEARNER_URL
+}
+coursePrice.init(app, config)
+
 function getLocals(req) {
   var locals = {};
   locals.userId = _.get(req, 'kauth.grant.access_token.content.sub') ? req.kauth.grant.access_token.content.sub : null
@@ -383,14 +391,6 @@ require('./helpers/shareUrlHelper.js')(app)
 // Add content State update wrapper api and pdf creator
 require('./helpers/contentStateUpdateHelper.js')(app)
 require('./helpers/pdfCreator/pdfCreator.js')(app)
-
-// Initialize course price plugin
-const coursePrice = new CoursePrice()
-const config = { 
-  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
-  baseUrl: envHelper.LEARNER_URL
-}
-coursePrice.init(app, config)
 
 // Resource bundles apis
 

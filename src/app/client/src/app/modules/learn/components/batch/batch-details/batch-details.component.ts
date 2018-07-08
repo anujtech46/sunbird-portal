@@ -51,7 +51,7 @@ export class BatchDetailsComponent implements OnInit {
     this.createBatchIntractEdata = {
       id: 'create-batch',
       type: 'click',
-      pageid: 'course-consumption'
+      pageid: 'course-consumption' 
     };
     this.enrollBatchIntractEdata = {
       id: 'enroll-batch',
@@ -91,9 +91,12 @@ export class BatchDetailsComponent implements OnInit {
     }
     this.courseBatchService.getAllBatchDetails(searchParams).subscribe((data: ServerResponse) => {
       if (data.result.response.content && data.result.response.content.length > 0) {
-        this.batchList = _.filter(data.result.response.content, (batchData) => {
-          return batchData.batchId !== this.batchId;
-        });
+        this.batchId = data.result.response.content;
+        if (this.batchId) {
+          this.batchList = _.filter(data.result.response.content, (batchData) => {
+            return batchData.batchId !== this.batchId;
+          });
+        }
         this.fetchUserDetails();
       } else {
         this.showBatchList = true;
