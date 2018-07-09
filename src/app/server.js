@@ -32,7 +32,7 @@ const reqDataLimitOfContentEditor = envHelper.API_REQUEST_LIMIT_SIZE
 const reqDataLimitOfContentUpload = envHelper.API_REQUEST_LIMIT_SIZE
 const ekstepEnv = envHelper.EKSTEP_ENV
 const appId = envHelper.APPID
-const defaultTenant = envHelper.DEFAUULT_TENANT
+const defaultTenant = envHelper.DEFAULT_TENANT
 const portal = this
 const Telemetry = require('sb_telemetry_util')
 const telemetry = new Telemetry()
@@ -147,7 +147,7 @@ function getLocals(req) {
   locals.instance = process.env.sunbird_instance
   locals.appId = envHelper.APPID
   locals.ekstepEnv = envHelper.EKSTEP_ENV
-  locals.defaultTenant = envHelper.DEFAUULT_TENANT
+  locals.defaultTenant = envHelper.DEFAULT_TENANT
   locals.contentChannelFilter = envHelper.CONTENT_CHANNEL_FILTER_TYPE;
   locals.exploreButtonVisibility = envHelper.EXPLORE_BUTTON_VISIBILITY;
   locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
