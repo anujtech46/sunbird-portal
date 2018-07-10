@@ -5,9 +5,11 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '@sunbird/core';
-import { IUserData } from '@sunbird/shared';
-import { CourseBadgeService } from '../../../services';
+import { IUserData, ServerResponse } from '@sunbird/shared';
+
+import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
+import { CourseBadgeService, CourseConsumptionService } from '../../../services';
 
 @Component({
   selector: 'app-course-badge',
@@ -31,10 +33,15 @@ export class CourseBadgeComponent implements OnInit {
    */
   public userBadges: any;
 
+  public courseId: string;
+
+  public courseData: any;
+
   /**
    * @param  {UserService} public userService
    */
-  constructor(public userService: UserService, public courseBadgeService: CourseBadgeService) {
+  constructor(public userService: UserService, public courseBadgeService: CourseBadgeService,
+    public activatedRoute: ActivatedRoute, public courseConsumptionService: CourseConsumptionService) {
   }
 
   /**
@@ -47,6 +54,12 @@ export class CourseBadgeComponent implements OnInit {
     this.ccBadgeId = (<HTMLInputElement>document.getElementById('courseCompletionBadgeId')).value;
     this.userProfile = this.userService.userProfile;
     this.getCourseBadge();
+    this.activatedRoute.params.subscribe(params => {
+      this.courseId = params.courseId;
+      this.courseConsumptionService.getCourseHierarchy(this.courseId).subscribe((resp) => {
+        this.courseData = resp;
+      });
+    });
   }
 
   /**

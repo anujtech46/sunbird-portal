@@ -137,6 +137,10 @@ const config = {
 }
 coursePrice.init(app, config)
 
+// Add content State update wrapper api and pdf creator
+require('./helpers/contentStateUpdateHelper.js')(app)
+require('./helpers/pdfCreator/pdfCreator.js')(app)
+
 function getLocals(req) {
   var locals = {};
   locals.userId = _.get(req, 'kauth.grant.access_token.content.sub') ? req.kauth.grant.access_token.content.sub : null
@@ -387,10 +391,6 @@ app.all('/:tenantName', function (req, res) {
 
 // Handle content share request
 require('./helpers/shareUrlHelper.js')(app)
-
-// Add content State update wrapper api and pdf creator
-require('./helpers/contentStateUpdateHelper.js')(app)
-require('./helpers/pdfCreator/pdfCreator.js')(app)
 
 // Resource bundles apis
 

@@ -1,7 +1,7 @@
 <div class="rightSideSectionCards ui card margin-top-15" *ngIf="userBadges && (userBadges.name || userBadges.badgeClassName)">
   <div class="content">
     <div class="header announcementCard-header">Certification
-      <!-- <course-certificate coursedata="courseData" batchdata="batchData"></course-certificate> -->
+      <app-course-certificate [courseData]="courseData"></app-course-certificate>
     </div>
     <div class="ui items margin-top-10">
       <div class="item">

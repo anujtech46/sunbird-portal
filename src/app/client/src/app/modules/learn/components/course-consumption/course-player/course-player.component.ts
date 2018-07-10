@@ -8,7 +8,7 @@ import {
   ICollectionTreeOptions, NavigationHelperService, ToasterService, ResourceService
 } from '@sunbird/shared';
 import { Subscription } from 'rxjs/Subscription';
-import { CourseConsumptionService, JuliaNoteBookService } from './../../../services';
+import { CourseConsumptionService, JuliaNoteBookService, CourseProgressService } from './../../../services';
 import { PopupEditorComponent, NoteCardComponent, INoteData } from '@sunbird/notes';
 import { IInteractEventInput, IImpressionEventInput, IEndEventInput,
   IStartEventInput,  IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
@@ -18,7 +18,7 @@ import { IInteractEventInput, IImpressionEventInput, IEndEventInput,
   templateUrl: './course-player.component.html',
   styleUrls: ['./course-player.component.css']
 })
-export class CoursePlayerComponent implements OnInit, OnDestroy {
+export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   public courseInteractObject: IInteractEventObject;
   public contentInteractObject: IInteractEventObject;
   public closeContentIntractEdata: IInteractEventEdata;
@@ -117,6 +117,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     loaderMessage: 'Fetching content details!'
   };
 
+  progress: number;
+
   /**
    * Time interval of pulling status
    */
@@ -150,7 +152,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
     router: Router, public navigationHelperService: NavigationHelperService, private userService: UserService,
     private toasterService: ToasterService, private resourceService: ResourceService, public breadcrumbsService: BreadcrumbsService,
-     private  cdr: ChangeDetectorRef, public juliaNoteBookService: JuliaNoteBookService) {
+     private  cdr: ChangeDetectorRef, public juliaNoteBookService: JuliaNoteBookService,
+     public courseProgressService: CourseProgressService) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -418,6 +421,14 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
       this.stopPullingContentStatus();
     }
     window.open_noteBook = null;
+  }
+
+  ngAfterViewInit() {
+    this.courseProgressService.courseProgressData.subscribe((courseProgressData) => {
+      this.enrolledCourse = true;
+      this.progress = courseProgressData.progress ? Math.round(courseProgressData.progress) :
+        this.progress;
+    });
   }
 
   setTelemetryStartEndData() {

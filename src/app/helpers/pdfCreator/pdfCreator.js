@@ -23,7 +23,7 @@ const certificateInstructor = envVariables.CERTIFICATE_INSTRUCTOR_NAME
 const uploadUtil = new UploadUtil(containerName)
 
 module.exports = function (app) {
-  app.post('/course/certificate/download', bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
+  app.post('/certificate/v1/course/download', bodyParser.json({ limit: '1mb' }), createAndValidateRequestBody,
     createCertificate)
 }
 
