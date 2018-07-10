@@ -156,6 +156,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     this.windowScrollService = windowScrollService;
     this.router = router;
     this.router.onSameUrlNavigation = 'ignore';
+    (<any>window).open_notebook = this.open_notebook.bind(this);
   }
   ngOnInit() {
     this.activatedRouteSubscription = this.activatedRoute.params.first()
@@ -416,6 +417,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     if (this.statePullingClearTimeInterval) {
       this.stopPullingContentStatus();
     }
+    window.open_noteBook = null;
   }
 
   setTelemetryStartEndData() {
@@ -451,6 +453,36 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * This function help to get the detail to load content
+   */
+  loadCourseDetails () {
+    const uid = this.externalContentData.userId;
+    const contentId = this.externalContentData.contentId;
+    const courseId = this.externalContentData.courseId;
+    const batchId = this.externalContentData.batchId;
+    const courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
+                             '&batchId=' + batchId + '&uid=' + uid;
+    return courseDetailsStr;
+  }
+
+  /**
+   * This function is use to open note book in new tab
+   */
+  open_notebook = (url) => {
+    this.juliaNoteBookService.ssoPing({}).subscribe((r) => {
+      const newUrl = url + this.loadCourseDetails();
+      console.log('Open notebook link:', newUrl);
+      this.startJuliaNoteBookPing();
+      window.open(newUrl);
+    }, (err) => {
+      console.log('Fail to load notebook failed', JSON.stringify(err));
+    });
+  }
+
+/**
+ * This function is use to start ping
+ */
   public startJuliaNoteBookPing = () => {
     setInterval(() => {
       this.juliaNoteBookService.getPing().subscribe((r) => {
