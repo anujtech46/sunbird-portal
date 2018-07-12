@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { DataService } from '@sunbird/core';
-import { ConfigService, CreatePriceI, UpdatePriceI } from '@sunbird/shared';
+import { DataService } from '../data/data.service';
+import { ConfigService } from '@sunbird/shared';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class CoursePriceService extends DataService {
+export class PaymentService extends DataService {
 
     /**
    * base Url for announcement api
@@ -27,12 +27,19 @@ export class CoursePriceService extends DataService {
   constructor(config: ConfigService, http: HttpClient) {
     super(http);
     this.config = config;
-    this.baseUrl = this.config.urlConFig.URLS.PRICE_PREFIX;
+    this.baseUrl = this.config.urlConFig.URLS.PAYMENT_PREFIX;
   }
 
-  createPrice(data: CreatePriceI) {
+  startPayment() {
     const option = {
-      url: this.config.urlConFig.URLS.PRICE.CREATE,
+      url: this.config.urlConFig.URLS.PAYMENT.START
+    };
+    return this.get(option);
+  }
+
+  createPayment(data) {
+    const option = {
+      url: this.config.urlConFig.URLS.PAYMENT.CREATE,
       data: {
         'request': data
       }
@@ -40,9 +47,9 @@ export class CoursePriceService extends DataService {
     return this.post(option);
   }
 
-  updatePrice(data) {
+  submitPayment(data) {
     const option = {
-      url: this.config.urlConFig.URLS.PRICE.UPDATE,
+      url: this.config.urlConFig.URLS.PAYMENT.SUBMIT,
       data: {
         'request': data
       }
@@ -50,16 +57,19 @@ export class CoursePriceService extends DataService {
     return this.patch(option);
   }
 
-  readPrice(priceId) {
+  paymentStatus(data) {
     const option = {
-      url: this.config.urlConFig.URLS.PRICE.Read + '/' + priceId,
+      url: this.config.urlConFig.URLS.PAYMENT.STATUS,
+      data: {
+        'request': data
+      }
     };
-    return this.get(option);
+    return this.post(option);
   }
 
-  searchPrice(data: any) {
+  sendPayment = (data) => {
     const option = {
-      url: this.config.urlConFig.URLS.PRICE.SEARCH,
+      url: this.config.urlConFig.URLS.PAYMENT.SEND,
       data: {
         'request': data
       }

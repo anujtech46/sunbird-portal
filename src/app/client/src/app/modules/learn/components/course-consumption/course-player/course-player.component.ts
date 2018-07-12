@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
-import { PlayerService, CollectionHierarchyAPI, ContentService, UserService, BreadcrumbsService } from '@sunbird/core';
+import { PlayerService, CollectionHierarchyAPI, ContentService, UserService, BreadcrumbsService, PaymentService } from '@sunbird/core';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
@@ -8,7 +8,7 @@ import {
   ICollectionTreeOptions, NavigationHelperService, ToasterService, ResourceService
 } from '@sunbird/shared';
 import { Subscription } from 'rxjs/Subscription';
-import { CourseConsumptionService, JuliaNoteBookService, CourseProgressService } from './../../../services';
+import { CourseConsumptionService, JuliaNoteBookService, CourseProgressService, CoursePriceService } from './../../../services';
 import { PopupEditorComponent, NoteCardComponent, INoteData } from '@sunbird/notes';
 import { IInteractEventInput, IImpressionEventInput, IEndEventInput,
   IStartEventInput,  IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
@@ -142,6 +142,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   externalContentData: any;
+  productData: any;
+  orderData: any;
 
   /**
    * This variable is use for note book ping
@@ -152,8 +154,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
     router: Router, public navigationHelperService: NavigationHelperService, private userService: UserService,
     private toasterService: ToasterService, private resourceService: ResourceService, public breadcrumbsService: BreadcrumbsService,
-     private  cdr: ChangeDetectorRef, public juliaNoteBookService: JuliaNoteBookService,
-     public courseProgressService: CourseProgressService) {
+    private  cdr: ChangeDetectorRef, public juliaNoteBookService: JuliaNoteBookService,
+    public courseProgressService: CourseProgressService, public coursePriceService: CoursePriceService,
+    public paymentService: PaymentService) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -198,6 +201,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
           this.telemetryCourseImpression.edata.uri = '/learn/course/' + this.courseId + '/batch/' + this.batchId;
           this.enrolledCourse = true;
           this.setTelemetryStartEndData();
+          this.getPriceDetail();
           this.parseChildContent(response);
           this.fetchContentStatus(response);
           this.subscribeToQueryParam(response);
@@ -382,7 +386,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   startPullingContentStatus = () => {
     console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
-    if (this.courseHierarchy.progress !== 2) {
+    if (this.progress !== 100) {
       this.statePullingClearTimeInterval = setInterval(() => {
         console.log('Time', Date.now());
         this.fetchContentStatus({});
@@ -513,5 +517,45 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log('Ping failed', JSON.stringify(err));
       });
     }, 60000);
+  }
+
+  /**
+   * Get price detail
+   */
+
+  private getPriceDetail() {
+    const request: any = {
+      filters: {
+        courseid: this.courseId,
+        batchid: this.batchId
+      }
+    };
+    this.coursePriceService.searchPrice(request).subscribe((response) => {
+      if (response && response.responseCode === 'OK') {
+        this.productData = response.result.response.content[0];
+
+      } else {
+        this.toasterService.error('Unable to get course price, Please try again later');
+      }
+    }, (err) => {
+      console.log('err', err);
+    });
+  }
+
+  private getOrderDetail() {
+    const request = {
+      productId: this.productData.priceId,
+      userId: this.userService.userid
+    };
+    this.paymentService.paymentStatus(request).subscribe((response) => {
+      if (response && response.responseCode === 'OK') {
+        this.orderData = response.result.response;
+      } else {
+        this.toasterService.error('Unable to get order detail, Please try again later');
+      }
+    }, (err) => {
+      console.log('err', err);
+    });
+
   }
 }

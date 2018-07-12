@@ -137,6 +137,9 @@ const config = {
 }
 coursePrice.init(app, config)
 
+var Payment = require('sb_payment_plugin').PaymentRoutes
+const payment = new Payment(app)
+
 // Add content State update wrapper api and pdf creator
 require('./helpers/contentStateUpdateHelper.js')(app)
 require('./helpers/pdfCreator/pdfCreator.js')(app)

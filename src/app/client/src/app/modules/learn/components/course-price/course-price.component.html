@@ -1,5 +1,5 @@
 <div class="rightSideSectionCards ui card margin-bottom-10" *ngIf="viewType === 'CARD'">
-  <div class="content" *ngIf="data.price">
+  <div class="content" *ngIf="data && data.price">
     <div class="header announcementCard-header">Price Detail
     </div>
     <div class="ui middle aligned list margin-top-0">
@@ -29,7 +29,7 @@
       </div>
     </div>
   </div>
-  <div class="ui warning message" *ngIf="!data.price">
+  <div class="ui warning message" *ngIf="data && !data.price">
     <div class="header">
       Price is not defined for this batch, Please contact admin...
     </div>

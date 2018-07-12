@@ -11,7 +11,7 @@ import {
   LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
   CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
   UpdateCourseBatchComponent, CarriculumCardComponent, CourseBadgeComponent, CoursePriceComponent,
-  CourseCertificateComponent } from './components';
+  CourseCertificateComponent, CourseBenefitComponent } from './components';
 import { CourseConsumptionService, CourseBatchService, CourseProgressService, CourseBadgeService,
           JuliaNoteBookService, CoursePriceService, CourseCertificateService } from './services';
 import { CoreModule } from '@sunbird/core';
@@ -39,6 +39,8 @@ import { DashboardModule } from '@sunbird/dashboard';
      JuliaNoteBookService, CoursePriceService, CourseCertificateService],
   declarations: [LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
     CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
-    UpdateCourseBatchComponent, CarriculumCardComponent, CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent]
+    UpdateCourseBatchComponent, CarriculumCardComponent,
+     CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent, CourseBenefitComponent,
+     CourseBenefitComponent]
 })
 export class LearnModule { }

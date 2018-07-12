@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UserService } from '@sunbird/core';
 import { CoursePriceService } from '../../services/course-price/course-price.service';
 import { ToasterService, UpdatePriceI, CoursePriceModelI } from '@sunbird/shared';
@@ -14,13 +14,14 @@ export class CoursePriceComponent implements OnInit {
   @Input() viewType: string;
   @Input() courseId: string;
   @Input() batchId: string;
+  @Output() updatePriceData: EventEmitter<any> = new EventEmitter();
   userId: string;
-  data: any;
+  data: any = {} ;
   titleMessage: string;
   showCoursePriceModal = false;
   showLoader = false;
   loaderMessage = {
-    'loaderMessage': 'Submitting price detail, Please wait...'
+    loaderMessage: 'Submitting price detail, Please wait...'
   };
   modelDataForm: FormGroup;
 
@@ -50,6 +51,9 @@ export class CoursePriceComponent implements OnInit {
         this.data = response.result.response.content[0] || {};
         if (this.viewType === 'ICON') {
           this.updateModelData();
+        }
+        if (this.viewType === 'CARD') {
+          this.updatePriceData.emit({productId: this.data.priceId, amount: this.data.price, benefit: this.data.benefit});
         }
         this.titleMessage = this.data && this.data.priceId ? 'Update Price' : 'Add Price';
       } else {
