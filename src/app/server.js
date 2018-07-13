@@ -44,11 +44,12 @@ const request = require('request');
 const ejs = require('ejs');
 const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const MobileDetect = require('mobile-detect');
+const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
+
 let memoryStore = null
 const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
 //require course price plugin
 var CoursePrice = require('sb_course_price_plugin').PriceRoutes
-const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -335,23 +336,28 @@ app.all('/content/*',
     }
   }))
 
+// Local proxy for content and learner service
+require('./proxy/localProxy.js')(app)
+
 app.all('/juliabox/*',
   proxy(juliaBoxBaseUrl, {
     limit: reqDataLimitOfContentUpload,
     proxyReqPathResolver: function (req) {
       let urlParam = req.params['0']
       let query = require('url').parse(req.url).query
+      let auth_query = "Authorization=" + req.kauth.grant.id_token['token']
+      // console.log('base URL = ' + juliaBoxBaseUrl + urlParam)
       if (query) {
+        query = query + '&' + auth_query
+        // console.log('final query = ' + juliaBoxBaseUrl + urlParam + '?' + query)
         return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
       } else {
-        return require('url').parse(juliaBoxBaseUrl + urlParam).path
+        // console.log('final query = ' + juliaBoxBaseUrl + urlParam + '?' + auth_query)
+        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + auth_query).path
       }
     }
   })
 )
-
-// Local proxy for content and learner service
-require('./proxy/localProxy.js')(app)
 
 app.all('/v1/user/session/create', function (req, res) {
   trampolineServiceHelper.handleRequest(req, res, keycloak)
