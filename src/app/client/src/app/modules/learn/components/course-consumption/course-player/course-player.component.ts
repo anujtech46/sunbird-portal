@@ -118,7 +118,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   progress: number;
-  public showOpenNoteBookModel = false;
+  public showOpenNoteBookModal = false;
   juliaBoxPingIntervalTime: any;
 
   /**
@@ -489,19 +489,20 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   open_notebook = (url) => {
     // TODO: ssoPing should be renamed to doSSO or ssoJuliaBox or something like that
     // TODO: this method is required to be invoked only the very first time. It is not required all the time
-    // TODO: We should clear ping happening through startJuliaNoteBookPing OR should not call startJuliaNoteBookPing every time this is called
+    // TODO: We should clear ping happening through startJuliaNoteBookPing OR should not
+    // call startJuliaNoteBookPing every time this is called
     // TODO: Show a loaded screen till the time window.open is called
-    this.showOpenNoteBookModel = true;
+    (<any>$('#openNoteBookModal')).modal('show');
     this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
-          const newUrl = url + this.loadCourseDetails();
-          console.log('SSO successful :: Opening notebook :: ', newUrl);
-          this.showOpenNoteBookModel = false;
-          window.open(newUrl);
-          if (this.juliaBoxPingIntervalTime) {
-            this.startJuliaNoteBookPing();
-          }
+      const newUrl = url + this.loadCourseDetails();
+      console.log('SSO successful :: Opening notebook :: ', newUrl);
+      (<any>$('#openNoteBookModal')).modal('hide');
+      window.open(newUrl);
+      if (this.juliaBoxPingIntervalTime) {
+        this.startJuliaNoteBookPing();
+      }
     }, (err) => {
-      this.showOpenNoteBookModel = false;
+      (<any>$('#openNoteBookModal')).modal('hide');
       this.toasterService.error('Loading notebook failed, Please try again later...');
       console.log('Failed to load notebook :: ', JSON.stringify(err));
     });
