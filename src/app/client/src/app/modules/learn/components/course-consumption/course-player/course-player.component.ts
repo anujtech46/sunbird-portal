@@ -485,13 +485,17 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    * This function is use to open note book in new tab
    */
   open_notebook = (url) => {
+    // TODO: ssoPing should be renamed to doSSO or ssoJuliaBox or something like that
+    // TODO: this method is required to be invoked only the very first time. It is not required all the time
+    // TODO: We should clear ping happening through startJuliaNoteBookPing OR should not call startJuliaNoteBookPing every time this is called
+    // TODO: Show a loaded screen till the time window.open is called
     this.juliaNoteBookService.ssoPing({}).subscribe((r) => {
-      const newUrl = url + this.loadCourseDetails();
-      console.log('Open notebook link:', newUrl);
-      this.startJuliaNoteBookPing();
-      window.open(newUrl);
+          const newUrl = url + this.loadCourseDetails();
+          console.log('SSO successful :: Opening notebook :: ', newUrl);
+          window.open(newUrl);
+          this.startJuliaNoteBookPing();
     }, (err) => {
-      console.log('Fail to load notebook failed', JSON.stringify(err));
+      console.log('Failed to load notebook :: ', JSON.stringify(err));
     });
   }
 

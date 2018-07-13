@@ -19,7 +19,7 @@ export class JuliaNoteBookService {
     return this.juliaBoxService.juliaGet(option);
   }
 
-  ssoPing(data): Observable<any > {
+  ssoPing(data): Observable<any> {
     const option = {
       url: this.config.urlConFig.URLS.JULIA_BOX.SSO,
       data: data
