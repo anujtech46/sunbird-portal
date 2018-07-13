@@ -118,6 +118,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   progress: number;
+  public showOpenNoteBookModel = false;
+  juliaBoxPingIntervalTime: any;
 
   /**
    * Time interval of pulling status
@@ -489,12 +491,18 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     // TODO: this method is required to be invoked only the very first time. It is not required all the time
     // TODO: We should clear ping happening through startJuliaNoteBookPing OR should not call startJuliaNoteBookPing every time this is called
     // TODO: Show a loaded screen till the time window.open is called
-    this.juliaNoteBookService.ssoPing({}).subscribe((r) => {
+    this.showOpenNoteBookModel = true;
+    this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
           const newUrl = url + this.loadCourseDetails();
           console.log('SSO successful :: Opening notebook :: ', newUrl);
+          this.showOpenNoteBookModel = false;
           window.open(newUrl);
-          this.startJuliaNoteBookPing();
+          if (this.juliaBoxPingIntervalTime) {
+            this.startJuliaNoteBookPing();
+          }
     }, (err) => {
+      this.showOpenNoteBookModel = false;
+      this.toasterService.error('Loading notebook failed, Please try again later...');
       console.log('Failed to load notebook :: ', JSON.stringify(err));
     });
   }
@@ -503,7 +511,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
  * This function is use to start ping
  */
   public startJuliaNoteBookPing = () => {
-    setInterval(() => {
+    this.juliaBoxPingIntervalTime = setInterval(() => {
       this.juliaNoteBookService.getPing().subscribe((r) => {
         console.log('Ping received by server');
         const activeTime = Math.floor(Date.now() / 1000) - r['create_time'];
