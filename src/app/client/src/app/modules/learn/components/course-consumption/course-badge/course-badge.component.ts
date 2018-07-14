@@ -3,20 +3,21 @@
  * @author: Anuj Gupta
  * @description: This component is use to show badge inside course
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '@sunbird/core';
 import { IUserData, ServerResponse } from '@sunbird/shared';
 
 import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import { CourseBadgeService, CourseConsumptionService } from '../../../services';
+import { CourseBadgeService, CourseConsumptionService, CourseCertificateService } from '../../../services';
+import * as crypto from 'crypto-js';
 
 @Component({
   selector: 'app-course-badge',
   templateUrl: './course-badge.component.html',
   styleUrls: ['./course-badge.component.css']
 })
-export class CourseBadgeComponent implements OnInit {
+export class CourseBadgeComponent implements OnInit, OnDestroy {
 
   /**
    * userProfile: Current user profile
@@ -33,15 +34,42 @@ export class CourseBadgeComponent implements OnInit {
    */
   public userBadges: any;
 
+  /**
+   * Course id
+   */
   public courseId: string;
 
+  /**
+   * Course data
+   */
   public courseData: any;
+
+  /**
+   * Add to digilocker ID
+   */
+  private addToDigiLockerId: string;
+
+  /**
+   * Certificate file url
+   */
+  private fileUrl: string;
+
+  /**
+   * Digilocker update time stamp interval
+   */
+  private digiLockerValueUpdateInterval = 1200000;
+
+  /**
+   * Interval time to clear when we destroy component
+   */
+  private digiLockerValueUpdateSetInterval: any;
 
   /**
    * @param  {UserService} public userService
    */
   constructor(public userService: UserService, public courseBadgeService: CourseBadgeService,
-    public activatedRoute: ActivatedRoute, public courseConsumptionService: CourseConsumptionService) {
+    public activatedRoute: ActivatedRoute, public courseConsumptionService: CourseConsumptionService,
+    public courseCertificateService: CourseCertificateService) {
   }
 
   /**
@@ -57,12 +85,15 @@ export class CourseBadgeComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.courseId = params.courseId;
       this.courseConsumptionService.getCourseHierarchy(this.courseId).subscribe((resp) => {
-        this.courseData = resp;
+      this.courseData = resp;
+      this.download();
+      this.loadDigiLockerScript();
       });
     });
   }
 
   /**
+   * getCourseBadge()
    * This function is used to get course badge from profile.
    * First check the badge data inside the user profile, If not available called the get user profile
    */
@@ -111,6 +142,62 @@ export class CourseBadgeComponent implements OnInit {
       }, (err) => {
         console.log('Unable to get user issue list');
       });
+    }
+  }
+
+  /**
+   * Download certificate
+   */
+  download = () => {
+    this.fileUrl = this.courseCertificateService.certificateUrl;
+    if (!this.fileUrl) {
+      this.courseCertificateService.download(this.userProfile, this.courseData).subscribe((response) => {
+        if (response && response.responseCode === 'OK') {
+          this.fileUrl = response.result && response.result.fileUrl;
+          this.courseCertificateService.certificateUrl = this.fileUrl;
+        } else {
+        }
+      }, (err) => {
+        console.log('err', err);
+      });
+    }
+  }
+
+  /**
+   * Load digilocker script
+   * Load the script file and update time after 20 min,
+   */
+  loadDigiLockerScript = () => {
+    this.addToDigiLockerId = String(Date.now());
+    const digiLockerScript = document.createElement('script');
+    let timeStamp = Date.now();
+    const appId = (<HTMLInputElement>document.getElementById('addToDigiLockerUrl')).value;
+    let hash = crypto.SHA256(appId + (<HTMLInputElement>document.getElementById('addToDigiLockerAppKey')).value + timeStamp).toString();
+    digiLockerScript.setAttribute('type', 'text/javascript');
+    digiLockerScript.setAttribute('src', (<HTMLInputElement>document.getElementById('addToDigiLockerUrl')).value);
+    digiLockerScript.setAttribute('id', 'dlshare');
+    digiLockerScript.setAttribute('data-app-id', appId);
+    digiLockerScript.setAttribute('data-app-hash', hash);
+    digiLockerScript.setAttribute('time-stamp', String(timeStamp));
+    document.head.appendChild(digiLockerScript);
+
+    if (!this.digiLockerValueUpdateSetInterval) {
+      this.digiLockerValueUpdateSetInterval = setInterval(() => {
+        timeStamp = Date.now();
+        hash = crypto.SHA256(appId + (<HTMLInputElement>document.getElementById('addToDigiLockerAppKey')).value + timeStamp).toString();
+        digiLockerScript.setAttribute('data-app-hash', hash);
+        digiLockerScript.setAttribute('time-stamp', String(timeStamp));
+      }, this.digiLockerValueUpdateInterval);
+    }
+  }
+
+  /**
+   * Called when destroy component
+   * clear digilocker update time set interval once destroy the component
+   */
+  ngOnDestroy() {
+    if (this.digiLockerValueUpdateSetInterval) {
+      clearInterval(this.digiLockerValueUpdateSetInterval);
     }
   }
 }

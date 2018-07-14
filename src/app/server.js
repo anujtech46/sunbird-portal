@@ -158,7 +158,10 @@ function getLocals(req) {
   locals.defaultTenant = envHelper.DEFAULT_TENANT
   locals.contentChannelFilter = envHelper.CONTENT_CHANNEL_FILTER_TYPE;
   locals.exploreButtonVisibility = envHelper.EXPLORE_BUTTON_VISIBILITY;
-  locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
+  locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID;
+  locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_APP_URL;
+  locals.addToDigiLockerAppID = envHelper.ADD_TO_DIGILOCKER_APP_ID;
+  locals.addToDigiLockerAppKey = envHelper.ADD_TO_DIGILOCKER_APP_KEY;
   return locals;
 }
 

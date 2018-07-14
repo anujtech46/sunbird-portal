@@ -24,6 +24,7 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   amount: number;
   orderData: any;
   paymentId: string;
+  paymentType: string;
   /**
 	 * telemetryImpression object for update batch page
 	*/
@@ -99,6 +100,7 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
     };
     this.courseBatchService.enrollToCourse(request).subscribe((data) => {
       this.disableSubmitBtn = true;
+      this.toasterService.success(this.resourceService.messages.smsg.m0036);
       this.fetchEnrolledCourseData();
     }, (err) => {
       this.disableSubmitBtn = false;
@@ -109,7 +111,6 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   fetchEnrolledCourseData() {
     setTimeout(() => {
       this.coursesService.getEnrolledCourses().subscribe(() => {
-        this.toasterService.success(this.resourceService.messages.smsg.m0036);
         this.router.navigate(['/learn/course', this.batchDetails.courseId, 'batch', this.batchDetails.identifier]);
         window.location.reload();
       }, (err) => {
@@ -118,6 +119,11 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
     }, 2000);
   }
 
+  /**
+   * This function is use to get order detail. Order means transaction detail.
+   * Calling payment status api to get detail
+   * Once we get the response, We enable button to enroll course
+   */
   private getOrderDetail() {
     const request = {
       productId: this.productId,
@@ -134,13 +140,16 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
       if (err.error.responseCode === 'RESOURCE_NOT_FOUND') {
         this.disableSubmitBtn = false;
       }
-      console.log('err', err);
+      console.log('Payment Status err :: ', err);
     });
   }
 
+  /**
+   * This function is use to start payment:
+   * Basically call start payment api to get the api key and payment sdk url.
+   */
   startPayment() {
     this.paymentService.startPayment().subscribe((resp: ServerResponse) => {
-      console.log('response', resp);
       this.sdkUrl = resp.result && resp.result.sdkUrl;
       this.apiKey = resp.result && resp.result.apiKey;
     }, (err: ServerResponse) => {
@@ -148,17 +157,41 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
     });
   }
 
-  public updatePriceData(data) {
+  /**
+   * This function is called by child component once child component got the price data then component
+   * fire event to update data.
+   * Once we got the event then we call get order detail
+   * We updating the amount b'coz payment provider need amount in price.
+   * @param data : It's contains the productid and amount.
+   */
+  public updatePriceData(data: {productId: string, amount: number, payment: string}) {
     this.productId = data.productId;
     this.amount = data.amount * 100;
+    this.paymentType = data.payment;
     if (!this.orderData) {
       this.getOrderDetail();
     }
   }
 
+  /**
+   * This function is use to create payment.
+   * This function called by user when user click on enroll button.
+   * In this we will check some condition, If user already paid for the course. so we will not collect
+   * the payment and directly enroll.
+   * Then we create payment api to create order and then initialize the payment sdk
+   * @param batchId : string
+   */
   createPayment(batchId) {
     if (this.orderData && (this.orderData.orderStatus === 'USER_PAID' || this.orderData.cpTxnId)) {
+      console.log('User already paid for this course, So directly enroll the course');
       this.enrollToCourse(batchId);
+      this.showEnrollDetails = false;
+      return;
+    }
+    if (this.paymentType.toLowerCase() === 'optional') {
+      console.log('For this course payment is optional, so directly enroll');
+      this.enrollToCourse(batchId);
+      this.showEnrollDetails = false;
       return;
     }
     if (!this.apiKey || !this.sdkUrl || !this.productId || !this.amount) {
@@ -180,13 +213,12 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
       const options = {
         key: this.apiKey,
         amount: this.amount,
-        name: 'Julia',
+        name: 'JuliaBox',
         description: '',
         image: '',
         handler: (response) => {
            this.paymentId = response.razorpay_payment_id;
             this.submitPayment(batchId, response.razorpay_payment_id);
-            console.log(JSON.stringify(response));
         },
         theme: {
             color: '#F37254'
@@ -212,16 +244,20 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * this function is use to submit payment, Once we got callback from the payment provider,
+   * we call api to update the collect payment id and status
+   * @param batchId : Batch id
+   * @param paymentId : Payment id
+   */
   private submitPayment(batchId: string, paymentId: string) {
     const req: any = {...this.orderData, ...{paymentId: paymentId, orderStatus: 'USER_PAID', amount: this.amount,
                     cpTxnId: paymentId, cpStatus: 'USER_PAID', cpCreatedDate: new Date().toISOString()}};
     this.paymentService.submitPayment(req).subscribe((resp) => {
-      alert('Submit payment done');
       this.enrollToCourse(batchId);
     }, (err) => {
       this.enrollToCourse(batchId);
-      alert('Submit payment done');
-      console.log('Submit payment failed due to', JSON.stringify(err));
+      console.log('Submit payment failed due to :: ', JSON.stringify(err));
     });
   }
 }

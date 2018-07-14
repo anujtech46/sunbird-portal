@@ -388,7 +388,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   startPullingContentStatus = () => {
     console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
-    if (this.progress !== 100) {
+    if (this.progress !== 100 && !this.statePullingTimeInterval) {
       this.statePullingClearTimeInterval = setInterval(() => {
         console.log('Time', Date.now());
         this.fetchContentStatus({});
@@ -535,7 +535,6 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Get price detail
    */
-
   private getPriceDetail() {
     const request: any = {
       filters: {
@@ -553,22 +552,5 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     }, (err) => {
       console.log('err', err);
     });
-  }
-
-  private getOrderDetail() {
-    const request = {
-      productId: this.productData.priceId,
-      userId: this.userService.userid
-    };
-    this.paymentService.paymentStatus(request).subscribe((response) => {
-      if (response && response.responseCode === 'OK') {
-        this.orderData = response.result.response;
-      } else {
-        this.toasterService.error('Unable to get order detail, Please try again later');
-      }
-    }, (err) => {
-      console.log('err', err);
-    });
-
   }
 }

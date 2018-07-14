@@ -1,3 +1,8 @@
+/**
+ * @name: course-price.component.ts
+ * @author: Anuj Gupta
+ * @description: This component is use to handle course batch price
+ */
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UserService } from '@sunbird/core';
 import { CoursePriceService } from '../../services/course-price/course-price.service';
@@ -11,9 +16,21 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class CoursePriceComponent implements OnInit {
 
+  /**
+   * viewType: Contains tell where we are using this component [ICON, CARD]
+   */
   @Input() viewType: string;
+  /**
+   * Course id
+   */
   @Input() courseId: string;
+  /**
+   * Batch Id
+   */
   @Input() batchId: string;
+  /**
+   * updatePriceData: Contains price data
+   */
   @Output() updatePriceData: EventEmitter<any> = new EventEmitter();
   userId: string;
   data: any = {} ;
@@ -53,7 +70,8 @@ export class CoursePriceComponent implements OnInit {
           this.updateModelData();
         }
         if (this.viewType === 'CARD') {
-          this.updatePriceData.emit({productId: this.data.priceId, amount: this.data.price, benefit: this.data.benefit});
+          this.updatePriceData.emit({productId: this.data.priceId, amount: this.data.price,
+            benefit: this.data.benefit, payment: this.data.payment});
         }
         this.titleMessage = this.data && this.data.priceId ? 'Update Price' : 'Add Price';
       } else {

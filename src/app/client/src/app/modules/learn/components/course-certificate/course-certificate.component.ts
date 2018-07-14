@@ -1,74 +1,65 @@
-import { Component, OnInit, Input } from '@angular/core';
+/**
+ * @name: course-certificate.component.ts
+ * @author: Anuj Gupta
+ * @description: This component is use to handle course certificate
+ */
+import { Component, Input } from '@angular/core';
 import { UserService } from '@sunbird/core';
 import { CourseCertificateService } from '../../services/course-certificate/course-certificate.service';
-import { ToasterService, UpdatePriceI, CoursePriceModelI } from '@sunbird/shared';
+import { ToasterService } from '@sunbird/shared';
 
 @Component({
   selector: 'app-course-certificate',
   templateUrl: './course-certificate.component.html',
   styleUrls: ['./course-certificate.component.css']
 })
-export class CourseCertificateComponent implements OnInit {
+export class CourseCertificateComponent {
 
+  /**
+   * UserData: Contains the user information
+   */
   userData: any;
+  /**
+   * courseData: Contains the course information
+   */
   @Input() courseData: any;
 
+  /**
+   *
+   * @param userService UserService instance
+   * @param courseCertificateService CourseCertificateService instance
+   * @param toasterService ToasterService instance
+   */
   constructor(userService: UserService, public courseCertificateService: CourseCertificateService,
     public toasterService: ToasterService) {
     this.userData = userService.userProfile;
    }
 
-  ngOnInit() {
-  }
-
-  getUserTitle (gender) {
-    if (gender) {
-      gender = gender.toLowerCase();
-      return gender === 'male' ? 'Mr.' : gender === 'female' ? 'Mrs.' : '';
-    } else {
-      return '';
-    }
-  }
-
-  firstLetterUpperCase (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  getUserFullName (userData) {
-    if (userData) {
-      return this.firstLetterUpperCase(this.userData.firstName) + ' ' +
-          this.firstLetterUpperCase(this.userData.lastName);
-    } else {
-      return '';
-    }
-  }
-
   /**
    * This function is use to download certificate
+   * TODO: Call the download certificate api and open the url in new tab.
    */
   download = () => {
-    const request = {
-      title: this.getUserTitle(this.userData && this.userData.gender),
-      name: this.getUserFullName(this.userData),
-      courseName: this.courseData.name,
-      userId: this.userData.userId,
-      courseId: this.courseData && this.courseData.identifier,
-      createdDate: new Date()
-    };
-
-    this.courseCertificateService.downloadCertificate(request).subscribe((response) => {
-      if (response && response.responseCode === 'OK') {
-        const fileUrl = response.result && response.result.fileUrl;
-        const popup = window.open('', '_blank');
-        popup.document.write('loading ...');
-        popup.location.href = fileUrl;
-      } else {
+    let fileUrl = this.courseCertificateService.certificateUrl;
+    if (!fileUrl) {
+      this.courseCertificateService.download(this.userData, this.courseData).subscribe((response) => {
+        if (response && response.responseCode === 'OK') {
+          fileUrl = response.result && response.result.fileUrl;
+          this.courseCertificateService.certificateUrl = fileUrl;
+          const popup = window.open('', '_blank');
+          popup.document.write('loading ...');
+          popup.location.href = fileUrl;
+        } else {
+          this.toasterService.error('Unable to download file, Please try again later...');
+        }
+      }, (err) => {
+        console.log('err', err);
         this.toasterService.error('Unable to download file, Please try again later...');
-      }
-    }, (err) => {
-      console.log('err', err);
-      this.toasterService.error('Unable to download file, Please try again later...');
-    });
+      });
+    } else {
+      const popup = window.open('', '_blank');
+      popup.document.write('loading ...');
+      popup.location.href = fileUrl;
+    }
   }
-
 }

@@ -53,7 +53,10 @@ let envVariables = {
   CERTIFICATE_INSTRUCTOR_NAME: env.julia_certificate_instructor_name || 'Alan Edelman',
   CONTENT_FEEDBACK_STORE_CONTAINER_NAME: env.julia_content_feedback_storage_container_name || 'feedback',
   JULIA_BOX_BASE_URL: env.julia_server_base_url || 'https://staging.juliabox.com/', 
-  SUNBIRD_EXTERNAL_CONTENT_WHITELISTED_DOMAINS: env.sunbird_external_content_whitelisted_domains || ['youtube.com','juliabox.com']
+  SUNBIRD_EXTERNAL_CONTENT_WHITELISTED_DOMAINS: env.sunbird_external_content_whitelisted_domains || ['youtube.com','juliabox.com'],
+  ADD_TO_DIGILOCKER_APP_URL: env.julia_add_to_digilocker_app_url,
+  ADD_TO_DIGILOCKER_APP_ID: env.julia_add_to_digilocker_app_id,
+  ADD_TO_DIGILOCKER_APP_KEY: env.julia_add_to_digilocker_app_key,
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')
