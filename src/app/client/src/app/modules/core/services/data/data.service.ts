@@ -163,7 +163,7 @@ export class DataService {
     };
     return this.http.post(this.baseUrl + requestParam.url, requestParam.data, httpOptions)
       .flatMap((data: any) => {
-        console.log("Response from JuliaBox :: ", data)
+        console.log('Response from JuliaBox :: ', data);
       /* if (data.responseCode !== 'OK') {
           return Observable.throw(data);
           } */
@@ -183,7 +183,7 @@ export class DataService {
     };
     return this.http.get(this.baseUrl + requestParam.url, httpOptions)
       .flatMap((data: any) => {
-        console.log("Response from JuliaBox :: ", data)
+        console.log('Response from JuliaBox :: ', data);
       /* if (data.responseCode !== 'OK') {
           return Observable.throw(data);
           } */

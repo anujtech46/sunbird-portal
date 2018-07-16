@@ -171,10 +171,12 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
     this.addToDigiLockerId = String(Date.now());
     const digiLockerScript = document.createElement('script');
     let timeStamp = Date.now();
-    const appId = (<HTMLInputElement>document.getElementById('addToDigiLockerUrl')).value;
-    let hash = crypto.SHA256(appId + (<HTMLInputElement>document.getElementById('addToDigiLockerAppKey')).value + timeStamp).toString();
+    const appId = (<HTMLInputElement>document.getElementById('addToDigiLockerAppID')).value;
+    const appKey = (<HTMLInputElement>document.getElementById('addToDigiLockerAppKey')).value;
+    const url = (<HTMLInputElement>document.getElementById('addToDigiLockerUrl')).value;
+    let hash = crypto.SHA256(appId + appKey + timeStamp).toString();
     digiLockerScript.setAttribute('type', 'text/javascript');
-    digiLockerScript.setAttribute('src', (<HTMLInputElement>document.getElementById('addToDigiLockerUrl')).value);
+    digiLockerScript.setAttribute('src', url);
     digiLockerScript.setAttribute('id', 'dlshare');
     digiLockerScript.setAttribute('data-app-id', appId);
     digiLockerScript.setAttribute('data-app-hash', hash);
@@ -184,7 +186,7 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
     if (!this.digiLockerValueUpdateSetInterval) {
       this.digiLockerValueUpdateSetInterval = setInterval(() => {
         timeStamp = Date.now();
-        hash = crypto.SHA256(appId + (<HTMLInputElement>document.getElementById('addToDigiLockerAppKey')).value + timeStamp).toString();
+        hash = crypto.SHA256(appId + appKey + timeStamp).toString();
         digiLockerScript.setAttribute('data-app-hash', hash);
         digiLockerScript.setAttribute('time-stamp', String(timeStamp));
       }, this.digiLockerValueUpdateInterval);
