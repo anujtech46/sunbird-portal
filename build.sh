@@ -16,4 +16,4 @@ containerid=$(docker ps -aqf "name=${name}-${version}-build") && \
 rm -rf ./dist && \
 docker cp $containerid:/opt/player/app/player-dist.zip player-dist.zip && \
 docker rm ${containerid} && \
-docker build -f ./Dockerfile -t ${org}/${name}:${version}-bronze .
+docker build -f ./Dockerfile -t ${org}/${name}:${version}-silver .
