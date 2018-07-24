@@ -498,7 +498,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log('SSO successful :: Opening notebook :: ', newUrl);
       window.open(newUrl);
       (<any>$('#openNoteBookModal')).modal('hide');
-      if (this.juliaBoxPingIntervalTime) {
+      if (!this.juliaBoxPingIntervalTime) {
         this.startJuliaNoteBookPing();
       }
     }, (err) => {
