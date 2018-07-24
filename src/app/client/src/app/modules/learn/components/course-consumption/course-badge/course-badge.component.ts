@@ -87,7 +87,6 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
       this.courseConsumptionService.getCourseHierarchy(this.courseId).subscribe((resp) => {
       this.courseData = resp;
       this.download();
-      this.loadDigiLockerScript();
       });
     });
   }
@@ -155,7 +154,9 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
         if (response && response.responseCode === 'OK') {
           this.fileUrl = response.result && response.result.fileUrl;
           this.courseCertificateService.certificateUrl = this.fileUrl;
+          this.loadDigiLockerScript();
         } else {
+          this.loadDigiLockerScript();
         }
       }, (err) => {
         console.log('err', err);
