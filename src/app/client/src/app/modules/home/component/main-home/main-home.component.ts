@@ -87,7 +87,7 @@ export class MainHomeComponent implements OnInit, OnDestroy {
    */
   constructor(resourceService: ResourceService, private playerService: PlayerService,
     userService: UserService, courseService: CoursesService, toasterService: ToasterService,
-    route: Router, activatedRoute: ActivatedRoute) {
+    route: Router, activatedRoute: ActivatedRoute, public router: Router) {
     this.userService = userService;
     this.courseService = courseService;
     this.resourceService = resourceService;
@@ -100,6 +100,7 @@ export class MainHomeComponent implements OnInit, OnDestroy {
   */
   public populateUserProfile() {
     const profile = 'profile';
+    this.showLoader = true;
     this.userSubscription = this.userService.userData$.subscribe(
       user => {
         if (user && !user.err) {
@@ -123,13 +124,20 @@ export class MainHomeComponent implements OnInit, OnDestroy {
    * This method calls the course API.
    */
   public populateEnrolledCourse() {
+    this.showLoader = true;
     this.courseSubscription = this.courseService.enrolledCourseData$.subscribe(
       data => {
         if (data && !data.err) {
           this.showLoader = false;
-          this.toDoList = this.toDoList.concat(data.enrolledCourses);
+          if (data.enrolledCourses.length === 0) {
+            this.router.navigate(['learn']);
+          } else {
+            this.toDoList = this.toDoList.concat(data.enrolledCourses);
+          }
+          this.populateUserProfile();
         } else if (data && data.err) {
           this.showLoader = false;
+          this.populateUserProfile();
           this.toasterService.error(this.resourceService.messages.fmsg.m0001);
         }
       },
@@ -157,7 +165,6 @@ export class MainHomeComponent implements OnInit, OnDestroy {
   * user details and enrolled courses.
   */
   ngOnInit() {
-    this.populateUserProfile();
     this.populateEnrolledCourse();
     this.telemetryImpression = {
       context: {

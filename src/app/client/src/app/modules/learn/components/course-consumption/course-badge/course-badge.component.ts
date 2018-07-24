@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
 import { CourseBadgeService, CourseConsumptionService, CourseCertificateService } from '../../../services';
 import * as crypto from 'crypto-js';
+import { ISubscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-course-badge',
@@ -64,6 +65,8 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
    */
   private digiLockerValueUpdateSetInterval: any;
 
+  userDataUnsubscribe: ISubscription;
+
   /**
    * @param  {UserService} public userService
    */
@@ -105,15 +108,14 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
         this.getIssuerName();
       }
     } else {
-      this.userService.getUserProfile();
-      const userDataUnsubscribe = this.userService.userData$.first().subscribe((user: IUserData) => {
+      this.userDataUnsubscribe = this.userService.userData$.subscribe((user: IUserData) => {
         if (user && !user.err) {
-          if (userDataUnsubscribe) {
-            userDataUnsubscribe.unsubscribe();
-            const badge = _.find(user.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
-            this.userBadges = badge;
-            this.getIssuerName();
+          if (this.userDataUnsubscribe) {
+            this.userDataUnsubscribe.unsubscribe();
           }
+          const badge = _.find(user.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
+          this.userBadges = badge;
+          this.getIssuerName();
         }
       });
     }
@@ -202,5 +204,6 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
     if (this.digiLockerValueUpdateSetInterval) {
       clearInterval(this.digiLockerValueUpdateSetInterval);
     }
+    this.userDataUnsubscribe.unsubscribe();
   }
 }

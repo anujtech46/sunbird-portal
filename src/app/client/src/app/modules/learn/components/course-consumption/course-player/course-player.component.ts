@@ -388,7 +388,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   startPullingContentStatus = () => {
     console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
-    if (this.progress !== 100 && !this.statePullingTimeInterval) {
+    if (this.progress !== 100 && !this.statePullingClearTimeInterval) {
       this.statePullingClearTimeInterval = setInterval(() => {
         console.log('Time', Date.now());
         this.fetchContentStatus({});

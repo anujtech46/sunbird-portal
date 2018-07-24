@@ -32,6 +32,7 @@ export class SignupComponent implements OnInit {
   * Boolean value to either show/hide app loader
   */
   showLoader = false;
+  signUpProvider: string;
 
   constructor(public resourceService: ResourceService, public configService: ConfigService, public activatedRoute: ActivatedRoute,
     public router: Router, public signupService: SignupService, public toasterService: ToasterService) {
@@ -41,15 +42,16 @@ export class SignupComponent implements OnInit {
    * This method is used to create formgroup instance
    */
   ngOnInit() {
+    this.signUpProvider = '@' + (<HTMLInputElement>document.getElementById('defaultTenant')).value;
     this.signUpForm = new FormGroup({
       userName: new FormControl(null, [Validators.required, Validators.pattern('^[-\\w\.\\$@\*\\!]{5,256}$')]),
+      providerName: new FormControl({value: this.signUpProvider, disabled: true}),
       password: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s@#!$?*^&0-9]*(?<! )$')]),
       firstName: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s]*(?<! )$')]),
       lastName: new FormControl(null),
-      phone: new FormControl(null, [Validators.required, Validators.pattern('^\\d{10}$')]),
+      phone: new FormControl(null, [Validators.pattern('^\\d{10}$')]),
       email: new FormControl(null, [Validators.required,
-      Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)]),
-      language: new FormControl(null, [Validators.required])
+      Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)])
     });
     this.telemetryImpression = {
       context: {
