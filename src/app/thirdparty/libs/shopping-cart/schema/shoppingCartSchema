@@ -1,0 +1,8 @@
+TableName: shoppingCart
+Schema: 
+  orderId: string
+  productId: string
+  userId: string
+  orderStatus: string <created|userPaidSuccess|userPaidFailed|benefitSuccess|BenefitFailed> 
+  createdDate: string
+  orderDate: string

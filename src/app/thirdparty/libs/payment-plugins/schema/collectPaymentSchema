@@ -1,0 +1,7 @@
+TableName: collectPayment
+Schema: 
+  sbOrderId: string
+  providerOrderId: string
+  paymentId: string
+  status: string <initialized|failed|authorized|rejected|declined> 
+  date: string

@@ -1,0 +1,7 @@
+TableName: sendPayment
+Schema: 
+  sbOrderId: string
+  providerOrderId: string
+  paymentId: string
+  status: string <initialized|failed|declined> 
+  date: string
