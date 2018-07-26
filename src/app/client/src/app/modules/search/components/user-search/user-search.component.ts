@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IPagination } from '@sunbird/announcement';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
-import { Angular2Csv } from 'angular2-csv/Angular2-csv';
+import { Angular5Csv } from 'angular5-csv/Angular5-csv';
 import { UserSearchService } from './../../services';
 import { IInteractEventObject, IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
 
@@ -248,7 +248,7 @@ export class UserSearchComponent implements OnInit {
       });
     });
 
-    return new Angular2Csv(downloadArray, 'Users', options);
+    return new Angular5Csv(downloadArray, 'Users', options);
   }
 
 

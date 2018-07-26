@@ -32,7 +32,7 @@ export class ConceptPickerService {
     this.resourceService = resourceService;
   }
   public initialize() {
-    this.getConcept(0, 200);
+    this.getConcept(0, 300);
   }
   /**
   * call search api with objectType =['Concept']
@@ -53,7 +53,7 @@ export class ConceptPickerService {
           });
           if ((apiResponse.result.count > offset) && apiResponse.result.count > (offset + limit)) {
             offset += limit;
-            limit = apiResponse.result.count - limit;
+            // limit = apiResponse.result.count - limit;
             this.getConcept(offset, limit);
           } else {
             this.loadDomains();
