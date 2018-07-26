@@ -107,7 +107,8 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
       if (!this.userBadges.issuerName) {
         this.getIssuerName();
       }
-    } else {
+  } else {
+      this.userService.getUserProfile();
       this.userDataUnsubscribe = this.userService.userData$.subscribe((user: IUserData) => {
         if (user && !user.err) {
           if (this.userDataUnsubscribe) {
@@ -204,6 +205,8 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
     if (this.digiLockerValueUpdateSetInterval) {
       clearInterval(this.digiLockerValueUpdateSetInterval);
     }
-    this.userDataUnsubscribe.unsubscribe();
+    if (this.userDataUnsubscribe) {
+      this.userDataUnsubscribe.unsubscribe();
+    }
   }
 }
