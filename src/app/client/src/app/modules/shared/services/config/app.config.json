@@ -176,7 +176,7 @@
         },
         "apislug": "/action",
         "repos": [
-          "/content-plugins/renderer"
+          "/sunbird-plugins/renderer"
         ],
         "plugins": [
           {
