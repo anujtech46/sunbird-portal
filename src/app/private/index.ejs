@@ -29,7 +29,14 @@
     <input type="hidden" id="sessionId" value="<%=sessionId%>" />
     <input type="hidden" id="cdnUrl" value="<%=cdnUrl%>" />
     <input type="hidden" id="theme" value="<%=theme%>" />
+    <input type="hidden" id="logSession" value="<%=logSession%>" />
+    <input type="hidden" id="producerId" value="<%=producerId%>" />
     <input type="hidden" id="defaultPortalLanguage" value="<%=defaultPortalLanguage%>" />
+    <input type="hidden" id="contentChannelFilterType" value="<%=contentChannelFilterType%>" />
+    <input type="hidden" id="courseCompletionBadgeId" value="<%=courseCompletionBadgeId%>" />
+    <input type="hidden" id="addToDigiLockerUrl" value="<%=addToDigiLockerUrl%>" />
+    <input type="hidden" id="addToDigiLockerAppID" value="<%=addToDigiLockerAppID%>" />
+    <input type="hidden" id="addToDigiLockerAppKey" value="<%=addToDigiLockerAppKey%>" />
     <div ng-include="'views/common/topHeader.html'"></div>
     <div class="ui top attached fluid container">
         <div class="ui padded grid">
@@ -50,6 +57,7 @@
     <script src="/thirdparty/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="/thirdparty/bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="/thirdparty/bower_components/angular/angular.min.js"></script>
+    <script src="/thirdparty/libs/angular-inview.js"></script>
     <script src="/thirdparty/bower_components/angular-cookies/angular-cookies.min.js"></script>
     <script src="/thirdparty/bower_components/angular-route/angular-route.min.js"></script>
     <script type="text/javascript" src="/thirdparty/bower_components/semantic-ui-calendar/dist/calendar.min.js"></script>
@@ -75,16 +83,11 @@
     <script src="/thirdparty/bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
     <script src="/thirdparty/semantic-tree-picker/semantic-ui-tree-picker.js"></script>
     <script src="/thirdparty/libs/generateAndDownloadCSV.min.js"></script>
+    <script src="/thirdparty/bower_components/crypto-js/crypto-js.js"></script>
 
     <script src="/thirdparty/semantic/semantic.min.js"></script>
-
     <script src="scripts/utils/util.js"></script>
     <script src="/thirdparty/libs/telemetry.min.js"></script>
-    <script src="scripts/telemetry/TelemetryEvent.js"></script>
-    <script src="scripts/telemetry/TelemetryService.js"></script>
-    <script src="scripts/telemetry/TelemetryV2Manager.js"></script>
-    <script src="scripts/telemetry/TelemetryServiceUtil.js"></script>
-    <script src="scripts/telemetry/InActiveEvent.js"></script>
     <script src="scripts/playerAppConfig.js"></script>
     <script src="scripts/managers/eventManager.js"></script>
     <script src="scripts/app.js"></script>
@@ -104,9 +107,7 @@
     <script src="scripts/services/pageSectionService.js"></script>
     <script src="scripts/services/searchService.js"></script>
     <script src="scripts/services/permissionsService.js"></script>
-    <script src="scripts/services/playerTelemetryUtilsService.js"></script>
     <script src="scripts/services/contentStateService.js"></script>
-    <script src="scripts/services/portalTelemetryService.js"></script>
     <script src="scripts/services/toasterService.js"></script>
     <script src="scripts/services/routeHelperService.js"></script>
     <script src="scripts/services/formValidation.js"></script>
@@ -190,6 +191,22 @@
     <script src="scripts/directives/profileVisibility.js"></script>
     <script src="scripts/controllers/profileVisibilityController.js"></script>
     <script src="scripts/services/telemetryService.js"></script>
+    <script src="scripts/controllers/dataDrivenFiltersController.js"></script>
+    <script src="scripts/directives/badge/contentBadgeDirective.js"></script>
+    <script src="scripts/directives/badge/profileBadgeDirective.js"></script>
+    <script src="scripts/services/badgeService.js"></script>
+    <script src="scripts/controllers/badge/contentBadgeController.js"></script>
+    <script src="scripts/controllers/workspace/DataDrivenFormController.js"></script>
+    <script src="scripts/controllers/badge/profileBadgeController.js"></script>
+    <script src="scripts/controllers/coursePaymentController.js"></script>
+    <script src="scripts/services/payment/coursePaymentService.js"></script>
+    <script src="scripts/directives/courseBenefitTransferDirective.js"></script>
+    <script src="scripts/services/restfulPlayerService.js"></script>
+    <script src="scripts/directives/certificate/courseCertificateDirective.js"></script>
+    <script src="scripts/services/coursePriceService.js"></script>
+    <script src="scripts/directives/coursePriceDirective.js"></script>
+    <script src="scripts/directives/badge/courseBadgeDirective.js"></script>
+    <script src="scripts/controllers/purchaseListController.js"></script>
 
     <!-- Announcement flow -->
     <script src="/thirdparty/bower_components/file-upload/fine-uploader/fine-uploader.js"></script>
@@ -215,6 +232,9 @@
     <!-- endinject -->
     <script src="../common/js/frmelmnts.js"></script>
     <script src="../common/js/messages.js"></script>
+    <script src="../../node_modules/angular/angular.js"></script>
+    <script src="../../node_modules/angular-inview/angular-inview.js"></script>
+
 </body>
 
 </html>

@@ -27,7 +27,7 @@ angular.module('playerApp').directive('addSlick', function () {
             {
               breakpoint: 2000,
               settings: {
-                slidesToShow: 5,
+                slidesToShow: 4,
                 slidesToScroll: 4
               }
             },

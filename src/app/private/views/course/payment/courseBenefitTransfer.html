@@ -1,0 +1,38 @@
+<div ng-if="courseBT.isShowBTButton">
+    <button class="ui fluid blue basic button margin-bottom-10 margin-right-10" ng-click="courseBT.getBenefit()">GET BENEFIT</button>
+  </div>
+  <div class="ui modal" id="benefitModal">
+    <i class="close icon" ng-click="courseBT.close()" ng-if="!courseBT.progress"></i>
+    <div class="header">
+      Get Benefit Request
+    </div>
+    <div class="image content">
+      <div class="ui description" ng-if="courseBT.progress">
+        <h2 class="ui center aligned icon header">
+          <i class="notched circle loading icon"></i>
+          <p>We requested to the merchant for benefit transfer, Please wait... !</p>
+        </h2>
+      </div>
+      <div class="description" ng-if="courseBT.statusMessage === 'PAYMENT_SUCCESS'">
+        <div class="ui header">Transaction has been done successfully.</div>
+        <p>You have received your benefit ! </p>
+      </div>
+      <div class="description" ng-if="courseBT.statusMessage === 'PAYMENT_ERROR'">
+        <div class="ui header">Transaction failed.</div>
+        <p>Please try again later ! </p>
+      </div>
+      <div class="description" ng-if="courseBT.statusMessage === 'PAYMENT_CANCELLED'">
+        <div class="ui header">Payment cancelled by merchant! </div>
+        <p>Please try again later !</p>
+      </div>
+      <div class="description" ng-if="courseBT.statusMessage === 'PAYMENT_DECLINED'">
+        <div class="ui header">Payment cancelled by user! </div>
+        <p>Please try again later !</p>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui black deny button" ng-click="courseBT.close()" ng-if="!courseBT.progress">
+        close
+      </div>
+    </div>
+  </div>

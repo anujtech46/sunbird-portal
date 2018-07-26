@@ -28,12 +28,12 @@ angular.module('loginApp')
                 prompt: $rootScope.messages.stmsg.m0092
               }]
             },
-            phone: {
-              rules: [{
-                type: 'regExp[^(?:(?:\\+|0{0,2})91(\\s*[\\-]\\s*)?|[0]?)?[789]\\d{9}$]', // eslint-disable-line  ,max-len
-                prompt: $rootScope.messages.stmsg.m0091
-              }]
-            },
+            // phone: {
+            //   rules: [{
+            //     type: 'regExp[^\\d{10}$]', // eslint-disable-line  ,max-len
+            //     prompt: $rootScope.messages.stmsg.m0091
+            //   }]
+            // },
             email: {
               rules: [{
                 type: 'regExp[/^([a-zA-Z0-9_.+\\-])+\\@(([a-zA-Z0-9-])+\\.)+([a-zA-Z0-9]{2,4})+$/]',
@@ -55,8 +55,14 @@ angular.module('loginApp')
           }
         })
       }
-
+      newUser.dropdown = function () {
+        $('#headerSearchtab')
+          .dropdown()
+        $('#headerSearchmob')
+          .dropdown()
+      }
       newUser.showModal = function () {
+        newUser.apiCallCount = 0
         newUser.firstName = ''
         newUser.lastName = ''
         newUser.password = ''
@@ -64,6 +70,7 @@ angular.module('loginApp')
         newUser.userName = ''
         newUser.phone = ''
         newUser.language = []
+        newUser.isSocialRegister = false
 
         $timeout(function () {
           // Resets form input fields from data values
@@ -140,10 +147,16 @@ angular.module('loginApp')
           errorMessage = $rootScope.messages.stmsg.m0085
         } else if (errorKey === 'USERNAME_EMAIL_IN_USE') {
           errorMessage = $rootScope.messages.stmsg.m0086
+        } else if (errorKey === 'INVALID_PHONE_NO_FORMAT') {
+          errorMessage = $rootScope.messages.stmsg.m0114
+        } else if (errorKey === 'EMAIL_IN_USE') {
+          errorMessage = $rootScope.messages.stmsg.m0115
         } else errorMessage = $rootScope.messages.emsg.m0005
         return errorMessage
       }
       newUser.signUp = function () {
+        var isPhoneVerified = true
+        isPhoneVerified = newUser.phone ? isPhoneVerified : false
         newUser.request = {
           params: {},
           request: {
@@ -153,7 +166,10 @@ angular.module('loginApp')
             email: newUser.email,
             userName: newUser.userName.trim(),
             phone: newUser.phone,
-            language: [newUser.language]
+            provider: $rootScope.signUpUserProvider,
+            emailVerified: !isPhoneVerified,
+            phoneVerified: isPhoneVerified,
+            isSocialRegister: false
           }
         }
         newUser.loader = toasterService.loader('', $rootScope.messages.stmsg.m0084)
@@ -162,10 +178,9 @@ angular.module('loginApp')
         $('#signupModal').modal({
           closable: false
         })
-
+        newUser.apiCallCount += 1
         signUpService.signUp(req).then(function (successResponse) {
-          if (successResponse &&
-                        successResponse.responseCode === 'OK') {
+          if (successResponse && successResponse.responseCode === 'OK') {
             newUser.loader.showLoader = false
 
             $location.path('/private/index')
@@ -174,6 +189,10 @@ angular.module('loginApp')
             $timeout(function () {
               $('.ui .modal').modal('hide')
             }, 2000)
+          } else if (successResponse && successResponse.responseCode === 'SERVER_ERROR' &&
+            newUser.apiCallCount === 1) {
+            console.log('Call signup api again ', successResponse.responseCode, newUser.apiCallCount)
+            newUser.signUp()
           } else {
             newUser.loader.showLoader = false
             var errorMessage = newUser.getErrorMsg(successResponse.params.err)

@@ -1,0 +1,29 @@
+<div class="rightSideSectionCards ui card margin-top-15" ng-init="courseBadge.loadDigiLockerScript(); courseBadge.download()" ng-if="courseBadge.userBadges && courseBadge.userBadges.badgeClassName">
+  <div class="content" ng-init="badge = courseBadge.userBadges">
+    <div class="header announcementCard-header">Certification
+      <course-certificate coursedata="courseBadge.courseData" batchdata="courseBadge.batchData"></course-certificate>
+    </div>
+    <div class="ui items margin-top-10">
+      <div class="item">
+        <img class="ui avatar image" ng-src="{{badge.image || badge.badgeClassImage}}">
+        <div class="middle aligned content padding-left-10" ng-init="badgeName = badge.name || badge.badgeClassName">
+          <div class="ui huge sub header secondary-text-color-sunbird">{{badgeName | limitTo : 70}}</div>
+          <i ng-if="badgeName && badgeName.length > 70" class="ellipsis horizontal icon" title="{{badgeName}}">
+          </i>
+          <div class="description">
+            <div class="secondary-text-color-sunbird">{{badge.issuerName | limitTo : 40}}
+              <i ng-if="issueName && issueName.length > 40" class="ellipsis horizontal icon" title="{{issueName}}">
+              </i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content extra">
+    <span class="ui right floated cursor-pointer cardsKnowMore">
+        <a href="{{courseBadge.fileUrl}}" id="{{courseBadge.addToDigiLockerId}}" class="locker_saver"></a>
+      </span>
+  </div>
+</div>
+<div></div>

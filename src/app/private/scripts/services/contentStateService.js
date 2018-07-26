@@ -2,7 +2,8 @@
 
 angular.module('playerApp')
   .service('contentStateService', ['$filter', '$rootScope', 'restfulLearnerService', 'config',
-    'uuid4', 'dataService', function ($filter, $rootScope, restfulLearnerService, config, uuid4, dataService) {
+    'uuid4', 'dataService', 'sessionService',
+    function ($filter, $rootScope, restfulLearnerService, config, uuid4, dataService, sessionService) {
     /**
      * @class contentStateService
      * @desc Service to manage state of content.
@@ -38,7 +39,7 @@ angular.module('playerApp')
           status: 1,
           lastAccessTime: $filter('date')(new Date(data.ets), 'yyyy-MM-dd HH:mm:ss:sssZ'),
           courseId: _.find(data.cdata, { type: 'course' }).id,
-          batchId: $rootScope.enrolledCourseIds[_.find(data.cdata, { type: 'course' }).id].batchId
+          batchId: sessionService.getSessionData('COURSE_BATCH_ID').batchId
         }
         var contentStatusData = _.find(localContentState[content.courseId].contents, { contentId: content.contentId })
         if (contentStatusData && contentStatusData.status > content.status) {
@@ -65,11 +66,12 @@ angular.module('playerApp')
          */
       this.getContentsState = function (req, callback) {
         // accepts only one course id and multiple contentids
-
-        if (_.isEmpty(localContentState) || !localContentState[req.request.courseIds[0]]) {
+        if (_.isEmpty(localContentState) || !localContentState[req.request.courseIds[0]] ||
+        req.contentType === 'html') {
           var courseId = req.request.courseIds[0]
           localContentState[courseId] = {}
           localContentState[courseId].contents = []
+          delete req['contentType']
           this.getContentsStateFromAPI(req).then(function (res) {
             if (res && res.responseCode === 'OK') {
               localContentState[courseId].contents = res.result.contentList

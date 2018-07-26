@@ -7,6 +7,8 @@
             "BASE_PREFIX": "service/",
             "LEARNER_PREFIX": "v1/learner/",
             "CONTENT_PREFIX": "v1/content/",
+            "PHONE_PE_PREFIX": "v1/phonepe/",
+            "JULIA_PREFIX": "v1/juliabox",
             "CONFIG_BASE": "http://localhost:4000/api/sb/v1/",
             "PAGE_PREFIX": "data/v1/page/assemble",
             "USER": {
@@ -79,8 +81,9 @@
                 "UPDATE_USER_ORG_ROLES": "org/v1/role/assign"
             },
             "BADGE": {
-                "GET": "org/v1/badges/list",
-                "ASSIGN": "user/v1/badges/add"
+                "GET_ISSUER_LIST": "badging/v1/issuer/list",
+                "BADGE_CLASS_SEARCH": "badging/v1/issuer/badge/search",
+                "ASSIGN": "badging/v1/issuer/badge/assertion/create"
 
             },
             "ORG_TYPE":{
@@ -104,6 +107,22 @@
             },
             "FRAMEWORK": {
                 "READ":"framework/v1/read"
+            },
+            "dataDrivenForms": {
+                "READ":"data/v1/form/read"
+            },
+            "OBJECT": {
+                "READ": "data/v1/object/read",
+                "CREATE": "data/v1/object/create",
+                "UPDATE": "data/v1/object/update",
+                "SEARCH": "data/v1/object/search"
+            },
+            "CERTIFICATE": {
+                "COURSE": "/course/certificate/download"
+            },
+            "PAYMENT": {
+                "COLLECT": "/payment/v3/charge",
+                "REFUND": "/payment/v3/credit/instant"
             }
         },
         "FILTER": {
@@ -285,6 +304,24 @@
                 "host": "",
                 "apislug": "/action",
                 "repos": ["/content-plugins/renderer"],
+                "overlay": {
+                    "enableUserSwitcher": false,
+                    "showUser": false,
+                    "showOverlay": false,
+                    "showNext": false,
+                    "showPrevious": false,
+                    "showSubmit": false,
+                    "showReload": false,
+                    "menu": {
+                        "showTeachersInstruction": false
+                    }
+                },
+                "splash": {
+                    "text": "",
+                    "icon": "",
+                    "bgImage": "assets/icons/background_1.png",
+                    "webLink": ""
+                },
                 "plugins": [{ "id": "org.sunbird.iframeEvent", "ver": 1.0, "type": "plugin" }, { "id": "org.sunbird.player.endpage", "ver": 1.0, "type": "plugin" }]
             },
             "baseURL": "/content/preview/preview.html?webview=true"
@@ -468,7 +505,7 @@
         },
         "CURRENT_USER_ROLES": ["CONTENT_REVIEWER"],
         "COMMON_ROLES_CHECK": ["CONTENT_CREATOR", "CONTENT_REVIEW", "CONTENT_CREATION", "CONTENT_REVIEWER"],
-        "WORKSPACE_ACCESS_ROLES": ["CONTENT_CREATOR", "CONTENT_REVIEW", "CONTENT_CREATION", "CONTENT_REVIEWER", "FLAG_REVIEWER", "COURSE_MENTOR"],
+        "WORKSPACE_ACCESS_ROLES": ["CONTENT_CREATOR", "CONTENT_REVIEW", "CONTENT_CREATION", "CONTENT_REVIEWER", "FLAG_REVIEWER", "COURSE_MENTOR","BOOK_CREATOR","BOOK_REVIEWER"],
         "CreateLessonMimeType": "application/vnd.ekstep.ecml-archive",
         "CreateCollectionMimeType": "application/vnd.ekstep.content-collection",
         "MimeTypeExceptCollection": ["application/pdf", "video/mp4", "video/x-youtube",
@@ -490,10 +527,7 @@
             { "field": "name", "name": "Name A-Z"}
         ],
         "searchSelectionKeys": [
-            { "id": "All", "name": "All" },
             { "id": "Courses", "name": "Courses" },
-            { "id": "Library", "name": "Library" },
-            { "id": "Organisations", "name": "Organisations" },
             { "id": "Users", "name": "Users" }
         ],
         "contributeContentType": ["Collection", "TextBook", "Course", "LessonPlan", "Resource"],
@@ -508,9 +542,67 @@
             "h5p": "application/vnd.ekstep.h5p-archive",
             "webm": "video/webm"
         },
+        "ERROR":{
+            "PROFILE_IMAGE_UPLOAD": {
+                "err":"400",
+                "errorType":"Bad Request"
+            }
+        },
         "UNLISTED_CONTENT_TYPE" : "Unlisted",
         "AnncmntMaxFileSizeToUpload": 1024000,
         "AnncmntFileExtensionToUpload": "application/pdf, application/jpg, application/png",
-        "AnncmntAllowedFileExtension": ["png", "pdf", "jpg"]
+        "AnncmntAllowedFileExtension": ["png", "pdf", "jpg"],
+        "WORKSPACE": {
+            "CREATE": {
+                "BOOK" : {
+                    "ROLES": ["BOOK_CREATOR"]
+                }
+            },
+            "DRAFT": {
+                "ROLES": ["CONTENT_CREATOR", "CONTENT_REVIEW", "CONTENT_CREATION", "CONTENT_REVIEWER", "BOOK_CREATOR"]
+            },
+            "REVIEW":{
+                "ROLES": ["CONTENT_CREATOR", "CONTENT_REVIEW", "CONTENT_CREATION", "CONTENT_REVIEWER", "BOOK_CREATOR"]
+            },
+            "PUBLISHED":{
+                "ROLES": ["CONTENT_CREATOR", "CONTENT_REVIEW", "CONTENT_CREATION", "CONTENT_REVIEWER", "BOOK_CREATOR"]
+            },
+            "ALL_UPLOADS":{
+                "ROLES": ["CONTENT_CREATOR", "CONTENT_REVIEW", "CONTENT_CREATION", "CONTENT_REVIEWER"]
+            },
+            "UP_FOR_REVIEW":{
+                "ROLES":["CONTENT_REVIEWER", "CONTENT_REVIEW", "BOOK_REVIEWER", "FLAG_REVIEWER"],
+                "contentTypes": [
+                    {
+                      "key": "Collection",
+                      "value": "Collection"
+                    },
+                    {
+                      "key": "LessonPlan",
+                      "value": "Lesson Plan"
+                    },
+                    {
+                      "key": "Resource",
+                      "value": "Resource"
+                    },
+                    {
+                      "key": "Story",
+                      "value": "Story"
+                    },
+                    {
+                      "key": "Worksheet",
+                      "value": "Worksheet"
+                    },
+                    {
+                      "key": "Game",
+                      "value": "Game"
+                    }
+                  ]
+            }
+        },
+        "PROFILE": {
+            "languages": ["Bengali", "English", "Gujarati", "Hindi", "Kannada", "Marathi", "Punjabi", "Tamil", "Telugu","Urdu", "Assamese"]
+        }
+
     }
 }

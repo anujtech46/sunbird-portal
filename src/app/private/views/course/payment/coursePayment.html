@@ -1,0 +1,145 @@
+<div class="ui grid">
+  <div class="one wide column"></div>
+  <div class="ten wide column">
+    <div class="ui grid">
+      <div class="eight wide column">
+        <div class="ui grid">
+          <div class="twelve wide column">
+            <div class="margin-top-20 ui raised segment">
+              <div class="row">
+                <span class="header cardsHeading">Select Payment Method</span>
+              </div>
+              <div class="row">
+                <div class="ui secondary pointing compact menu">
+                  <a class="item" ng-click="pay.activePatmentMode = 'UPI'" ng-class="{active: pay.activePatmentMode === 'UPI'}">
+                    Pay by UPI</a>
+                  <a class="item" ng-click="pay.activePatmentMode = 'VOUCHER'" ng-class="{active: pay.activePatmentMode === 'VOUCHER'}">
+                    Voucher Code</a>
+                </div>
+              </div>
+              <!-- if upi -->
+              <div class="row margin-top-20" ng-if="pay.activePatmentMode === 'UPI' ">
+                <form class="ui form">
+                  <div class="three fields">
+                    <div class="field">
+                      <label class="secondary-text-color-sunbird">Enter your UPI ID below</label>
+                      <div class="ui input right icon">
+                        <input type="text" name="location" ng-model="pay.upiId">
+                      </div>
+                    </div>
+                  </div>
+                  <button class="ui primary button"
+                    ng-click="pay.doPayment()">CONTINUE</button>
+                  <button class="ui primary button" ng-if="pay.coursePayment === 'optional'"
+                  ng-click="pay.skipAndContinue()">SKIP AND CONTINUE</button>
+                </form>
+              </div>
+              <!-- If voucher code, currentlly it's disabled -->
+              <div class="row margin-top-20" ng-if="pay.activePatmentMode === 'VOUCHER'">
+                <form class="ui form">
+                  <div class="three fields">
+                    <div class="field">
+                      <label class="secondary-text-color-sunbird">Enter your voucher code below</label>
+                      <div class="ui input right icon">
+                        <input type="text" name="location" ng-model="pay.upiId">
+                      </div>
+                    </div>
+                  </div>
+                  <button class="ui primary button" ng-class="{ 'disabled' : true}">CONTINUE</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="four wide column">
+        <div class="ui grid">
+          <div class="row">
+            <div class="twelve wide column">
+              <div class="margin-top-20  ui raised segment">
+                <div class="header announcementCard-header">
+                  <div class="profileitems ui relaxed divided items">
+                    <div class="item">
+                      <img class="ui avatar image" ng-src="{{pay.courseImage || '/common/images/default.png'}}">
+                      <div class="content">
+                        <span>{{pay.courseTitle}}</span>
+                      </div>
+                      <div class="right floated">{{pay.coursePrice | currency : "Rs. " : 0}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="ui middle aligned list margin-top-0">
+                  <div class="item padding-top-10 padding-bottom-5">
+                    <div class="right floated content">
+                      <div>{{pay.coursePrice | currency : "Rs. " : 0}}</div>
+                    </div>
+                    <div class="content contentMetaDetail">
+                      Sub Total
+                    </div>
+                  </div>
+                  <!-- <div class="item padding-top-10 padding-bottom-5">
+                    <div class="right floated content">
+                      <div>{{pay.courseTax | currency : "Rs. " : 0}}</div>
+                    </div>
+                    <div class="content contentMetaDetail">
+                      Tax
+                    </div>
+                  </div> -->
+                </div>
+                <div class="ui divider"></div>
+                <div class="ui middle aligned list margin-top-0">
+                  <div class="item padding-top-10 padding-bottom-5">
+                    <div class="ui right floated tiny header content">
+                      <div>{{pay.coursePrice + pay.courseTax | currency : "Rs. " : 0}}</div>
+                    </div>
+                    <div class="ui tiny header content">
+                      Total
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="one wide column"></div>
+</div>
+
+<div class="ui modal" id="payModal">
+  <i class="close icon" ng-click="pay.close()" ng-if="!pay.progress"></i>
+  <div class="header">
+    Collect Request
+  </div>
+  <div class="image content">
+    <div class="ui description" ng-if="pay.progress">
+      <h2 class="ui center aligned icon header">
+        <i class="notched circle loading icon"></i>
+        <p>Please accept request from your PhonePe mobile app !</p>
+      </h2>
+    </div>
+    <div class="description" ng-if="pay.statusMessage === 'PAYMENT_SUCCESS'">
+      <div class="ui header">Transaction has been done successfully.</div>
+      <p>Thanks, You have enrolled for this course ! </p>
+    </div>
+    <div class="description" ng-if="pay.statusMessage === 'PAYMENT_ERROR'">
+      <div class="ui header">Transaction failed.</div>
+      <p>Please try again later ! </p>
+    </div>
+    <div class="description" ng-if="pay.statusMessage === 'PAYMENT_CANCELLED'">
+      <div class="ui header">Payment cancelled by merchant! </div>
+      <p>Please try again later !</p>
+    </div>
+    <div class="description" ng-if="pay.statusMessage === 'PAYMENT_DECLINED'">
+      <div class="ui header">Payment cancelled by user! </div>
+      <p>Please try again later !</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button" ng-click="pay.close()" ng-if="!pay.progress">
+      close
+    </div>
+  </div>
+</div>

@@ -5,6 +5,36 @@ angular.module('loginApp')
     $qProvider.errorOnUnhandledRejections(false) // To handle error rejection
     $urlRouterProvider.otherwise('/')
     $stateProvider
+      .state('Get', {
+        url: '/get',
+        views: {
+          mainView: {
+            templateUrl: '/views/dialcode/get.html',
+            controller: 'dialCodeController as dialctrl'
+          }
+        },
+        onEnter: function ($window, $rootScope) {
+          $rootScope.getPageBackground = true
+        },
+        onExit: function ($rootScope) {
+          $rootScope.getPageBackground = false
+        }
+      })
+      .state('dialCode', {
+        url: '/get/dial/:dialcode',
+        views: {
+          mainView: {
+            templateUrl: '/views/dialcode/dialcode.html',
+            controller: 'dialCodeController as dialctrl'
+          }
+        },
+        onEnter: function ($window, $rootScope) {
+          $rootScope.dailCodePageBackground = true
+        },
+        onExit: function ($rootScope) {
+          $rootScope.dailCodePageBackground = false
+        }
+      })
       .state('Landing', {
         url: '/',
         views: {
@@ -12,8 +42,12 @@ angular.module('loginApp')
             templateUrl: '/views/home/landingPage.html'
           }
         },
-        onEnter: function ($window) {
+        onEnter: function ($window, $rootScope) {
           delete $window.localStorage.redirectUrl
+          $rootScope.showSignup = true
+        },
+        onExit: function ($rootScope) {
+          $rootScope.showSignup = false
         }
       })
       .state('PublicContent', {

@@ -1,10 +1,9 @@
 'use strict'
 
 angular.module('playerApp')
-  .controller('PreviewContentController', ['$stateParams', 'playerTelemetryUtilsService',
-    '$rootScope', '$state', 'contentService', '$timeout', 'config',
-    'toasterService', function ($stateParams, playerTelemetryUtilsService, $rootScope,
-      $state, contentService, $timeout, config, toasterService) {
+  .controller('PreviewContentController', ['$stateParams', '$rootScope', '$state', 'contentService',
+    '$timeout', 'config', 'toasterService', '$window', function ($stateParams, $rootScope, $state,
+      contentService, $timeout, config, toasterService, $window) {
       var previewContent = this
       previewContent.contentProgress = 0
       previewContent.contentId = $stateParams.contentId
@@ -19,7 +18,7 @@ angular.module('playerApp')
       var validateModal = {
         state: ['WorkSpace.UpForReviewContent', 'WorkSpace.ReviewContent',
           'WorkSpace.PublishedContent', 'WorkSpace.FlaggedContent'],
-        status: ['Review', 'Live', 'Flagged'],
+        status: ['Review', 'Live', 'Flagged', 'FlagDraft', 'FlagReview'],
         mimeType: config.MimeTypeExceptCollection
       }
       previewContent.contentPlayer = { isContentPlayerEnabled: false }
@@ -53,9 +52,9 @@ angular.module('playerApp')
         rspData.userId = $rootScope.userId
 
         if (!checkContentAccess(rspData, validateModal)) {
-          toasterService
-            .warning($rootScope.messages.imsg.m0004)
-          $state.go('Home')
+          toasterService.warning($rootScope.messages.imsg.m0004)
+          var previousState = JSON.parse($window.localStorage.getItem('previousURl'))
+          $state.go(previousState.name, previousState.params)
         }
         previewContent.contentData = data
         previewContent.contentPlayer.contentData = data

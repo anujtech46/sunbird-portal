@@ -3,8 +3,10 @@
 angular.module('playerApp')
   .controller('BatchController', ['$rootScope', '$timeout', '$state', '$scope', '$stateParams',
     'batchService', '$filter', 'permissionsService', 'toasterService', 'courseService',
-    'learnService', '$window', function ($rootScope, $timeout, $state, $scope, $stateParams, batchService, $filter,
-      permissionsService, toasterService, courseService, learnService, $window) {
+    'learnService', '$window', 'userService', 'telemetryService', 'coursePriceService', 'sessionService',
+    function ($rootScope, $timeout, $state, $scope, $stateParams, batchService, $filter,
+      permissionsService, toasterService, courseService, learnService, $window, userService,
+      telemetryService, coursePriceService, sessionService) {
       var batch = this
       batch.userList = []
       batch.menterList = []
@@ -21,7 +23,11 @@ angular.module('playerApp')
         { name: 'Ongoing', value: 1 },
         { name: 'Upcoming', value: 0 }
       ]
+
       batch.showEnroll = true
+      batch.searchUserMap = {}
+      batch.userSearchTime = 0
+
       batch.showCreateBatchModal = function () {
         batch.getUserList()
         $timeout(function () {
@@ -30,6 +36,7 @@ angular.module('playerApp')
           $('#users,#mentors').dropdown({ forceSelection: false, fullTextSearch: true })
           $('.ui.calendar').calendar({ refresh: true })
           $('#createBatchModal').modal({
+            closable: false,
             onShow: function () {
               var today = new Date()
               $('.ui.calendar#rangestartAdd').calendar({
@@ -169,12 +176,18 @@ angular.module('playerApp')
           batch.isMentor = true
           request.request.filters.createdBy = batch.userId
         } else {
+          batch.getAllBatchIdInCourse = _.map(sessionService.getSessionData('ENROLLED_COURSES').courseArr, 'batchId')
           request.request.filters.enrollmentType = 'open'
         }
         batchService.getAllBatchs(request).then(function (response) {
           if (response && response.responseCode === 'OK') {
             batch.userList = []
             batch.userNames = {}
+
+            response.result.response.content = _.filter(response.result.response.content, function (content) {
+              return !(_.indexOf(batch.getAllBatchIdInCourse, content.identifier) > -1)
+            })
+
             _.forEach(response.result.response.content, function (val) {
               batch.userList.push(val.createdBy)
             })
@@ -215,42 +228,117 @@ angular.module('playerApp')
         $state.go('updateBatch', { batchId: batchData.identifier, coursecreatedby: coursecreatedby })
       }
 
-      batch.getUserList = function () {
-        var request = {
-          request: {
-            filters: {
-              'organisations.organisationId': $rootScope.organisationIds
-            }
+      // User search status = 1, Mentor search status = 2, Normal status = 0
+      $timeout(function () {
+        $('#users').dropdown({
+          forceSelection: false,
+          fullTextSearch: true,
+          onAdd: function () {
+            $('#createBatchModal').modal('refresh')
+            batch.isUserSearch = 1
+            batch.getUserListWithQuery('')
           }
-        }
+        })
+        $('#mentors').dropdown({
+          fullTextSearch: true,
+          forceSelection: false,
+          onAdd: function () {
+            $('#createBatchModal').modal('refresh')
+            batch.isUserSearch = 2
+            batch.getUserListWithQuery('')
+          }
+        })
+        $('#users input.search').on('keyup', function (e) {
+          batch.isUserSearch = 1
+          batch.getUserListWithQuery(this.value)
+        })
+        $('#mentors input.search').on('keyup', function (e) {
+          batch.isUserSearch = 2
+          batch.getUserListWithQuery(this.value)
+        })
+      }, 1000)
 
+      batch.getUserListWithQuery = function (query) {
+        if (batch.userSearchTime) {
+          clearTimeout(batch.userSearchTime)
+        }
+        batch.userSearchTime = setTimeout(function () {
+          var users = batch.searchUserMap[query]
+          if (users) {
+            batch.isUserSearch = 0
+            batch.userList = users.user
+            batch.menterList = users.mentor
+            $('#users').dropdown('refresh')
+            $('#mentors').dropdown('refresh')
+          } else {
+            batch.getUserList(query)
+          }
+        }, 1000)
+      }
+
+      batch.getUserList = function (query) {
+        var request = batchService.getRequestBodyForUserSearch(query)
         batchService.getUserList(request).then(function (response) {
           if (response && response.responseCode === 'OK') {
             _.forEach(response.result.response.content, function (userData) {
               if (userData.identifier !== $rootScope.userId) {
-                var user = {
-                  id: userData.identifier,
-                  name: userData.firstName + ' ' + userData.lastName,
-                  avatar: userData.avatar
-                }
-                _.forEach(userData.organisations, function (userOrgData) {
-                  if (_.indexOf(userOrgData.roles, 'COURSE_MENTOR') !== -1) {
-                    batch.menterList.push(user)
+                if (batchService.filterUserSearchResult(userData, query)) {
+                  var user = {
+                    id: userData.identifier,
+                    name: userData.firstName + (userData.lastName ? ' ' + userData.lastName : ''),
+                    avatar: userData.avatar,
+                    otherDetail: batchService.getUserOtherDetail(userData)
                   }
-                })
-                batch.userList.push(user)
+                  _.forEach(userData.organisations, function (userOrgData) {
+                    if (_.indexOf(userOrgData.roles, 'COURSE_MENTOR') !== -1) {
+                      batch.menterList.push(user)
+                    }
+                  })
+                  batch.userList.push(user)
+                }
               }
             })
+            batch.userList = _.uniqBy(batch.userList, 'id')
+            batch.menterList = _.uniqBy(batch.menterList, 'id')
+            batch.searchUserMap[query || ''] = {
+              mentor: _.clone(batch.menterList),
+              user: _.clone(batch.userList)
+            }
+            $('#users').dropdown('refresh')
+            $('#mentors').dropdown('refresh')
+            batch.isUserSearch = 0
           } else {
+            batch.isUserSearch = 0
             toasterService.error($rootScope.messages.fmsg.m0056)
           }
-          console.log('response ', response)
         }).catch(function () {
+          batch.isUserSearch = 0
           toasterService.error($rootScope.messages.fmsg.m0056)
         })
       }
 
       batch.showBatchDetails = function (batchData) {
+        var enrolledCoursesList = sessionService.getSessionData('ENROLLED_COURSES') &&
+                                sessionService.getSessionData('ENROLLED_COURSES').courseArr
+        var enrolledCourseBatchList = _.filter(enrolledCoursesList, function (content) {
+          return content.courseId === batch.courseId
+        })
+        var courseBatchIdData = sessionService.getSessionData('COURSE_BATCH_ID')
+        if (courseBatchIdData && (courseBatchIdData.courseId === batchData.courseId)) {
+          batch.currentCourseBatchId = courseBatchIdData.batchId
+        } else {
+          console.log('Invalid batch id')
+        }
+        var batchListExceptCurrentBatch = _.filter(enrolledCourseBatchList, function (content) {
+          return content.batchId !== batch.currentCourseBatchId
+        })
+        var completeBatchCourse = _.filter(batchListExceptCurrentBatch, {status: 2})
+        if ((!((completeBatchCourse.length === batchListExceptCurrentBatch.length) &&
+              $rootScope.currentBatchCourseProgress === 100)) && enrolledCourseBatchList.length > 0) {
+          toasterService.warning('You can not enroll this batch,' +
+            'First complete other course batch which you enrolled...')
+          return ''
+        }
         batch.participants = {}
         if (!_.isUndefined(batchData.participant)) {
           var req = {
@@ -279,6 +367,9 @@ angular.module('playerApp')
           $rootScope.$broadcast('batchDetails', batchData)
           $('#batchDetails').modal('show')
         }
+        batch.batchPriceInfo = _.find(batch.courseBatchPriceList, {batchid: batchData.identifier})
+        console.log('batch.batchPriceInfo', batch.batchPriceInfo)
+        $rootScope.$broadcast('batchPriceInfo', batch.batchPriceInfo)
         // batchData.userList = batch.userNames;
         // console.log('batchData ', batchData);
         // $rootScope.$broadcast('batchDetails', batchData);
@@ -296,6 +387,7 @@ angular.module('playerApp')
         courseService.enrollUserToCourse(req).then(function (response) {
           if (response && response.responseCode === 'OK') {
             batch.showEnroll = false
+            sessionService.setSessionData('COURSE_BATCH_ID', {courseId: batch.courseId, batchId: batchId})
             toasterService.success($rootScope.messages.smsg.m0036)
             $timeout(function () {
               $window.location.reload()
@@ -305,6 +397,53 @@ angular.module('playerApp')
           }
         }).catch(function () {
           toasterService.error($rootScope.messages.emsg.m0001)
+        })
+      }
+
+      function initializeCourseEnrollEvent () {
+        console.log('Initialize enroll course event')
+        $rootScope.$on('enrollCourse', function (event, args) {
+          console.log('Got callback from payment:', args)
+          $scope.message = args.message
+          if ($scope.message === 'success') {
+            batch.enrollUserToCourse(args.batchId)
+          } else {
+            toasterService.error($rootScope.messages.emsg.m0001)
+          }
+        })
+      }
+
+      batch.payForCourse = function () {
+        $('#batchDetails').modal('hide')
+        $('#batchDetails').modal('hide all')
+        $('#batchDetails').modal('hide others')
+        if (document.getElementById('batchDetails')) {
+          document.getElementById('batchDetails').remove()
+        }
+        var params = {
+          courseId: batch.courseId,
+          batchId: batch.batchInfo.id
+        }
+        initializeCourseEnrollEvent()
+        $state.go('coursePayment', params)
+      }
+
+      batch.getCourseBatchesPrice = function () {
+        var request = {
+          entityName: 'courseprice',
+          filters: {
+            courseid: batch.courseId
+          }
+        }
+
+        coursePriceService.searchPrice(request).then(function (response) {
+          if (response && response.responseCode === 'OK') {
+            batch.courseBatchPriceList = response.result.response.content
+          } else {
+            toasterService.error('Unable to get course price, Please try again later')
+          }
+        }).catch(function (err) {
+          console.log('err', err)
         })
       }
     }

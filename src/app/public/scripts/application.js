@@ -12,9 +12,12 @@ angular.module('loginApp', [
   .controller('loginCtrl', ['$rootScope', 'messages', 'frmelmnts',
     function ($rootScope, messages, frmelmnts) {
       $rootScope.language = $('#defaultPortalLanguage').attr('value') || 'en'
+      $rootScope.signUpUserProvider = $('#signUpUserProvider').attr('value')
       $rootScope.messages = messages[$rootScope.language]
       $rootScope.frmelmnts = frmelmnts[$rootScope.language]
       $rootScope.cdnUrl = $('#cdnUrl').attr('value') || ''
+      $rootScope.instance = $('#instance').attr('value') || ''
+      $rootScope.instance = $rootScope.instance.charAt(0).toUpperCase() + $rootScope.instance.slice(1)
       $rootScope.getQueryStringValue = function (key) {
         return decodeURIComponent(window.location.search.replace(new RegExp('^(?:.*[&\\?]' +
               encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') + '(?:\\=([^&]*))?)?.*$', 'i'), '$1')); //eslint-disable-line
@@ -27,7 +30,7 @@ angular.module('loginApp', [
 
       /**
            * Delete redirect url if user direct close the window
-           */
+      */
       $(window).on('onunload', function () {
         delete window.localStorage.redirectUrl
       })

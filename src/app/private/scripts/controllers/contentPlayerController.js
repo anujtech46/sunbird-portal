@@ -1,14 +1,15 @@
 'use strict'
 
 angular.module('playerApp')
-  .controller('contentPlayerCtrl', ['playerTelemetryUtilsService', '$state', '$scope',
-    'contentService', '$timeout', '$stateParams', 'config', '$rootScope', '$location', '$anchorScroll',
-    'toasterService', function (playerTelemetryUtilsService, $state, $scope, contentService,
-      $timeout, $stateParams, config, $rootScope, $location, $anchorScroll, toasterService) {
+  .controller('contentPlayerCtrl', ['$state', '$scope', 'contentService', '$timeout', '$stateParams',
+    'config', '$rootScope', '$location', '$anchorScroll', 'toasterService', '$window', '$http',
+    function ($state, $scope, contentService, $timeout, $stateParams, config, $rootScope,
+      $location, $anchorScroll, toasterService, $window, $http) {
       $scope.isClose = $scope.isclose
       $scope.isHeader = $scope.isheader
       $scope.showModalInLectureView = true
       $scope.contentProgress = 0
+      $scope.telemetryEnv = ($state.current.name === 'Toc') ? 'course' : 'library'
       var count = 0
 
       $scope.getContentEditorConfig = function (data) {
@@ -28,6 +29,7 @@ angular.module('playerApp')
           }
           configuration.context.dims = cloneDims
         }
+        configuration.context.tags = _.concat([], org.sunbird.portal.channel)
         configuration.context.app = [org.sunbird.portal.appid]
         configuration.context.partner = []
         if ($rootScope.isTocPage) {
@@ -36,18 +38,26 @@ angular.module('playerApp')
             type: 'course'
           }]
         }
+        configuration.context.pdata = {
+          'id': org.sunbird.portal.appid,
+          'ver': '1.0',
+          'pid': 'sunbird-portal'
+        }
         configuration.config = config.ekstep_CP_config.config
         configuration.config.plugins = config.ekstep_CP_config.config.plugins
         configuration.config.repos = config.ekstep_CP_config.config.repos
         configuration.metadata = $scope.contentData
         configuration.data = $scope.contentData.mimeType !== config.MIME_TYPE.ecml ? {} : data.body
+        configuration.config.overlay = config.ekstep_CP_config.config.overlay || {}
+        configuration.config.splash = config.ekstep_CP_config.config.splash || {}
+        configuration.config.overlay.showUser = false
         return configuration
       }
 
       $scope.adjustPlayerHeight = function () {
         var playerWidth = $('#contentViewerIframe').width()
         if (playerWidth) {
-          var height = playerWidth * (9 / 16)
+          var height = playerWidth * (8 / 14)
           $('#contentViewerIframe').css('height', height + 'px')
         }
       }
@@ -80,13 +90,13 @@ angular.module('playerApp')
          * from renderer
          * Player controller dispatching the event sunbird
          */
-        document.getElementById('contentPlayer').addEventListener('renderer:telemetry:event',function (event, data) { // eslint-disable-line
+        document.getElementById('contentPlayer').addEventListener('renderer:telemetry:event', function (event, data) { // eslint-disable-line
           org.sunbird.portal.eventManager.dispatchEvent('sunbird:player:telemetry',
             event.detail.telemetryData)
         })
-        window.onbeforeunload = function (e) { // eslint-disable-line
+        /* window.onbeforeunload = function (e) { // eslint-disable-line
           playerTelemetryUtilsService.endTelemetry({ progress: $scope.contentProgress })
-        }
+        } */
       }
 
       function showLoaderWithMessage (showMetaLoader, message, closeButton, tryAgainButton) {
@@ -103,23 +113,23 @@ angular.module('playerApp')
       function getContent (contentId) {
         var req = { contentId: contentId }
         var qs = {
-          fields: 'body,editorState,stageIcons,templateId,languageCode,template,' +
-                        'gradeLevel,status,concepts,versionKey,name,appIcon,contentType,owner,' +
-                        'domain,code,visibility,createdBy,description,language,mediaType,' +
-                        'osId,languageCode,createdOn,lastUpdatedOn,audience,ageGroup,' +
-                        'attributions,artifactUrl,mimeType,medium,year,publisher'
+          fields: 'body,editorState,templateId,languageCode,template,' +
+            'gradeLevel,status,concepts,versionKey,name,appIcon,contentType,owner,' +
+            'domain,code,visibility,createdBy,description,language,mediaType,' +
+            'osId,languageCode,createdOn,lastUpdatedOn,audience,ageGroup,' +
+            'attributions,artifactUrl,mimeType,medium,year,publisher'
         }
         contentService.getById(req, qs).then(function (response) {
           if (response && response.responseCode === 'OK') {
             if (response.result.content.status === 'Live' || response.result.content.status === 'Unlisted' ||
-             $scope.isworkspace) {
+              $scope.isworkspace) {
               $scope.errorObject = {}
               showPlayer(response.result.content)
             } else {
               if (!count) {
                 count += 1
-                toasterService.warning($rootScope.messages.imsg.m0018)
-                $state.go('Home')
+                toasterService.warning($rootScope.messages.imsg.m0027)
+                $window.history.back()
               }
             }
           } else {
@@ -155,7 +165,6 @@ angular.module('playerApp')
         }
 
         $scope.visibility = false
-        playerTelemetryUtilsService.endTelemetry({ progress: $scope.contentProgress })
         if (document.getElementById('contentPlayer')) {
           document.getElementById('contentPlayer').removeEventListener('renderer:telemetry:event', function () {
             org.sunbird.portal.eventManager.dispatchEvent('sunbird:player:telemetry',
@@ -195,5 +204,76 @@ angular.module('playerApp')
         $('html, body').animate({
           scrollTop: $('#player-auto-scroll').offset().top
         }, 500)
+      }
+
+      function httpCall (url, method, data, headers) {
+        var URL = config.URL.BASE_PREFIX + config.URL.JULIA_PREFIX + url
+
+        return $http({
+          method: method,
+          url: URL,
+          headers: headers,
+          data: { request: data }
+          // data: data
+        })
+      }
+
+      function comm (url, type, data, success, error) {
+        var headers = { 'content-type': 'application/json' }
+        var request = httpCall(url, type, data, headers)
+        return (request.then(success, error))
+      }
+
+      var warnShown = false
+
+      function ping () {
+        var s = function (r) {
+          console.log('Ping received by server')
+
+          var activeTime = Math.floor(Date.now() / 1000) - r['create_time']
+          var timeout = r['timeout']
+
+          if (activeTime > timeout - 60) {
+            $('#jupyter-frame').remove()
+            toasterService.error('Your session on notebooks has timed out. Please close notebook tab(s) ' +
+              'and relanch the same.')
+          } else if (activeTime > timeout - 900 && !warnShown) {
+            toasterService.error('You have 15 minutes left on your notebook session. Please save your ' +
+              'open notebooks to avoid losing data.')
+            warnShown = true
+          }
+        }
+
+        var f = function (error) { console.log('Ping failed', JSON.stringify(error)) }
+        comm('/jbox/ping', 'GET', {}, s, f)
+      }
+
+      function loadCourseDetails () {
+        var mydata = JSON.parse(sessionStorage.getItem('sbConfig'))
+        if (typeof mydata.ENROLLED_COURSES === 'undefined') {
+          return ''
+        }
+
+        var uid = mydata.ENROLLED_COURSES.uid
+        var contentId = mydata.COURSE_PARAMS.contentId
+        var courseId = mydata.COURSE_PARAMS.courseId
+        var batchId = mydata.COURSE_PARAMS.batchId
+        // var course
+        // while (course = mydata.ENROLLED_COURSES.courseArr.pop()) { // eslint-disable-line no-cond-assign
+        //   if (courseId === course.courseId) {
+        //     batchId = course.batchId
+        //     break
+        //   }
+        // }
+        var courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
+          '&batchId=' + batchId + '&uid=' + uid
+        // alert("course_details_str = " + course_details_str);
+        return courseDetailsStr
+      }
+
+      $window.open_notebook = function (url) {
+        var newUrl = url + loadCourseDetails()
+        $window.open(newUrl)
+        setInterval(ping, 60000)
       }
     }])

@@ -22,7 +22,6 @@ angular.module('playerApp')
      */
       var admin = this
       admin.searchResult = $scope.users
-      admin.badges = adminService.getBadgesList()
       /**
          * @method getOrgName
          * @desc get organizations name
@@ -71,12 +70,13 @@ angular.module('playerApp')
                     .includes('SYSTEM_ADMINISTRATION')
                 }
               }
+              user.badgeAssertions = user.badgeAssertions
               if (user.organisations) {
                 user.organisations.forEach(function (userOrg) {
                   var adminRoles = admin.currentUserRoleMap[userOrg.organisationId]
                   // if user belongs to an org in which the current logged in user is ORG_ADMIN, set editable to true
                   if (typeof (user.isEditableProfile) === 'undefined' && (_.indexOf(adminRoles, 'ORG_ADMIN') > -1 ||
-                   _.indexOf(adminRoles, 'SYSTEM_ADMINISTRATION') > -1)) {
+                    _.indexOf(adminRoles, 'SYSTEM_ADMINISTRATION') > -1)) {
                     user.isEditableProfile = true
                   }
                   var orgNameAndId = orgIdAndNames.find(function (org) {
@@ -87,7 +87,7 @@ angular.module('playerApp')
               }
               // if current logged in user is ORG_ADMIN, SYSTEM_ADMINISTRATION of the root org of the user, set editable to true
               if (user.rootOrgId === $rootScope.rootOrgId &&
-                                    $rootScope.rootOrgAdmin === true) {
+                $rootScope.rootOrgAdmin === true) {
                 user.isEditableProfile = true
               }
             })
@@ -97,18 +97,22 @@ angular.module('playerApp')
       // open editRoles modal
       admin.showModal = function (identifier, orgs) {
         $timeout(function () {
-          $('#changeUserRoles').modal({
+          $('#changeUserRoles_' + identifier).modal({
             onShow: function () {
               admin.setDefaultSelected(orgs)
               admin.identifier = identifier
               admin.userOrganisations = orgs
               admin.selectedOrgUserRoles = []
+              admin.selectedOrgUserRolesNew = []
               $('.roleChckbox').checkbox()
             },
+            observeChanges: true,
+            closable: false,
             onHide: function () {
               admin.userId = ''
               admin.userOrganisations = []
               admin.selectedOrgUserRoles = []
+              admin.selectedOrgUserRolesNew = []
               return true
             }
           }).modal('show')
@@ -144,33 +148,33 @@ angular.module('playerApp')
           var nullReplacedToEmpty = JSON.stringify(list).replace(/null/g, '""')
           var users = JSON.parse(nullReplacedToEmpty)
           alasql('SELECT firstName AS [First Name],lastName AS [Last Name], ' +
-                        ' organisationsName AS Organizations ,location AS Location, grade AS Grades, ' +
-                        'language AS Language ,subject as Subjects ' +
-                        ' INTO CSV(\'Users.csv\',{headers:true ,separator:","}) FROM ?', [users])
+            ' organisationsName AS Organizations ,location AS Location, grade AS Grades, ' +
+            'language AS Language ,subject as Subjects ' +
+            ' INTO CSV(\'Users.csv\',{headers:true ,separator:","}) FROM ?', [users])
         } else if (key === 'Organisations') {
           list.forEach(function (org) {
             switch (org.status) {
-            case 0:
-              org.status = 'INACTIVE'
-              break
-            case 1:
-              org.status = 'ACTIVE'
-              break
-            case 2:
-              org.status = 'BLOCKED'
-              break
-            case 3:
-              org.status = 'RETIRED'
-              break
-            default:
-              break
+              case 0:
+                org.status = 'INACTIVE'
+                break
+              case 1:
+                org.status = 'ACTIVE'
+                break
+              case 2:
+                org.status = 'BLOCKED'
+                break
+              case 3:
+                org.status = 'RETIRED'
+                break
+              default:
+                break
             }
           })
           var orgNullReplacedToEmpty = JSON.stringify(list).replace(/null/g, '""')
           var organizations = JSON.parse(orgNullReplacedToEmpty)
           alasql('SELECT orgName AS orgName,orgType AS orgType,' +
-          'noOfMembers AS noOfMembers,channel AS channel, ' +
-          'status AS Status INTO CSV(\'Organizations.csv\',{headers:true,separator:","}) FROM ?',
+            'noOfMembers AS noOfMembers,channel AS channel, ' +
+            'status AS Status INTO CSV(\'Organizations.csv\',{headers:true,separator:","}) FROM ?',
           [organizations])
         }
       }
@@ -194,7 +198,7 @@ angular.module('playerApp')
               return user
             })
           } else { toasterService.error($rootScope.messages.fmsg.m0051) }
-                }).catch(function(err) { // eslint-disable-line
+        }).catch(function (err) { // eslint-disable-line
           toasterService.error($rootScope.messages.fmsg.m0051)
         })
       }
@@ -203,40 +207,58 @@ angular.module('playerApp')
       admin.isUserRole = function (role, list) {
         return list.includes(role)
       }
-      admin.editRoles = function (role, userRoles) {
+      admin.editRoles = function (role, userRoles, $event) {
         if (userRoles.includes(role) === true) {
           admin.selectedOrgUserRoles = admin.selectedOrgUserRoles.filter(function (selectedRole) {
             return selectedRole !== role
           })
         } else {
-          admin.selectedOrgUserRoles.push(role)
+          if ($event.target.checked === true) {
+            admin.selectedOrgUserRolesNew.push(role)
+          } else {
+            admin.selectedOrgUserRolesNew.splice(admin.selectedOrgUserRolesNew.indexOf(role))
+          }
         }
       }
       admin.updateRoles = function (identifier, orgId, roles) {
+        admin.selectedOrgUserRolesNew.forEach(function (Newroles) {
+          roles.push(Newroles)
+        })
+        var mainRole = []
+        var mainRolesCollections = _.clone(permissionsService.getMainRoles())
+        _.forEach(mainRolesCollections, function (value, key) {
+          mainRole.push(value.role)
+        })
+        var sendingRoles = _.clone(roles)
+        var removalRoles = _.difference(sendingRoles, mainRole)
+        _.remove(roles, function (role) {
+          return _.indexOf(removalRoles, role) !== -1
+        })
         var req = {
           request: {
             userId: identifier,
             organisationId: orgId,
             roles: roles
-
           }
         }
 
         adminService.updateRoles(req).then(function (res) {
           if (res.responseCode === 'OK') {
             toasterService.success($rootScope.messages.smsg.m0028)
-            $('#changeUserRoles').modal('hide', function () {
-              $('#changeUserRoles').modal('hide')
+            $('#changeUserRoles_' + identifier).modal('hide', function () {
+              $('#changeUserRoles_' + identifier).modal('hide')
             })
           } else {
-            $('#changeUserRoles').modal('hide', function () {
-              $('#changeUserRoles').modal('hide')
+            admin.selectedOrgUserRoles = _.difference(admin.selectedOrgUserRoles, admin.selectedOrgUserRolesNew)
+            $('#changeUserRoles_' + identifier).modal('hide', function () {
+              $('#changeUserRoles_' + identifier).modal('hide')
             })
             // profile.isError = true;
             toasterService.error($rootScope.messages.fmsg.m0051)
           }
-            }).catch(function(err) { // eslint-disable-line
+        }).catch(function (err) { // eslint-disable-line
           // profile.isError = true
+          admin.selectedOrgUserRoles = _.difference(admin.selectedOrgUserRoles, admin.selectedOrgUserRolesNew)
           toasterService.error($rootScope.messages.fmsg.m0051)
         })
       }
@@ -256,67 +278,19 @@ angular.module('playerApp')
       }
 
       admin.setDefaultSelected = function (organizations) {
-        if (organizations) {
+        if (organizations && organizations.length > 0) {
           $timeout(function () {
-            var orgDropdown = $('#userOrgs').dropdown()
-            orgDropdown.dropdown('set text', organizations[0].orgName)
-            orgDropdown.dropdown({ allowTab: false })
+            var dropdownDom = $('#userOrgs_' + admin.identifier)
+            dropdownDom.dropdown()
+            if (organizations[0]['orgName']) {
+              dropdownDom.dropdown('set text', organizations[0].orgName)
+            } else {
+              dropdownDom.dropdown('set text', organizations[0].organisationId)
+            }
+            dropdownDom.dropdown({ allowTab: false })
             admin.selectedOrgUserRoles = organizations[0].roles
             admin.selectedOrgUserId = organizations[0].organisationId
-          }, 0)
-        }
-      }
-
-      admin.assignBadgeModal = function (id) {
-        $('#assignBadge').modal({
-          onShow: function () {
-            admin.userIdentifier = id
-            admin.disableAsignButton = false
-            $timeout(function () {
-              $('#badgeDropdown').dropdown()
-            }, 100)
-          },
-          onHide: function () {
-            admin.userIdentifier = ''
-            admin.userBadges = []
-            return true
-          }
-        }).modal('show')
-      }
-
-      admin.assignBadge = function (badge, identifier) {
-        var newBadge = {
-          params: {},
-          request: {
-            badgeTypeId: badge.id,
-            receiverId: identifier
-          }
-        }
-
-        adminService.addBadges(newBadge).then(function (res) {
-          if (res.responseCode === 'OK') {
-            admin.recievedBadge.name = badge.name
-            admin.recievedBadge.userId = identifier
-            admin.newBadgeAssigned = false
-            toasterService.success(badge.name + ' assigned successfully')
-          } else {
-            toasterService.error(res.params.errmsg)
-            admin.disableAsignButton = false
-          }
-        }).catch(function () {
-          admin.disableAsignButton = false
-          toasterService.error('Some thing went wrong. please try again later..')
-        })
-      }
-      admin.getBadgeName = function (user) {
-        user.userBadgeS = []
-        if (user.badges) {
-          user.badges.forEach(function (badge) {
-            var userBadge = admin.badges.find(function (badgE) {
-              return badgE.id === badge.badgeTypeId
-            })
-            user.userBadgeS.push(userBadge)
-          })
+          }, 1000)
         }
       }
       admin.getUserRoles()

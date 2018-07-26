@@ -31,8 +31,10 @@ var paths = {
     testRequire: [
       'app/thirdparty/bower_components/jquery/dist/jquery.min.js',
       'app/thirdparty/bower_components/angular/angular.min.js',
+      'app/thirdparty/libs/angular-inview.js',
       'app/thirdparty/libs/eventbus.min.js',
       'app/thirdparty/libs/md5.js',
+      'app/thirdparty/libs/telemetry.min.js',
       'app/thirdparty/bower_components/jasmine-jquery/lib/jasmine-jquery.js',
       'app/thirdparty/semantic/semantic.min.js',
       'app/thirdparty/bower_components/jquery-ui/jquery-ui.min.js',
@@ -124,7 +126,9 @@ var paths = {
     'dist/public/scripts/controllers/publicContentPlayerController.js',
     'dist/public/scripts/controllers/courseScheduleController.js',
     'dist/public/scripts/controllers/collectionPlayerController.js',
-    'dist/public/scripts/filters/dateFilter.js'
+    'dist/public/scripts/filters/dateFilter.js',
+    'dist/public/scripts/controllers/dialCodeController.js',
+    'dist/public/scripts/filters/fileSize.js'
   ],
   private_bower_js: [
     'dist/thirdparty/libs/eventbus.min.js',
@@ -133,6 +137,7 @@ var paths = {
     'dist/thirdparty/bower_components/jquery/dist/jquery.min.js',
     'dist/thirdparty/bower_components/jquery-ui/jquery-ui.min.js',
     'dist/thirdparty/bower_components/angular/angular.min.js',
+    'dist/thirdparty/libs/angular-inview.js',
     'dist/thirdparty/bower_components/angular-cookies/angular-cookies.min.js',
     'dist/thirdparty/bower_components/angular-route/angular-route.min.js',
     'dist/thirdparty/bower_components/semantic-ui-calendar/dist/calendar.min.js',
@@ -158,7 +163,8 @@ var paths = {
     'dist/thirdparty/bower_components/angular-chart.js/dist/angular-chart.min.js',
     'dist/thirdparty/semantic-tree-picker/semantic-ui-tree-picker.js',
     'dist/thirdparty/libs/generateAndDownloadCSV.min.js',
-    'dist/thirdparty/bower_components/file-upload/fine-uploader/fine-uploader.js'
+    'dist/thirdparty/bower_components/file-upload/fine-uploader/fine-uploader.js',
+    'dist/thirdparty/bower_components/crypto-js/crypto-js.js'
   ],
   private_bower_css: [
     'dist/thirdparty/libs/semantic-ui-tree-picker/semantic-ui-tree-picker.css',
@@ -284,8 +290,23 @@ var paths = {
     'dist/private/scripts/services/dashboard/datasources/orgConsumptionDataSource.js',
     'dist/private/scripts/services/dashboard/datasources/dataSourceUtils.js',
     'dist/private/scripts/services/dashboard/datasources/downloadReportDataSource.js',
-    'dist/private/scripts/services/telemetryService.js'
-
+    'dist/private/scripts/services/telemetryService.js',
+    'dist/private/scripts/controllers/dataDrivenFiltersController.js',
+    'dist/private/scripts/directives/badge/contentBadgeDirective.js',
+    'dist/private/scripts/directives/badge/profileBadgeDirective.js',
+    'dist/private/scripts/controllers/badge/contentBadgeController.js',
+    'dist/private/scripts/services/badgeService.js',
+    'dist/private/scripts/controllers/workspace/DataDrivenFormController.js',
+    'dist/private/scripts/controllers/badge/profileBadgeController.js',
+    'dist/private/scripts/controllers/coursePaymentController.js',
+    'dist/private/scripts/services/payment/coursePaymentService.js',
+    'dist/private/scripts/directives/courseBenefitTransferDirective.js',
+    'dist/private/scripts/services/restfulPlayerService.js',
+    'dist/private/scripts/directives/certificate/courseCertificateDirective.js',
+    'dist/private/scripts/services/coursePriceService.js',
+    'dist/private/scripts/directives/coursePriceDirective.js',
+    'dist/private/scripts/directives/badge/courseBadgeDirective.js',
+    'dist/private/scripts/controllers/purchaseListController.js'
   ],
   telemetry_js: [
     'dist/private/scripts/telemetry/TelemetryEvent.js',
