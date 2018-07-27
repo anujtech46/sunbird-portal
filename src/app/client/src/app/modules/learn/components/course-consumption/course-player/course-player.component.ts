@@ -501,7 +501,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log('SSO successful :: Opening notebook :: ', newUrl);
       const windowPopup = window.open(newUrl);
       if (!windowPopup) {
-        this.toasterService.info('Unable to open a new tab. Please enable popups for domain ' + url.split('//')[1].split('/')[0]);
+        const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
+        this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
       }
       (<any>$('#openNoteBookModal')).modal('hide');
       if (!this.juliaBoxPingIntervalTime) {
