@@ -5,7 +5,7 @@
     <div class="ui middle aligned list margin-top-0">
       <div class="item padding-top-10 padding-bottom-5">
         <div class="right floated content contentMetaDetail">
-          <div>{{data.price}}</div>
+          <div>{{data.price}} Rs.</div>
         </div>
         <div class="content">
           Price
@@ -13,7 +13,7 @@
       </div>
       <div class="item padding-top-10 padding-bottom-5">
         <div class="right floated content contentMetaDetail">
-          <div>{{data.benefit}}</div>
+          <div>{{data.benefit}} Rs.</div>
         </div>
         <div class="content">
           Benefit
@@ -29,7 +29,10 @@
       </div>
     </div>
   </div>
-  <div class="ui warning message" *ngIf="data && !data.price">
+  <div class="twelve wide column" *ngIf="showLoader">
+    <app-loader [data]="loaderMessage"></app-loader>
+  </div>
+  <div class="ui warning message" *ngIf="data && !data.price && !showLoader">
     <div class="header">
       Price is not defined for this batch, Please contact admin...
     </div>

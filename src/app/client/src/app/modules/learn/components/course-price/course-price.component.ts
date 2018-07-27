@@ -63,7 +63,9 @@ export class CoursePriceComponent implements OnInit {
         batchid: this.batchId
       }
     };
+    this.showLoader = true;
     this.coursePriceService.searchPrice(request).subscribe((response) => {
+      this.showLoader = false;
       if (response && response.responseCode === 'OK') {
         this.data = response.result.response.content[0] || {};
         if (this.viewType === 'ICON') {
@@ -78,6 +80,7 @@ export class CoursePriceComponent implements OnInit {
         this.toasterService.error('Unable to get course price, Please try again later');
       }
     }, (err) => {
+      this.showLoader = false;
       console.log('err', err);
     });
   }
