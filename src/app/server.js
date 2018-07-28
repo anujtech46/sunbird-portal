@@ -344,6 +344,7 @@ app.all('/content/*',
 
 // Local proxy for content and learner service
 require('./proxy/localProxy.js')(app)
+require('./helpers/juliaNoteBook/juliaNoteBookHelper.js')(app)
 
 app.all('/juliabox/*',
   proxy(juliaBoxBaseUrl, {
