@@ -20,6 +20,7 @@ const envVariables = require('./../environmentVariablesHelper.js')
 const backgroundImg = FileSystem.readFileSync(path.join(__dirname, 'CertBackground.jpg'))
 const containerName = envVariables.CERTIFICATE_STORE_CONTAINER_NAME || 'container'
 const certificateInstructor = envVariables.CERTIFICATE_INSTRUCTOR_NAME
+const platformName = envVariables.CERTIFICATE_PLATFORM_NAME
 const uploadUtil = new UploadUtil(containerName)
 
 module.exports = function (app) {
@@ -167,8 +168,9 @@ function createPDF (data, filePath, callback) {
 
     doc.font('Helvetica-Bold').fontSize(15).text(title + ' ' + name, 200, 293, { align: 'center' })
     doc.font('Helvetica-Bold').fontSize(15).text(courseName, 200, 376, { align: 'center' })
+    doc.font('Helvetica').fontSize(15).text(platformName, 200, 416, { align: 'center' })
     doc.text(courseCompletionDate, 340, 470, { align: 'left' })
-    doc.text(instructor, 385, 470, { align: 'center' })
+    doc.text(instructor, 375, 470, { align: 'center' })
 
     doc.end()
     stream.on('error', function (err) {

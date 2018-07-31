@@ -265,7 +265,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     if ((this.batchId && !this.flaggedCourse) || this.courseStatus === 'Unlisted') {
       this.router.navigate([], navigationExtras);
     } else {
-      this.toasterService.info('Please enroll the course to access the content...');
+      this.toasterService.info('Please enrol to the course …');
     }
   }
 
