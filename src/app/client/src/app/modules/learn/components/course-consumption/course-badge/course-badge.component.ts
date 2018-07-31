@@ -100,14 +100,15 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
    * First check the badge data inside the user profile, If not available called the get user profile
    */
   getCourseBadge = () => {
-    const badgeDetail = _.find(this.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
+    const badgeDetail: any = _.find(this.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
     console.log('Checked badge, if not get from user profile again', badgeDetail);
-    if (badgeDetail) {
+    if (badgeDetail && badgeDetail.issuerId) {
       this.userBadges = badgeDetail;
       if (!this.userBadges.issuerName) {
         this.getIssuerName();
       }
   } else {
+    console.log('Get profile api called to get badge detail :: ');
       this.userService.getUserProfile();
       this.userDataUnsubscribe = this.userService.userData$.subscribe((user: IUserData) => {
         if (user && !user.err) {
@@ -115,6 +116,7 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
             this.userDataUnsubscribe.unsubscribe();
           }
           const badge = _.find(user.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
+          console.log('We got badge info :: ', badge);
           this.userBadges = badge;
           this.getIssuerName();
         }
@@ -127,7 +129,7 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
    */
   getIssuerName = () => {
     const issuerList = this.courseBadgeService.getIssuerListDetail() || [];
-    let issuer: any = _.find(issuerList, { 'issuerId': this.userBadges.issuerId });
+    let issuer: any = _.find(issuerList, { 'issuerId': this.userBadges && this.userBadges.issuerId });
     if (issuer) {
       this.userBadges.issuerName = issuer.name;
     } else {
@@ -164,6 +166,8 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
       }, (err) => {
         console.log('err', err);
       });
+    } else {
+      this.loadDigiLockerScript();
     }
   }
 
