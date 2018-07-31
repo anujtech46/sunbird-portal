@@ -101,7 +101,7 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
    */
   getCourseBadge = () => {
     const badgeDetail: any = _.find(this.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
-    console.log('Checked badge, if not get from user profile again', badgeDetail);
+    console.log('Checked badge, if not get from user profile :: ', badgeDetail);
     if (badgeDetail && badgeDetail.issuerId) {
       this.userBadges = badgeDetail;
       if (!this.userBadges.issuerName) {
@@ -118,7 +118,9 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
           const badge = _.find(user.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
           console.log('We got badge info :: ', badge);
           this.userBadges = badge;
-          this.getIssuerName();
+          if (this.userBadges && this.userBadges.issuerName) {
+            this.getIssuerName();
+          }
         }
       });
     }
