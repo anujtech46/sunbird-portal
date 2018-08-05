@@ -1,4 +1,4 @@
-TableName: shoppingCart
+TableName: scholarShipOrder
 Schema: 
   orderId: string
   productId: string
@@ -8,7 +8,7 @@ Schema:
   createdDate: string
   updatedDate: string
 
-TableName: ShoppingCartHistory
+TableName: scholarShipOrderHistory
 Schema: 
   orderId: string
   status: string

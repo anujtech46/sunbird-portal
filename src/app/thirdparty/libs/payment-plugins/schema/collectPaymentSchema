@@ -4,4 +4,11 @@ Schema:
   providerOrderId: string
   paymentId: string
   status: string <initialized|failed|authorized|rejected|declined> 
+  createdDate: string
+  updatedDate: string
+
+TableName: collectPaymentHistory
+Schema:
+  paymentId: string
+  status: string
   date: string

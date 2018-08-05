@@ -1,67 +1,69 @@
-export interface CollectUpiPaymentRequestI {
-  amount: number
-  orderId: string
-  currency?: string
-  upiId?: string
-}
 
-export interface PaymentResponseI {
+export interface StartPaymentResponseI {
+  sdkUrl: string,
+  providerOrderId: string,
+  apiKey? : string,
+  config? : object
+}
+export interface ErrorResponseI {
   errCode? : string
   errMsg? : string
-  statusCode: number
-  responseCode: string
-  result: any
 }
-
 export interface PaymentStatusRequestI {
   paymentId: string
 }
-
+export interface GetPaymentStatusResponseI {
+  paymentId: string
+  status: string
+  amount: number,
+  orderId: string,
+  date: string
+}
 export interface OrderStatusRequestI {
   providerOrderId: string
 }
-
-export interface CollectPaymentResultI {
-  cpTxnId: string
-  cpStatus: string
-  cpCreatedDate: string
+export interface GetOrderStatusResponseI {
+  providerOrderId: string
+  status: string
+  createdDate: string
   paymentId: string
   orderId: string
 }
-
-export interface SendPaymentResultI {
-  spTxnId: string
-  spStatus: string
-  spCreatedDate: string
+export interface CollectUpiPaymentRequestI {
+  amountInPaise: number
+  orderId: string
+  paymentAddress?: string
+}
+export interface CollectPaymentResponseI {
+  providerOrderId: string
+  status: string
+  createdDate: string
   paymentId: string
   orderId: string
 }
-
-export interface CollectPaymentResponseI extends PaymentResponseI {
-  result: CollectPaymentResultI
-}
-
-export interface SendPaymentResponseI extends PaymentResponseI {
-  result: SendPaymentResultI
-}
-
 export interface SenderPaymentRequestI {
-  refundAmount: number
-  collectedAmount?: number
+  refundAmountInPaise: number
+  collectedAmountInPaise?: number
   orderId: string
   paymentId: string
-  upiId?: string
+  paymentAddress?: string
 }
-
+export interface SendPaymentResponseI {
+  providerOrderId: string
+  status: string
+  createdDate: string
+  paymentId: string
+  sunbirdOrderId: string
+}
 export interface PaymentCollectorI {
-  startPayment(): Promise<PaymentResponseI>
-  getPaymentStatus(req: PaymentStatusRequestI): Promise<PaymentResponseI>
-  getOrderStatus(req: OrderStatusRequestI): Promise<PaymentResponseI>
-  collectUpiPayment(req: CollectUpiPaymentRequestI): Promise<CollectPaymentResponseI>
-  collectUpiPaymentCallback(reqBody: object, reqHeader: object): Promise<CollectPaymentResponseI>
+  startPayment(sunbirdOrderId: string): Promise<StartPaymentResponseI | ErrorResponseI>
+  getPaymentStatus(req: PaymentStatusRequestI): Promise<GetPaymentStatusResponseI | ErrorResponseI>
+  getOrderStatus(req: OrderStatusRequestI): Promise<GetOrderStatusResponseI | ErrorResponseI>
+  collectUpiPayment(req: CollectUpiPaymentRequestI): Promise<CollectPaymentResponseI | ErrorResponseI>
+  collectUpiPaymentCallback(reqBody: object, reqHeader: object): Promise<CollectPaymentResponseI | ErrorResponseI>
 }
 
 export interface PaymentSenderI {
-  sendPayment(req: SenderPaymentRequestI): Promise<SendPaymentResponseI>
-  sendPaymentCallback(reqBody: object, reqHeader: object): Promise<SendPaymentResponseI>
+  sendPayment(req: SenderPaymentRequestI): Promise<SendPaymentResponseI | ErrorResponseI>
+  sendPaymentCallback(reqBody: object, reqHeader: object): Promise<SendPaymentResponseI | ErrorResponseI>
 }
