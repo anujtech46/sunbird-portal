@@ -66,4 +66,5 @@ export interface PaymentCollectorI {
 export interface PaymentSenderI {
   sendPayment(req: SenderPaymentRequestI): Promise<SendPaymentResponseI | ErrorResponseI>
   sendPaymentCallback(reqBody: object, reqHeader: object): Promise<SendPaymentResponseI | ErrorResponseI>
+  getPaymentStatus(providerOrderId: string): Promise<GetPaymentStatusResponseI | ErrorResponseI>
 }

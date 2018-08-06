@@ -43,12 +43,17 @@ export interface OrderPaymentSuccessRequestI {
   paymentId: string
 }
 
+export interface SendUpiPaymentRequestI {
+  providerOrderId: string
+}
+
 export interface PaymentPluginInterface {
-  startPayment(StartPaymentRequestI): Promise<StartPaymentSuccessResponseI | PaymentResponseI>
-  collectUpiPayment(req: CollectUpiPaymentRequestI): Promise<CollectUpiPaymentSuccessResponseI | PaymentResponseI>
-  addOrderPaymentStatus(req: AddOrderPaymentStatusRequestI): Promise<PaymentResponseI>
-  getLastOrderPaymentStatus(sunbirdOrderId: string): Promise<PaymentResponseI>
-  orderPaymentSuccess(req: OrderPaymentSuccessRequestI): Promise<PaymentResponseI>
-  getOrderPaymentStatus(sunbirdOrderId: string): Promise<PaymentResponseI>
+  startPayment(req: StartPaymentRequestI): Promise<void>
+  collectUpiPayment(req: CollectUpiPaymentRequestI): Promise<void>
+  addOrderPaymentStatus(req: AddOrderPaymentStatusRequestI): Promise<void>
+  getLastOrderPaymentStatus(sunbirdOrderId: string): Promise<void>
+  orderPaymentSuccess(req: OrderPaymentSuccessRequestI): Promise<void>
+  getOrderPaymentStatus(sunbirdOrderId: string): Promise<void>
+  sendUpiPayment(req: SendUpiPaymentRequestI): Promise<void>
 }
 
