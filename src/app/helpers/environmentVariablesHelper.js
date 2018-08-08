@@ -38,6 +38,10 @@ let envVariables = {
   learner_Service_Local_BaseUrl: env.sunbird_learner_service_local_base_url || 'http://learner-service:9000',
   content_Service_Local_BaseUrl: env.sunbird_content_service_local_base_url || 'http://content_service_content_service:5000',
   ANDROID_APP_URL: env.sunbird_android_app_url || 'http://www.sunbird.org',
+  ENABLE_SIGNUP: env.sunbird_enable_signup || 'true',
+  BUILD_NUMBER: env.build_number || packageObj.version+'.'+packageObj.buildNumber,
+  TELEMETRY_SERVICE_LOCAL_URL: env.sunbird_telemetry_service_local_url || 'http://telemetry-service:9001/',
+  PORTAL_API_CACHE_TTL: env.sunbird_api_response_cache_ttl || '600'
   EXPLORE_BUTTON_VISIBILITY: env.sunbird_explore_button_visibility || 'false',
   ENABLE_SIGNUP: env.sunbird_enable_signup || 'true',
   BUILD_NUMBER: env.build_number || packageObj.version+'.'+packageObj.buildNumber,

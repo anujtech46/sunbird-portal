@@ -5,6 +5,8 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IInteractEventInput, IImpressionEventInput } from '@sunbird/telemetry';
 import * as _ from 'lodash';
+import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-enroll-batch',
@@ -17,7 +19,6 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   batchDetails: any;
   showEnrollDetails = false;
   readMore = false;
-  disableSubmitBtn = true;
   sdkUrl: string;
   apiKey: string;
   productId: string;
@@ -25,6 +26,8 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   orderData: any;
   paymentId: string;
   paymentType: string;
+  public unsubscribe = new Subject<void>();
+  disableSubmitBtn = false;
   /**
 	 * telemetryImpression object for update batch page
 	*/
@@ -54,8 +57,14 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
           }
       };
 
-      this.courseBatchService.getEnrollBatchDetails(this.batchId).subscribe((data) => {
+      this.courseBatchService.getEnrollToBatchDetails(this.batchId)
+      .takeUntil(this.unsubscribe)
+      .subscribe((data) => {
         this.batchDetails = data;
+        if (this.batchDetails.enrollmentType !== 'open') {
+          this.toasterService.error(this.resourceService.messages.fmsg.m0082);
+          this.redirect();
+        }
         this.fetchParticipantsDetails();
       }, (err) => {
         this.toasterService.error(this.resourceService.messages.fmsg.m0054);
@@ -68,6 +77,8 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
     if (this.enrollBatch && this.enrollBatch.deny) {
       this.enrollBatch.deny();
     }
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
   redirect() {
     this.router.navigate(['./'], { relativeTo: this.activatedRoute.parent });
@@ -79,7 +90,9 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
           identifier: _.keys(this.batchDetails.participant)
         }
       };
-      this.courseBatchService.getUserDetails(request).subscribe((res) => {
+      this.courseBatchService.getUserDetails(request)
+      .takeUntil(this.unsubscribe)
+      .subscribe((res) => {
         this.batchDetails.participantDetails = res.result.response.content;
         this.showEnrollDetails = true;
       }, (err) => {
@@ -98,7 +111,10 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
         batchId: this.batchDetails.identifier
       }
     };
-    this.courseBatchService.enrollToCourse(request).subscribe((data) => {
+this.disableSubmitBtn = true;
+this.courseBatchService.enrollToCourse(request)
+    .takeUntil(this.unsubscribe)
+    .subscribe((data) => {
       this.disableSubmitBtn = true;
       this.toasterService.success(this.resourceService.messages.smsg.m0036);
       this.fetchEnrolledCourseData();
@@ -106,14 +122,18 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
       this.disableSubmitBtn = false;
       this.toasterService.error(this.resourceService.messages.emsg.m0001);
     });
-    this.disableSubmitBtn = false;
   }
   fetchEnrolledCourseData() {
     setTimeout(() => {
-      this.coursesService.getEnrolledCourses().subscribe(() => {
+      this.coursesService.getEnrolledCourses()
+      .takeUntil(this.unsubscribe)
+      .subscribe(() => {
+        this.disableSubmitBtn = false;
+        this.toasterService.success(this.resourceService.messages.smsg.m0036);
         this.router.navigate(['/learn/course', this.batchDetails.courseId, 'batch', this.batchDetails.identifier]);
         window.location.reload();
       }, (err) => {
+        this.disableSubmitBtn = false;
         this.router.navigate(['/learn']);
       });
     }, 2000);

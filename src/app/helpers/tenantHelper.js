@@ -7,6 +7,7 @@ const async = require('async')
 const _ = require('lodash')
 const telemetryHelper = require('./telemetryHelper')
 const appId = envHelper.APPID
+const defaultTenant = envHelper.DEFAULT_TENANT
 const telemtryEventConfig = JSON.parse(fs.readFileSync(path.join(__dirname, './telemetryEventConfig.json')))
 telemtryEventConfig['pdata']['id'] = appId
 const successResponseStatusCode = 200
@@ -102,5 +103,22 @@ module.exports = {
       'result': result
     })
     res.end()
+  },
+  getDefaultTenantIndexState:  function() {
+    
+    if(!defaultTenant){
+      console.log('default_tenant env not set');
+      return false;
+    }
+
+    try {
+      var stats = fs.statSync(path.join(__dirname, '../tenant', defaultTenant, 'index.html'))
+      return stats.isFile()
+    } catch(e) {
+      console.log('default_tenant_index_file_stats_error ', e)
+      return false;
+    }
+    
   }
+
 }

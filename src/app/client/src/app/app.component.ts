@@ -96,7 +96,6 @@ export class AppComponent implements OnInit {
       this.router.events.filter(event => event instanceof NavigationEnd).first().subscribe((urlAfterRedirects: NavigationEnd) => {
         fingerPrint2.get((deviceId, components) => {
           (<HTMLInputElement>document.getElementById('deviceId')).value = deviceId;
-          this.conceptPickerService.initialize();
           this.initializeAnonymousSession();
         });
       });
@@ -125,16 +124,16 @@ export class AppComponent implements OnInit {
   }
   initializeAnonymousSession() {
     this.orgDetailsService.getOrgDetails(_.get(this.activatedRoute, 'snapshot.root.firstChild.params.slug'))
-    .first().subscribe((data) => {
-      this.orgDetails = data;
-      this.initTelemetryService();
-      this.initTenantService();
-      this.userService.initialize(false);
-      this.initApp = true;
-    }, (err) => {
-      this.initApp = true;
-      console.log('unable to get organization details');
-    });
+      .first().subscribe((data) => {
+        this.orgDetails = data;
+        this.initTelemetryService();
+        this.initTenantService();
+        this.userService.initialize(false);
+        this.initApp = true;
+      }, (err) => {
+        this.initApp = true;
+        console.log('unable to get organization details');
+      });
   }
   public initTelemetryService() {
     let config: ITelemetryContext;
@@ -202,7 +201,7 @@ export class AppComponent implements OnInit {
     this.tenantService.tenantData$.subscribe(
       data => {
         if (data && !data.err) {
-          document.title = data.tenantData.titleName;
+          document.title = this.userService.rootOrgName || data.tenantData.titleName;
           document.querySelector('link[rel*=\'icon\']').setAttribute('href', data.tenantData.favicon);
         }
       }

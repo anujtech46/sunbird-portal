@@ -47,6 +47,7 @@ const MobileDetect = require('mobile-detect');
 const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
 
 let memoryStore = null
+let defaultTenantIndexStatus = 'false';
 const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
 //require course price plugin
 var CoursePrice = require('sb_course_price_plugin').PriceRoutes
@@ -158,6 +159,10 @@ function getLocals(req) {
   locals.defaultTenant = envHelper.DEFAULT_TENANT
   locals.contentChannelFilter = envHelper.CONTENT_CHANNEL_FILTER_TYPE;
   locals.exploreButtonVisibility = envHelper.EXPLORE_BUTTON_VISIBILITY;
+  locals.defaultTenantIndexStatus = defaultTenantIndexStatus;
+  locals.enableSignup = envHelper.ENABLE_SIGNUP;
+  locals.buildNumber = envHelper.BUILD_NUMBER
+  locals.apiCacheTtl = envHelper.PORTAL_API_CACHE_TTL
   locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID;
   locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_APP_URL;
   locals.addToDigiLockerAppID = envHelper.ADD_TO_DIGILOCKER_APP_ID;
@@ -175,18 +180,18 @@ function indexPage(req, res) {
     _.forIn(getLocals(req), function (value, key) {
       res.locals[key] = value
     })
-    if (envHelper.PORTAL_CDN_URL) {
-      request(envHelper.PORTAL_CDN_URL + 'index.ejs?version=' + packageObj.version+'.'+packageObj.buildNumber, function (error, response, body) {
-        if (error || response.statusCode !== 200) {
-          console.log('error while fetching index.ejs from CDN', error)
-          res.render(path.join(__dirname, 'dist', 'index.ejs'))
-        } else {
-          res.send(ejs.render(body, getLocals(req)))
-        }
-      });
-    } else {
+    // if (envHelper.PORTAL_CDN_URL) {
+    //   request(envHelper.PORTAL_CDN_URL + 'index.ejs?version=' + packageObj.version+'.'+packageObj.buildNumber, function (error, response, body) {
+    //     if (error || response.statusCode !== 200) {
+    //       console.log('error while fetching index.ejs from CDN', error)
+    //       res.render(path.join(__dirname, 'dist', 'index.ejs'))
+    //     } else {
+    //       res.send(ejs.render(body, getLocals(req)))
+    //     }
+    //   });
+    // } else {
       res.render(path.join(__dirname, 'dist', 'index.ejs'))
-    }
+    //}
   }
 }
 app.get('/get/envData', function (req, res) {
@@ -284,6 +289,14 @@ app.post('/learner/content/v1/media/upload',
     }
   }))
 
+app.post('/learner/user/v1/create', function(req, res, next){
+  if(envHelper.ENABLE_SIGNUP === 'false'){
+    res.sendStatus(403);
+  } else{
+    next();
+  }
+});
+
 app.all('/learner/*',
   proxyUtils.verifyToken(),
   permissionsHelper.checkPermission(),
@@ -301,22 +314,44 @@ app.all('/learner/*',
     }
   }))
 
-
 app.all('/content/data/v1/telemetry',
-  proxy(envHelper.content_Service_Local_BaseUrl, {
+  proxy(envHelper.TELEMETRY_SERVICE_LOCAL_URL, {
     limit: reqDataLimitOfContentUpload,
     proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(),
     proxyReqPathResolver: function (req) {
-      return require('url').parse(envHelper.content_Service_Local_BaseUrl + '/v1/telemetry').path
+      return require('url').parse(envHelper.TELEMETRY_SERVICE_LOCAL_URL + telemtryEventConfig.endpoint).path
+    }
+  }))
+
+app.all('/action/data/v3/telemetry',
+  proxy(envHelper.TELEMETRY_SERVICE_LOCAL_URL, {
+    limit: reqDataLimitOfContentUpload,
+    proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(),
+    proxyReqPathResolver: function (req) {
+      return require('url').parse(envHelper.TELEMETRY_SERVICE_LOCAL_URL + telemtryEventConfig.endpoint).path
     }
   }))
 
 // proxy urls
 require('./proxy/contentEditorProxy.js')(app, keycloak)
 
+// middleware to add CORS headers
+function addCorsHeaders(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE,OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization,' +
+                                              'cid, user-id, x-auth, Cache-Control, X-Requested-With, *')
+
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200)
+  } else {
+    next()
+  };
+}
+
 // tenant Api's
-app.get('/v1/tenant/info', tenantHelper.getInfo)
-app.get('/v1/tenant/info/:tenantId', tenantHelper.getInfo)
+app.get('/v1/tenant/info', addCorsHeaders, tenantHelper.getInfo)
+app.get('/v1/tenant/info/:tenantId', addCorsHeaders, tenantHelper.getInfo)
 
 // proxy urls
 require('./proxy/contentEditorProxy.js')(app, keycloak)
@@ -475,6 +510,10 @@ if (!process.env.sunbird_environment || !process.env.sunbird_instance) {
 }
 
 portal.server = app.listen(port, function () {
+  if(envHelper.PORTAL_CDN_URL){
+    request(envHelper.PORTAL_CDN_URL + 'index_'+packageObj.version+'.'+packageObj.buildNumber+'.ejs' ).pipe(fs.createWriteStream(path.join(__dirname, 'dist', 'index.ejs')));
+  }
+  defaultTenantIndexStatus = tenantHelper.getDefaultTenantIndexState();
   console.log('app running on port ' + port)
 })
 
@@ -487,9 +526,9 @@ exports.close = function () {
 const telemetryConfig = {
   pdata: { id: appId, ver: telemtryEventConfig.pdata.ver },
   method: 'POST',
-  batchsize: process.env.sunbird_telemetry_sync_batch_size || 20,
+  batchsize: process.env.sunbird_telemetry_sync_batch_size || 200,
   endpoint: telemtryEventConfig.endpoint,
-  host: contentURL,
+  host: envHelper.TELEMETRY_SERVICE_LOCAL_URL,
   authtoken: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN
 }
 

@@ -2,8 +2,9 @@ import { Component, OnInit, AfterViewInit, NgZone, Renderer2, OnDestroy } from '
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import * as iziModal from 'izimodal/js/iziModal';
-import { ResourceService, ConfigService, ToasterService, ServerResponse, IUserData, IUserProfile } from '@sunbird/shared';
-import { UserService, PermissionService } from '@sunbird/core';
+import {NavigationHelperService, ResourceService, ConfigService, ToasterService, ServerResponse,
+   IUserData, IUserProfile } from '@sunbird/shared';
+import { UserService, PermissionService, TenantService } from '@sunbird/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EditorService } from './../../../services/editors/editor.service';
 import { environment } from '@sunbird/environment';
@@ -39,6 +40,11 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
    * user profile details.
    */
   public userProfile: IUserProfile;
+
+  /**
+   * user tenant details.
+   */
+  public tenantService: TenantService;
   /**
    * Content id for editor
    */
@@ -62,6 +68,10 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public showModal: boolean;
 
+  private buildNumber: string;
+
+  public logo: string;
+
   /**
   * Default method of classs ContentEditorComponent
   *
@@ -81,7 +91,9 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
     private router: Router,
     config: ConfigService,
     userService: UserService, public _zone: NgZone,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    tenantService: TenantService,
+    public navigationHelperService: NavigationHelperService
   ) {
     this.resourceService = resourceService;
     this.toasterService = toasterService;
@@ -89,6 +101,12 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
     this.config = config;
     this.activatedRoute = activatedRoute;
     this.userService = userService;
+    this.tenantService = tenantService;
+    try {
+      this.buildNumber = (<HTMLInputElement>document.getElementById('buildNumber')).value;
+    } catch (error) {
+      this.buildNumber = '1.0';
+    }
   }
 
 
@@ -110,7 +128,6 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
     });
 
     this.setRenderer();
-
   }
 
   setRenderer() {
@@ -130,13 +147,13 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit() {
     /**
-    * Launch the generic editor after window load
+    * Fetch header logo and launch the content editor after window load
     */
     jQuery.fn.iziModal = iziModal;
     jQuery('#contentEditor').iziModal({
       title: '',
       iframe: true,
-      iframeURL: '/thirdparty/editors/content-editor/index.html',
+      iframeURL: '/thirdparty/editors/content-editor/index.html?' + this.buildNumber,
 
       navigateArrows: false,
       fullscreen: true,
@@ -152,9 +169,15 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
         });
       }
     });
-    this.getContentData();
+    this.tenantService.tenantData$.subscribe((data) => {
+      if (data && !data.err) {
+        this.logo = data.tenantData.logo;
+        this.getContentData();
+      } else if (data && data.err) {
+        this.getContentData();
+      }
+    });
   }
-
 
   ngOnDestroy() {
     this.setRenderer();
@@ -193,7 +216,8 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
       modalId: 'contentEditor',
       apislug: '/action',
       alertOnUnload: true,
-      headerLogo: '',
+      build_number: this.buildNumber,
+      headerLogo: this.logo,
       aws_s3_urls: ['https://s3.ap-south-1.amazonaws.com/ekstep-public-' +
         this.userService.env + '/', 'https://ekstep-public-' +
         this.userService.env + '.s3-ap-south-1.amazonaws.com/'],
@@ -305,19 +329,15 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
   closeModal() {
     this.showModal = true;
      setTimeout(() => {
-      this.navigateToDraft();
+      this.navigateToWorkSpace();
      }, 1000);
   }
 
-  navigateToDraft() {
+  navigateToWorkSpace() {
     if (document.getElementById('contentEditor')) {
-      document.getElementById('contentEditor').remove();
+       document.getElementById('contentEditor').remove();
     }
-    if (this.state) {
-      this.router.navigate(['workspace/content/', this.state, '1']);
-    } else {
-      this.router.navigate(['workspace/content/draft/1']);
-      this.showModal = false;
-    }
+    this.navigationHelperService.navigateToWorkSpace('/workspace/content/draft/1');
+    this.showModal = false;
   }
 }
