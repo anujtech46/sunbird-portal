@@ -4,6 +4,7 @@ Schema:
   productId: string
   userId: string
   amount: string
+  currency: string
   orderStatus: string <created|userPaidSuccess|userPaidFailed|benefitSuccess|BenefitFailed> 
   createdDate: string
   updatedDate: string
