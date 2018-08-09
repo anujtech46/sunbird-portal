@@ -128,7 +128,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    * Time interval of pulling status
    */
   statePullingClearTimeInterval: any;
-  statePullingTimeInterval = 4000;
+  statePullingTimeInterval = 5000;
   externalContentData: any;
   productData: any;
   orderData: any;
@@ -240,7 +240,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.courseConsumptionService.getContentState(req, true)
     // .takeUntil(this.unsubscribe)
     .subscribe((res) => {
-      this.contentStatus = res.content;
+      const diff = _.differenceWith(this.contentStatus, res.content, _.isEqual) || [];
+      console.log('Content state diff ::', diff);
+      if (diff.length > 0 || !this.contentStatus) {
+        this.contentStatus = res.content;
+      }
     }, (err) => {
       console.log(err, 'content read api failed');
     });
