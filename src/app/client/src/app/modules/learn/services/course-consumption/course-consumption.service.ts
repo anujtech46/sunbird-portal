@@ -25,8 +25,8 @@ export class CourseConsumptionService {
   getConfigByContent(contentId, options) {
     return this.playerService.getConfigByContent(contentId, options);
   }
-  getContentState(req) {
-    return this.courseProgressService.getContentState(req);
+  getContentState(req, htmlContent?: boolean) {
+    return this.courseProgressService.getContentState(req, htmlContent);
   }
   updateContentsState(req) {
     return this.courseProgressService.updateContentsState(req);

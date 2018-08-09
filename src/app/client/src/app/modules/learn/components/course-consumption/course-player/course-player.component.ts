@@ -237,8 +237,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       contentIds: this.contentIds,
       batchId: this.batchId
     };
-    this.courseConsumptionService.getContentState(req)
-    .takeUntil(this.unsubscribe)
+    this.courseConsumptionService.getContentState(req, true)
+    // .takeUntil(this.unsubscribe)
     .subscribe((res) => {
       this.contentStatus = res.content;
     }, (err) => {
@@ -488,12 +488,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    * This function help to get the detail to load content
    */
   loadCourseDetails () {
-    const uid = this.externalContentData.userId;
-    const contentId = this.externalContentData.contentId;
-    const courseId = this.externalContentData.courseId;
-    const batchId = this.externalContentData.batchId;
-    const courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
-                             '&batchId=' + batchId + '&uid=' + uid;
+    const courseDetailsStr = '?courseId=' + this.courseId + '&contentId=' + this.contentId +
+                             '&batchId=' + this.batchId + '&uid=' + this.userService.userid;
     return courseDetailsStr;
   }
 

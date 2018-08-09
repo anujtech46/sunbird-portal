@@ -42,10 +42,10 @@ export class CourseProgressService {
   /**
   * method to get content status
   */
-  public getContentState(req) {
+  public getContentState(req, htmlContent: boolean = false) {
     const courseId_batchId = req.courseId + '_' + req.batchId;
     const courseProgress = this.courseProgress[courseId_batchId];
-    if (courseProgress) {
+    if (courseProgress && !htmlContent) {
       this.courseProgressData.emit(courseProgress);
       return Observable.of(courseProgress);
     } else {
@@ -126,72 +126,6 @@ export class CourseProgressService {
     const index = _.findIndex(contentList, { lastAccessTime: lastAccessTimeOfContentId.sort().reverse()[0] });
     const lastPlayedContent = contentList[index] ? contentList[index] : contentList[0];
     this.courseProgress[courseId_batchId].lastPlayedContentId = lastPlayedContent && lastPlayedContent.contentId;
-  }
-  /**
-* @method getContentsState
-* @desc Get content state
-* @memberOf Services.contentStateService
-* @param {object}  request - Request object
-* @param {string}  request.userId - userIdentifier of user
-* @param {object[]}  request.courseIds - course details
-* @param {object[]}  request.contentIds - Content details
-* @returns {Promise} Callback object represents response code and message
-* @instance
-*/
-  public getContentsState(req) {
-    const reqData = {
-      userId: req.userId,
-      courseId: req.courseId,
-      contentIds: req.contentIds
-    };
-    this.totalContentCount = req.contentIds.length;
-    const courseId_batchId = req.courseId + '_' + req.batchId;
-    const courseProgress = this.courseProgress[courseId_batchId];
-    const reqContentIds = [];
-    _.forEach(req.contentIds, (contentId) => {
-      reqContentIds.push({ 'contentId': contentId });
-    });
-    // if (courseProgress !== undefined) {
-    //   this.courseProgressData.emit(courseProgress);
-    //   return Observable.of(courseProgress);
-    // } else {
-      return this.getCourseStateFromAPI(reqData).map(
-        (res: ServerResponse) => {
-          if (res.result.contentList.length > 0) {
-            res.result.contentList = _.filter(res.result.contentList, (content) => {
-              return content.batchId === req.batchId;
-            });
-            this.prepareContentObject(res.result.contentList, courseId_batchId);
-            const resContentIds = [];
-            _.forEach(res.result.contentList, (contentList) => {
-              resContentIds.push({ 'contentId': contentList.contentId });
-            });
-            this.getEmptyContentStatus(reqContentIds, resContentIds, req.courseId, req.batchId);
-          } else {
-            this.courseProgress[courseId_batchId] = {
-              progress: 0,
-              completedCount: 0,
-              totalCount: this.totalContentCount,
-              lastPlayedContentId : reqData.contentIds[0]
-            };
-            this.courseProgress[courseId_batchId].content = [];
-            _.forEach(_.differenceBy(reqContentIds, [], 'contentId'), (value, key) => {
-              this.courseProgress[courseId_batchId].content.push({
-                'contentId': value['contentId'],
-                'status': 0,
-                'courseId': req.courseId,
-                'batchId:': req.batchId,
-                'lastAccessTime': null
-              });
-            });
-          }
-          this.courseProgressData.emit(this.courseProgress[courseId_batchId]);
-          return this.courseProgress[courseId_batchId];
-        }).catch((err) => {
-          this.courseProgressData.emit({lastPlayedContentId: reqData.contentIds[0]});
-            return err;
-        });
-    // }
   }
 
   public updateContentsState(req) {
