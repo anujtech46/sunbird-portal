@@ -54,7 +54,7 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
     this.createBatchIntractEdata = {
       id: 'create-batch',
       type: 'click',
-      pageid: 'course-consumption' 
+      pageid: 'course-consumption'
     };
     this.enrollBatchIntractEdata = {
       id: 'enroll-batch',

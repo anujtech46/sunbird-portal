@@ -36,7 +36,7 @@
                                             </p>
                                     </div>
                                 </div>
-                                <div class="four wide column" *ngIf="paymentType" >
+                                <div class="four wide column" *ngIf="paymentType && orderDataStatus" >
                                     <button *ngIf="paymentType && paymentType.toLowerCase() === 'optional'" [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="enrollToCourse()">
                                         <span class="text">SKIP AND ENROLL</span>
                                     </button>

@@ -9,7 +9,7 @@ import {
   ICollectionTreeOptions, NavigationHelperService, ToasterService, ResourceService
 } from '@sunbird/shared';
 import { Subscription } from 'rxjs/Subscription';
-import { CourseConsumptionService, CourseBatchService, JuliaNoteBookService, CourseProgressService, CoursePriceService 
+import { CourseConsumptionService, CourseBatchService, JuliaNoteBookService, CourseProgressService, CoursePriceService
 } from './../../../services';
 import { PopupEditorComponent, NoteCardComponent, INoteData } from '@sunbird/notes';
 import { IInteractEventInput, IImpressionEventInput, IEndEventInput,
