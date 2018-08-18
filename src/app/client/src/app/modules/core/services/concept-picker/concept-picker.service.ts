@@ -39,7 +39,7 @@ export class ConceptPickerService {
       this._conceptData$.next({ err: null, data: data });
     } else {
     }
-      this.getConcept(0, 200);
+      this.getConcept(0, 400);
   }
   /**
   * call search api with objectType =['Concept']
