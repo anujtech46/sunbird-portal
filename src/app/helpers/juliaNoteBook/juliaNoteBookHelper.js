@@ -8,17 +8,6 @@ module.exports = function (app) {
   checkNoteBookStatus)
 }
 
-
-/** 
- * This function is useful to modify date for certificate 
- * @param {String} reqDate  
- * @return {String} 
- */
-function getCertificateDate(reqDate) {
-  var date = reqDate ? new Date(reqDate) : new Date()
-  return moment(date).format('DD-MMM-YYYY')
-}
-
 /** 
  * This middleware function is used to validate request body and create response structure 
  * @param {Object} req  
@@ -133,5 +122,26 @@ function checkNoteBookStatus(req, res) {
       rspObj.result = {}
       return res.status(200).send(successResponse(rspObj))
     }
+  });
+}
+
+/**
+ * This function helps up to call logout api to julia notebook
+ */
+module.exports.logoutHelper = function() {
+  console.log('Call logout to Julia notebook ::')
+  const url = envHelper.JULIA_BOX_BASE_URL
+  var options = {
+    url: url,
+    method: 'GET',
+    json: false,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  request(options, function (err, response, body) {
+    if (err) console.log('Julia notebook logout error :: ')
+    else console.log('Julia logout status :: ', response && response.statusCode)
   });
 }
