@@ -68,7 +68,7 @@ export class ConceptPickerService {
         }
       },
       err => {
-        this.toasterService.error(this.resourceService.messages.fmsg.m0015);
+        // this.toasterService.error(this.resourceService.messages.fmsg.m0015);
       }
     );
   }
