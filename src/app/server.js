@@ -45,6 +45,7 @@ const ejs = require('ejs');
 const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const MobileDetect = require('mobile-detect');
 const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
+const juliaLogoutHelper = require('./helpers/juliaNoteBook/juliaNoteBookHelper')
 
 let memoryStore = null
 const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
@@ -127,6 +128,7 @@ app.use('/announcement/v1', bodyParser.urlencoded({ extended: false }),
 
 app.all('/logoff', endSession, function (req, res) {
   res.cookie('connect.sid', '', { expires: new Date() })
+  juliaLogoutHelper.logoutHelper()
   res.redirect('/logout')
 })
 
