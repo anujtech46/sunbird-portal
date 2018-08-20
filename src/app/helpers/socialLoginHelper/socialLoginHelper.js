@@ -68,7 +68,7 @@ module.exports = {
       },
       body: {
         request: {
-          firstName: payload['given_name'],
+          firstName: payload['given_name'] || payload['preferred_username'],
           lastName: payload['family_name'],
           email: payload['email'],
           emailVerified: true,
@@ -76,7 +76,7 @@ module.exports = {
           userId: payload['sub'],
           phone: payload['phone_number'],
           phoneVerified: false,
-          provider: envHelper.SIGN_UP_USER_PROVIDER,
+          channel: envHelper.SIGN_UP_USER_PROVIDER,
           isSocialRegister: true
         }
       },
