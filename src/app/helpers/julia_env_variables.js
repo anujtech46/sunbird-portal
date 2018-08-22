@@ -1,3 +1,5 @@
+const env = process.env
+
 module.exports = {
   COURSE_COMPLETION_BADGE_ID: env.sunbird_course_completion_badgeid,
   BADGE_ASSIGN_USERNAME: env.sunbird_badge_assign_username,

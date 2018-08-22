@@ -56,8 +56,8 @@ try {
   envVariables = Object.assign({}, envVariables,  require('./julia_env_variables'))
 } catch(err) {
 
-}
-   
+}   
+
 
 if (process.env.NODE_ENV === 'local') {   
   envVariables = Object.assign({}, envVariables,  require('./localVariables'))   
