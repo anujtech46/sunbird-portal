@@ -352,7 +352,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       batchId: this.batchId
     };
     this.courseConsumptionService.getContentStatus(req).subscribe((res) => {
-      this.contentStatus = res.content;
+      const diff = _.differenceWith(this.contentStatus, res.content, _.isEqual) || []; 
+      console.log('Content state diff check :: ', diff);
+      if (diff.length > 0 || !this.contentStatus) {
+        this.contentStatus = res.content;
+      }
     }, (err) => {
     });
   }
