@@ -17,7 +17,6 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   batchDetails: any;
   showEnrollDetails = false;
   readMore = false;
-  disableSubmitBtn = true;
   sdkUrl: string;
   apiKey: string;
   productId: string;
@@ -25,6 +24,8 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   orderData: any;
   paymentId: string;
   paymentType: string;
+  disableSubmitBtn = false;
+  orderDataStatus = false;
   /**
 	 * telemetryImpression object for update batch page
 	*/
@@ -133,10 +134,13 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
       if (response && response.responseCode === 'OK') {
         this.orderData = response.result.response;
         this.disableSubmitBtn = false;
+        this.orderDataStatus = true;
       } else {
+        this.orderDataStatus = true;
         this.toasterService.error('Unable to get order detail, Please try again later');
       }
     }, (err) => {
+      this.orderDataStatus = true;
       if (err.error.responseCode === 'RESOURCE_NOT_FOUND') {
         this.disableSubmitBtn = false;
       }
@@ -184,6 +188,7 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   createPayment(batchId) {
     if (this.orderData && (this.orderData.orderStatus === 'USER_PAID' || this.orderData.cpTxnId)) {
       console.log('User already paid for this course, So directly enroll the course');
+      this.toasterService.info('We already received payment for this course...');
       this.enrollToCourse(batchId);
       this.showEnrollDetails = false;
       return;
