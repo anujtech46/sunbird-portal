@@ -31,7 +31,8 @@ export class OrgDropdownComponent {
     url: this.config.urlConFig.URLS.ADMIN.ORG_SEARCH,
     data: {
       request: {
-        filters: {}
+        filters: {},
+        sort_by: {orgName: 'asc'}
       }
     }
   };

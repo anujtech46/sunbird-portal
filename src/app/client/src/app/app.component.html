@@ -1,3 +1,8 @@
-<app-header></app-header>
-<app-breadcrumbs *ngIf="userService.loggedIn"></app-breadcrumbs>
-<router-outlet *ngIf="initApp"></router-outlet>
+<div class="body">
+    <app-header></app-header>
+    <app-breadcrumbs *ngIf="userService.loggedIn"></app-breadcrumbs>
+    <router-outlet *ngIf="initApp"></router-outlet>
+    <div class="app-main-footer">
+        <app-main-footer *ngIf="userService.loggedIn"></app-main-footer>
+    </div>
+</div>
