@@ -1,4 +1,4 @@
-TableName: scholarShipOrder
+TableName: scholarshipOrder
 Schema: 
   orderId: string
   productId: string
@@ -9,7 +9,7 @@ Schema:
   createdDate: string
   updatedDate: string
 
-TableName: scholarShipOrderHistory
+TableName: scholarshipOrderHistory
 Schema: 
   orderId: string
   status: string
