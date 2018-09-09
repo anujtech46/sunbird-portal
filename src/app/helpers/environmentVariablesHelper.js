@@ -4,17 +4,17 @@ const fs = require('fs')
 const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
 let envVariables = {
-  LEARNER_URL: env.sunbird_learner_player_url || 'https://staging.open-sunbird.org/api/',
-  CONTENT_URL: env.sunbird_content_player_url || 'https://staging.open-sunbird.org/api/',
-  CONTENT_PROXY_URL: env.sunbird_content_proxy_url || 'https://staging.open-sunbird.org',
+  LEARNER_URL: 'http://40.117.159.161/api/' || env.sunbird_learner_player_url || 'https://staging.open-sunbird.org/api/',
+  CONTENT_URL: 'http://40.117.159.161/api/' || env.sunbird_content_player_url || 'https://staging.open-sunbird.org/api/',
+  CONTENT_PROXY_URL: 'http://40.117.159.161' || env.sunbird_content_proxy_url || 'https://staging.open-sunbird.org',
   PORTAL_REALM: env.sunbird_portal_realm || 'sunbird',
-  PORTAL_AUTH_SERVER_URL: env.sunbird_portal_auth_server_url || 'https://staging.open-sunbird.org/auth',
+  PORTAL_AUTH_SERVER_URL: 'http://40.117.159.161/auth' || env.sunbird_portal_auth_server_url || 'https://staging.open-sunbird.org/auth',
   PORTAL_AUTH_SERVER_CLIENT: env.sunbird_portal_auth_server_client || 'portal',
   APPID: process.env.sunbird_environment + '.' + process.env.sunbird_instance + '.portal',
-  DEFAULT_CHANNEL: env.sunbird_default_channel,
+  DEFAULT_CHANNEL: env.sunbird_default_channel || 'aiprohub',
   EKSTEP_ENV: env.ekstep_env || 'qa',
   PORTAL_PORT: env.sunbird_port || 3000,
-  PORTAL_API_AUTH_TOKEN: env.sunbird_api_auth_token,
+  PORTAL_API_AUTH_TOKEN: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxMTkyNTBlMGI0Yzc0NWEwOGIyMjFiM2M3OTE3ZTk5MyJ9.2ow7e28seHQNKQ_ZjME1_0QhTGtJKDwu4FQ0qs4CVxU' || env.sunbird_api_auth_token,
   PORTAL_TELEMETRY_PACKET_SIZE: env.sunbird_telemetry_packet_size || 1000,
   PORTAL_ECHO_API_URL: env.sunbird_echo_api_url || 'https://staging.open-sunbird.org/api/echo/',
   PORTAL_AUTOCREATE_TRAMPOLINE_USER: env.sunbird_autocreate_trampoline_user || 'true',
@@ -47,7 +47,27 @@ let envVariables = {
   CLOUD_STORAGE_URLS: env.sunbird_cloud_storage_urls
 }
 
+const julia_env_variable = {
+  COURSE_COMPLETION_BADGE_ID: env.sunbird_course_completion_badgeid || 'badgeslug-2',
+  BADGE_ASSIGN_USERNAME: env.sunbird_badge_assign_username,
+  BADGE_ASSIGN_USER_PASSWORD: env.sunbird_badge_assign_user_password,
+  AZURE_ACCOUNT_NAME: env.julia_azure_account_name,
+  AZURE_ACCOUNT_KEY: env.julia_azure_account_key,
+  AZURE_STORAGE_URL: env.julia_azure_storage_url,
+  CERTIFICATE_STORE_CONTAINER_NAME: env.julia_certificate_storage_container_name || 'certificate',
+  CERTIFICATE_PROVIDER_NAME: env.julia_certificate_provider_name || 'Julia Computing, Inc.',
+  CERTIFICATE_INSTRUCTOR_NAME: env.julia_certificate_instructor_name || 'Abhijith Chandraprabhu',
+  CONTENT_FEEDBACK_STORE_CONTAINER_NAME: env.julia_content_feedback_storage_container_name || 'feedback',
+  JULIA_BOX_BASE_URL: env.julia_server_base_url || 'https://staging.juliabox.com/', 
+  SUNBIRD_EXTERNAL_CONTENT_WHITELISTED_DOMAINS: env.sunbird_external_content_whitelisted_domains || ['youtube.com','juliabox.com'],
+  ADD_TO_DIGILOCKER_APP_URL: env.julia_add_to_digilocker_app_url,
+  ADD_TO_DIGILOCKER_APP_ID: env.julia_add_to_digilocker_app_id,
+  ADD_TO_DIGILOCKER_APP_KEY: env.julia_add_to_digilocker_app_key,
+  API_REQUEST_LIMIT_SIZE: env.julia_api_request_limit_size || '50mb',
+  CERTIFICATE_PLATFORM_NAME: env.julia_certificate_platform_name || 'On the 500k.ai platform'
+}
+
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')
   ? env.sunbird_cassandra_urls.split(',') : ['localhost']
 
-module.exports = envVariables
+module.exports = { ...envVariables, ...julia_env_variable }

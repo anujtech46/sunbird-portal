@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import 'jquery.fancytree';
 import { IFancytreeOptions } from '../../interfaces';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-fancy-tree',
@@ -30,6 +31,9 @@ export class FancyTreeComponent implements AfterViewInit {
   @Input() public options: IFancytreeOptions;
   @Output() public itemSelect: EventEmitter<Fancytree.FancytreeNode> = new EventEmitter();
 
+  // Julia related code
+  @Input() public contentState: any;
+
   ngAfterViewInit() {
     let options: IFancytreeOptions = {
       extensions: ['glyph'],
@@ -43,15 +47,46 @@ export class FancyTreeComponent implements AfterViewInit {
         }
       },
       click: (event, data): boolean => {
-        const node = data.node;
-        this.itemSelect.emit(node);
+        if (data.targetType === 'title') {
+          const node = data.node;
+          this.itemSelect.emit(node);
+        }
         return true;
-      }
+      },
+      renderNode: (event, data) => {
+        this.updateNodeTitle(data);
+      },
     };
     options = { ...options, ...this.options };
     $(this.tree.nativeElement).fancytree(options);
     if (this.options.showConnectors) {
       $('.fancytree-container').addClass('fancytree-connectors');
+    }
+  }
+
+  /**
+   *
+   * This function is used to update the node title with score and feedback
+   * @memberof FancyTreeComponent
+   */
+  updateNodeTitle = (data) => {
+    let title = '';
+    const scoreData: any = _.find(this.contentState, { 'contentId': data.node.data.id });
+    if (scoreData) {
+      if (scoreData.grade) {
+        title = title + '<span class="fancy-tree-feedback">( Score: ' +
+          scoreData.grade + '/' + scoreData.score + ' ) </span>';
+      }
+      if (scoreData.result) {
+        const feedbackLinkHtml = '<span> <a href=' + scoreData.result +
+        ' target="_blank" return false; onclick="event.stopPropagation();"> Feedback </a> </span>';
+        title = title + feedbackLinkHtml;
+      }
+    }
+    const $nodeSpan = $(data.node.span);
+    if (!$nodeSpan.data('rendered')) {
+      $nodeSpan.append($(title));
+      $nodeSpan.data('rendered', true);
     }
   }
 }

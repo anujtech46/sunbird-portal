@@ -111,6 +111,7 @@ export class AppComponent implements OnInit {
           this.initializeAnonymousSession(slug);
         });
       });
+      this.initTenantService();
     }
   }
   initializeLogedInsession() {

@@ -47,6 +47,9 @@ let memoryStore = null
 let defaultTenantIndexStatus = 'false';
 const tenantCdnUrl = envHelper.TENANT_CDN_URL;
 
+// Julia Related code
+const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
+
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
 } else {
@@ -138,6 +141,9 @@ function getLocals(req) {
   locals.buildNumber = envHelper.BUILD_NUMBER
   locals.apiCacheTtl = envHelper.PORTAL_API_CACHE_TTL
   locals.cloudStorageUrls = envHelper.CLOUD_STORAGE_URLS
+
+  //Julia related code
+  locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
   return locals;
 }
 
@@ -449,6 +455,9 @@ keycloak.authenticated = function (request) {
   async.series({
     getUserData: function (callback) {
       permissionsHelper.getCurrentUserRoles(request, callback)
+    },
+    checkAndCreateUserData: function (callback) {
+      socialLoginHelper.createUserIfNotExist(request, callback)
     },
     getPermissionData: function (callback) {
       permissionsHelper.getPermissions(request)

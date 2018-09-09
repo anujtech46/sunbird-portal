@@ -12,10 +12,10 @@
         <div *ngIf="userProfile">
             <div class="ui stackable grid">
                 <div class="eight wide column">
-                    <app-user-summary></app-user-summary>
+                    <!--<app-user-summary></app-user-summary>
                     <app-user-experience-view></app-user-experience-view>
                     <app-user-address></app-user-address>
-                    <app-user-education></app-user-education>
+                    <app-user-education></app-user-education> -->
                     <app-user-skills></app-user-skills>
                     <!-- <app-profile-badge *ngIf="userProfile.badgeAssertions && userProfile.badgeAssertions.length > 0"></app-profile-badge> -->
                     <extension-point *ngIf="userProfile.badgeAssertions && userProfile.badgeAssertions.length > 0" [name]="'profile-widget'"></extension-point>
@@ -23,7 +23,7 @@
                 </div>
                 <div class=" four wide column margin-top-20">
                     <div class="ui stackable grid ">
-                        <div class="twelve wide column" *ngIf="userProfile.completeness">
+                        <!-- <div class="twelve wide column" *ngIf="userProfile.completeness">
                             <div class="ui raised segment">
                                 <div class="profileitems profile-des ui relaxed aligned list">
                                     <div class="item ">
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="twelve wide column" *ngIf='permissionService.permissionAvailable' appPermission [permission]='workSpaceRole'>
                             <a appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject" [telemetryInteractEdata]="workspaceInteractEdata" (click)="navigateToWorkspace()">
@@ -85,7 +85,7 @@
                             </div>
                         </div>
 
-                        <div class="twelve wide column">
+                        <!-- <div class="twelve wide column">
                             <div class="ui raised segment blur-content">
                                 <div class="header">
                                     <span class="segment-heading">Member of</span>
@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>

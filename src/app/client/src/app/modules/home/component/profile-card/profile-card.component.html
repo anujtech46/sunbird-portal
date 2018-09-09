@@ -11,10 +11,10 @@
                 </div>
                 <div class="padding-left-10">
                     <div class="profile-update-heading">{{resourceService.messages?.stmsg?.m0060}}</div>
-                    <div *ngFor="let field of profile.missingFields | slice:0:2 ;  let first = first; let last = last" [ngClass]="{ first: first, last: last }"
+                    <!-- <div *ngFor="let field of profile.missingFields | slice:0:2 ;  let first = first; let last = last" [ngClass]="{ first: first, last: last }"
                         class="padding-top-5 profile-update-subheading">
                         {{first ? 'Add ' + field + ( profile.missingFields.length > 1 ? '' : '' ) : field + (last ? ' now' : '') }}
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

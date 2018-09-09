@@ -1,6 +1,6 @@
 import { combineLatest, Subscription, Subject } from 'rxjs';
 import { takeUntil, first, mergeMap, map } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import {
   ContentService, UserService, BreadcrumbsService, PermissionService, CoursesService
 } from '@sunbird/core';
@@ -10,7 +10,7 @@ import {
   WindowScrollService, ILoaderMessage, ConfigService, ICollectionTreeOptions, NavigationHelperService,
   ToasterService, ResourceService, ExternalUrlPreviewService
 } from '@sunbird/shared';
-import { CourseConsumptionService, CourseBatchService } from './../../../services';
+import { CourseConsumptionService, CourseBatchService, CourseProgressService } from './../../../services';
 import { INoteData } from '@sunbird/notes';
 import {
   IImpressionEventInput, IEndEventInput, IStartEventInput, IInteractEventObject, IInteractEventEdata
@@ -21,7 +21,7 @@ import {
   templateUrl: './course-player.component.html',
   styleUrls: ['./course-player.component.css']
 })
-export class CoursePlayerComponent implements OnInit, OnDestroy {
+export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public courseInteractObject: IInteractEventObject;
 
@@ -127,12 +127,22 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
 
   public unsubscribe = new Subject<void>();
 
+  // Julia content configuration
+  externalContentData: {
+    batchId: string,
+    courseId: string,
+    contentId: string,
+    userId: string
+  };
+  courseProgressData: any;
+
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
     router: Router, public navigationHelperService: NavigationHelperService, private userService: UserService,
     private toasterService: ToasterService, private resourceService: ResourceService, public breadcrumbsService: BreadcrumbsService,
     private cdr: ChangeDetectorRef, public courseBatchService: CourseBatchService, public permissionService: PermissionService,
-    public externalUrlPreviewService: ExternalUrlPreviewService, public coursesService: CoursesService) {
+    public externalUrlPreviewService: ExternalUrlPreviewService, public coursesService: CoursesService,
+    private courseProgressService: CourseProgressService, ) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -188,6 +198,13 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
         this.loader = false;
         this.toasterService.error(this.resourceService.messages.emsg.m0005); // need to change message
       });
+  }
+  ngAfterViewInit() {
+    this.courseProgressService.courseProgressData.pipe(
+    takeUntil(this.unsubscribe))
+    .subscribe((courseProgressData) => {
+      this.courseProgressData = courseProgressData;
+    });
   }
   private parseChildContent() {
     const model = new TreeModel();
@@ -276,6 +293,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
         this.setContentInteractData(config);
         this.loader = false;
         this.playerConfig = config;
+        this.setDataForExternalContent();
         if ((config.metadata.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && !(this.istrustedClickXurl))
           || (config.metadata.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && showExtContentMsg)) {
           setTimeout(() => {
@@ -439,6 +457,15 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
       id: 'content-close',
       type: 'click',
       pageid: 'course-consumption'
+    };
+  }
+
+  private setDataForExternalContent() {
+    this.externalContentData = {
+      batchId: this.batchId,
+      courseId: this.courseId,
+      contentId: this.contentId,
+      userId: this.userService.userid
     };
   }
 }

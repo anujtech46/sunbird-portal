@@ -16,6 +16,10 @@ import { CoreModule } from '@sunbird/core';
 import { NotesModule } from '@sunbird/notes';
 import { DashboardModule } from '@sunbird/dashboard';
 
+// Julia Related services
+import { CourseBadgeService } from './services';
+import { CourseBadgeComponent } from './components';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -31,9 +35,11 @@ import { DashboardModule } from '@sunbird/dashboard';
     TelemetryModule,
     NgInviewModule
   ],
-  providers: [CourseConsumptionService, CourseBatchService, CourseProgressService],
+  providers: [CourseConsumptionService, CourseBatchService, CourseProgressService,
+    CourseBadgeService],
   declarations: [LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
     CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
-    UpdateCourseBatchComponent, CarriculumCardComponent]
+    UpdateCourseBatchComponent, CarriculumCardComponent,
+    CourseBadgeComponent]
 })
 export class LearnModule { }

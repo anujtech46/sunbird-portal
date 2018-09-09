@@ -37,7 +37,7 @@ export class ConceptPickerService {
     if (data) {
       this._conceptData$.next({ err: null, data: data });
     } else {
-      this.getConcept(0, 200);
+      // this.getConcept(0, 200);
     }
   }
   /**
