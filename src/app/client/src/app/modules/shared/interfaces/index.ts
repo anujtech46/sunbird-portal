@@ -18,3 +18,6 @@ export * from './fancyTree';
 export * from './card';
 export * from './courseStates';
 export * from './telemetryShare';
+
+// Julia related code
+export * from './coursePrice';

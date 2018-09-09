@@ -16,6 +16,7 @@
                     <i class="write icon float-ContentRight cursor-pointer" appTelemetryInteract [telemetryInteractEdata]="updateBatchIntractEdata"
                         [telemetryInteractObject]="{id:batch.identifier,type:'batch',ver:'1',rollup:{l1:courseId}}" (click)="batchUpdate(batch)"
                         *ngIf="courseMentor"></i>
+                    <app-course-price *ngIf="courseMentor" [viewType]="'ICON'" [courseId]="courseId" [batchId]="batch.identifier"></app-course-price>
                     <button class="ui right floated blue basic button enrollBtn" appTelemetryInteract [telemetryInteractEdata]="enrollBatchIntractEdata"
                         [telemetryInteractObject]="{id:batch.identifier,type:'batch',ver:'1',rollup:{l1:courseId}}" (click)="enrollBatch(batch)"
                         *ngIf="!courseMentor">{{resourceService.frmelmnts.btn.enroll}}</button>

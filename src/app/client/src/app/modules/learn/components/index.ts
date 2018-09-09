@@ -10,4 +10,4 @@ export * from './course-consumption/carriculum-card/carriculum-card.component';
 
 // Julia related code
 export * from './course-consumption/course-badge/course-badge.component';
-
+export * from './course-price/course-price.component';

@@ -63,11 +63,9 @@ export class CourseBadgeComponent implements OnInit {
       }
     } else {
       this.userService.getUserProfile();
-      const userDataUnsubscribe = this.userService.userData$.subscribe((user: IUserData) => {
+      const userDataUnsubscribe = this.userService.userData$.first().subscribe((user: IUserData) => {
         if (user && !user.err) {
-          if (userDataUnsubscribe) {
-            userDataUnsubscribe.unsubscribe();
-          }
+          userDataUnsubscribe.unsubscribe();
           const badge = _.find(user.userProfile.badgeAssertions, { 'badgeId': this.ccBadgeId });
           this.userBadges = badge;
           this.getIssuerName();
@@ -89,9 +87,11 @@ export class CourseBadgeComponent implements OnInit {
         if (resp && resp.responseCode === 'OK') {
           issuer = _.find(resp.result.issuers,
             { 'issuerId': this.userBadges.issuerId });
-          this.userBadges.issuerName = issuer.name;
-          issuerList.push(issuer);
-          this.courseBadgeService.storeIssuerListDetail(issuerList);
+          if (issuer) {
+            this.userBadges.issuerName = issuer.name;
+            issuerList.push(issuer);
+            this.courseBadgeService.storeIssuerListDetail(issuerList);
+          }
         }
       }, (err) => {
         console.log('Unable to get user issue list');

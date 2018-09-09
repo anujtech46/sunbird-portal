@@ -132,6 +132,13 @@
     "JULIA_PREFIX": "/juliabox/",
     "JULIA_BOX": {
       "PING": "jbox/ping"
+    },
+    "PRICE_PREFIX": "/price/v1/",
+    "PRICE": {
+      "CREATE": "create",
+      "UPDATE": "update",
+      "READ": "read",
+      "SEARCH": "search"
     }
   }
 }
