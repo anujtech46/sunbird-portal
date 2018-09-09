@@ -100,6 +100,7 @@
     "request": "^2.81.0",
     "sb_api_interceptor": "file:libs/sb_api_interceptor",
     "sb_cache_manager": "file:libs/sb_cache_manager",
+    "sb_course_price_plugin": "^0.0.2",
     "sb_telemetry_util": "file:libs/sb_telemetry_util",
     "ua-parser-js": "^0.7.13",
     "uuid": "^3.1.0"

@@ -3,7 +3,7 @@
  * @author: Anuj Gupta
  * @description: This component is use to show badge inside course
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '@sunbird/core';
 import { IUserData } from '@sunbird/shared';
 import { CourseBadgeService } from '../../../services';
@@ -14,22 +14,24 @@ import * as _ from 'lodash';
   templateUrl: './course-badge.component.html',
   styleUrls: ['./course-badge.component.css']
 })
-
 export class CourseBadgeComponent implements OnInit {
 
   /**
    * userProfile: Current user profile
    */
   private userProfile: any;
-   /**
+
+  /**
    * ccBadgeId: Course completion batch id
    */
   private ccBadgeId: string;
-   /**
+
+  /**
    * userBadges: List of user badges
    */
   public userBadges: any;
-   /**
+
+  /**
    * @param  {UserService} public userService
    */
   constructor(public userService: UserService, public courseBadgeService: CourseBadgeService) {
@@ -46,7 +48,8 @@ export class CourseBadgeComponent implements OnInit {
     this.userProfile = this.userService.userProfile;
     this.getCourseBadge();
   }
-   /**
+
+  /**
    * This function is used to get course badge from profile.
    * First check the badge data inside the user profile, If not available called the get user profile
    */
@@ -70,7 +73,8 @@ export class CourseBadgeComponent implements OnInit {
       });
     }
   }
-   /**
+
+  /**
    * Ths function is used to get the issuer name.
    */
   getIssuerName = () => {
@@ -93,5 +97,3 @@ export class CourseBadgeComponent implements OnInit {
     }
   }
 }
-
-

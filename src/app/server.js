@@ -49,6 +49,8 @@ const tenantCdnUrl = envHelper.TENANT_CDN_URL;
 
 // Julia Related code
 const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
+//require course price plugin
+var CoursePrice = require('sb_course_price_plugin').PriceRoutes
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -435,6 +437,17 @@ function loadTenantFromLocal (req,res) {
 
 // Handle content share request
 require('./helpers/shareUrlHelper.js')(app)
+
+// Handle course routes
+require('./helpers/contentStateUpdateHelper.js')(app)
+require('./helpers/pdfCreator/pdfCreator.js')(app)
+ // Initialize course price plugin
+const coursePrice = new CoursePrice()
+const config = { 
+  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
+  baseUrl: envHelper.LEARNER_URL
+}
+coursePrice.init(app, config)
 
 // Resource bundles apis
 
