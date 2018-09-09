@@ -28,8 +28,8 @@ const contentURL = envHelper.CONTENT_URL
 const realm = envHelper.PORTAL_REALM
 const authServerUrl = envHelper.PORTAL_AUTH_SERVER_URL
 const keycloakResource = envHelper.PORTAL_AUTH_SERVER_CLIENT
-const reqDataLimitOfContentEditor = '50mb'
-const reqDataLimitOfContentUpload = '50mb'
+const reqDataLimitOfContentEditor = envHelper.API_REQUEST_LIMIT_SIZE
+const reqDataLimitOfContentUpload = envHelper.API_REQUEST_LIMIT_SIZE
 const appId = envHelper.APPID
 const defaultTenant = envHelper.DEFAULT_CHANNEL
 const portal = this
@@ -50,7 +50,8 @@ const tenantCdnUrl = envHelper.TENANT_CDN_URL;
 // Julia Related code
 const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
 //require course price plugin
-var CoursePrice = require('sb_course_price_plugin').PriceRoutes
+const CoursePrice = require('sb_course_price_plugin').PriceRoutes
+const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -126,6 +127,14 @@ app.all('/logoff', endSession, function (req, res) {
   res.redirect('/logout')
 })
 
+// Initialize course price plugin
+const coursePrice = new CoursePrice()
+const config = {
+  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
+  baseUrl: envHelper.LEARNER_URL
+}
+coursePrice.init(app, config)
+
 function getLocals(req) {
   var locals = {};
   locals.userId = _.get(req, 'kauth.grant.access_token.content.sub') ? req.kauth.grant.access_token.content.sub : null
@@ -150,15 +159,15 @@ function getLocals(req) {
 }
 
 function indexPage(req, res) {
-  if(defaultTenant && req.path === '/'){
+  if (defaultTenant && req.path === '/') {
     tenantId = defaultTenant
-    renderTenantPage(req,res)
-  }else{
-    renderDefaultIndexPage(req,res)
+    renderTenantPage(req, res)
+  } else {
+    renderDefaultIndexPage(req, res)
   }
 }
 
-function renderDefaultIndexPage(req,res){
+function renderDefaultIndexPage(req, res) {
   const mobileDetect = new MobileDetect(req.headers['user-agent']);
   if ((req.path === '/get' || req.path === '/' + req.params.slug + '/get')
     && mobileDetect.os() === 'AndroidOS') {
@@ -262,10 +271,10 @@ app.post('/learner/content/v1/media/upload',
     }
   }))
 
-app.post('/learner/user/v1/create', function(req, res, next){
-  if(envHelper.ENABLE_SIGNUP === 'false'){
+app.post('/learner/user/v1/create', function (req, res, next) {
+  if (envHelper.ENABLE_SIGNUP === 'false') {
     res.sendStatus(403);
-  } else{
+  } else {
     next();
   }
 });
@@ -313,7 +322,7 @@ function addCorsHeaders(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE,OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization,' +
-                                              'cid, user-id, x-auth, Cache-Control, X-Requested-With, *')
+    'cid, user-id, x-auth, Cache-Control, X-Requested-With, *')
 
   if (req.method === 'OPTIONS') {
     res.sendStatus(200)
@@ -383,30 +392,30 @@ app.all('/:tenantName', function (req, res) {
     tenantId = _.lowerCase(tenantId)
   }
   if (tenantId) {
-    renderTenantPage(req,res)
+    renderTenantPage(req, res)
   } else if (defaultTenant) {
-    renderTenantPage(req,res)
+    renderTenantPage(req, res)
   } else {
     res.redirect('/')
   }
 })
 
 // renders tenant page from cdn or from local files based on tenantCdnUrl exists
-function renderTenantPage (req,res) {
-  try{
-    if(tenantCdnUrl){
-      request(tenantCdnUrl + '/' + tenantId + '/' +  'index.html' , function (error, response, body) {
-        if(error || !body || response.statusCode !== 200){
-            loadTenantFromLocal(req,res)
-        }else{
+function renderTenantPage(req, res) {
+  try {
+    if (tenantCdnUrl) {
+      request(tenantCdnUrl + '/' + tenantId + '/' + 'index.html', function (error, response, body) {
+        if (error || !body || response.statusCode !== 200) {
+          loadTenantFromLocal(req, res)
+        } else {
           res.send(body)
         }
       });
-    }else {
-      loadTenantFromLocal(req,res)
+    } else {
+      loadTenantFromLocal(req, res)
     }
-  }catch(e){
-    loadTenantFromLocal(req,res)
+  } catch (e) {
+    loadTenantFromLocal(req, res)
   }
 }
 
@@ -417,37 +426,46 @@ if (defaultTenant) {
 }
 
 //in fallback option check always for localtenant folder and redirect to / if not exists
-function loadTenantFromLocal (req,res) {
- if(tenantId){
-   if (fs.existsSync(path.join(__dirname, 'tenant', tenantId, 'index.html'))){
-     res.sendFile(path.join(__dirname, 'tenant', tenantId, 'index.html'))
-   }else{
-     // renderDefaultIndexPage only if there is no local default tenant else redirect
-     if(defaultTenant && req.path === '/'){
-       renderDefaultIndexPage(req,res)
-     }else{
-     //this will be executed only if user is typed invalid tenant in url
-       res.redirect('/')
-     }
-   }
- }else{
-   renderDefaultIndexPage(req,res)
- }
+function loadTenantFromLocal(req, res) {
+  if (tenantId) {
+    if (fs.existsSync(path.join(__dirname, 'tenant', tenantId, 'index.html'))) {
+      res.sendFile(path.join(__dirname, 'tenant', tenantId, 'index.html'))
+    } else {
+      // renderDefaultIndexPage only if there is no local default tenant else redirect
+      if (defaultTenant && req.path === '/') {
+        renderDefaultIndexPage(req, res)
+      } else {
+        //this will be executed only if user is typed invalid tenant in url
+        res.redirect('/')
+      }
+    }
+  } else {
+    renderDefaultIndexPage(req, res)
+  }
 }
 
 // Handle content share request
 require('./helpers/shareUrlHelper.js')(app)
 
+// Julia box service
+app.all('/juliabox/*',
+  proxy(juliaBoxBaseUrl, {
+    limit: reqDataLimitOfContentUpload,
+    proxyReqPathResolver: function (req) {
+      let urlParam = req.params['0']
+      let query = require('url').parse(req.url).query
+      if (query) {
+        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
+      } else {
+        return require('url').parse(juliaBoxBaseUrl + urlParam).path
+      }
+    }
+  })
+)
+
 // Handle course routes
 require('./helpers/contentStateUpdateHelper.js')(app)
 require('./helpers/pdfCreator/pdfCreator.js')(app)
- // Initialize course price plugin
-const coursePrice = new CoursePrice()
-const config = { 
-  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
-  baseUrl: envHelper.LEARNER_URL
-}
-coursePrice.init(app, config)
 
 // Resource bundles apis
 
@@ -491,10 +509,10 @@ function endSession(request, response, next) {
   delete request.session['orgs']
   if (request.session) {
     if (_.get(request, 'kauth.grant.access_token.content.sub')) { telemetryHelper.logSessionEnd(request) }
-    
-      request.session.sessionEvents = request.session.sessionEvents || []
-      delete request.session.sessionEvents
-      delete request.session['deviceId']
+
+    request.session.sessionEvents = request.session.sessionEvents || []
+    delete request.session.sessionEvents
+    delete request.session['deviceId']
   }
   next()
 }
@@ -520,8 +538,8 @@ if (!process.env.sunbird_environment || !process.env.sunbird_instance) {
 }
 
 portal.server = app.listen(port, function () {
-  if(envHelper.PORTAL_CDN_URL){
-    request(envHelper.PORTAL_CDN_URL + 'index_'+packageObj.version+'.'+packageObj.buildNumber+'.ejs' ).pipe(fs.createWriteStream(path.join(__dirname, 'dist', 'index.ejs')));
+  if (envHelper.PORTAL_CDN_URL) {
+    request(envHelper.PORTAL_CDN_URL + 'index_' + packageObj.version + '.' + packageObj.buildNumber + '.ejs').pipe(fs.createWriteStream(path.join(__dirname, 'dist', 'index.ejs')));
   }
   defaultTenantIndexStatus = tenantHelper.getDefaultTenantIndexState();
   console.log('app running on port ' + port)
