@@ -126,6 +126,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   public collectionTreeOptions: ICollectionTreeOptions;
 
   public unsubscribe = new Subject<void>();
+  courseProgressData: any;
 
   // Julia content configuration
   externalContentData: {
@@ -134,7 +135,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     contentId: string,
     userId: string
   };
-  courseProgressData: any;
+    /**
+   * Time interval of pulling status
+   */
+  statePullingClearTimeInterval: any;
+  statePullingTimeInterval = 4000;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -310,6 +315,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loader = false;
         this.toasterService.error(this.resourceService.messages.stmsg.m0009);
       });
+
+      // Julia related code
+      this.stopPullingContentStatus();
   }
 
   public navigateToContent(content: { title: string, id: string }): void {
@@ -355,6 +363,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       };
       this.enableContentPlayer = false;
       this.router.navigate([], navigationExtras);
+
+      // Start pulling status
+      this.startPullingContentStatus();
     }
   }
   public createEventEmitter(data) {
@@ -372,6 +383,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.updateContentsStateSubscription) {
       this.updateContentsStateSubscription.unsubscribe();
+    }
+    // Stop content pulling status
+    if (this.statePullingClearTimeInterval) {
+      this.stopPullingContentStatus();
     }
     this.unsubscribe.next();
     this.unsubscribe.complete();
@@ -467,5 +482,26 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       contentId: this.contentId,
       userId: this.userService.userid
     };
+  }
+
+    /**
+   * This function is use to start pulling content status
+   */
+  startPullingContentStatus = () => {
+    console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
+    if (this.courseHierarchy.progress !== 2 && !this.statePullingClearTimeInterval) {
+      this.statePullingClearTimeInterval = setInterval(() => {
+        console.log('Time', Date.now());
+        this.getContentState();
+      }, this.statePullingTimeInterval);
+    }
+  }
+
+  /**
+   * This function is use to stop pulling content status
+   */
+  stopPullingContentStatus = () => {
+    console.log('Stop pulling status', this.statePullingClearTimeInterval);
+    clearTimeout(this.statePullingClearTimeInterval);
   }
 }

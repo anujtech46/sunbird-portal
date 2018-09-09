@@ -41,10 +41,13 @@ export class CourseProgressService {
   public getContentState(req) {
     const courseId_batchId = req.courseId + '_' + req.batchId;
     const courseProgress = this.courseProgress[courseId_batchId];
-    if (courseProgress) {
-      this.courseProgressData.emit(courseProgress);
-      return observableOf(courseProgress);
-    } else {
+    /**
+     * Stop checking progress
+     */
+    // if (courseProgress) {
+    //   this.courseProgressData.emit(courseProgress);
+    //   return observableOf(courseProgress);
+    // } else {
       const channelOptions = {
         url: this.configService.urlConFig.URLS.COURSE.USER_CONTENT_STATE_READ,
         data: {
@@ -64,7 +67,7 @@ export class CourseProgressService {
         return err;
       }), );
 
-    }
+    // }
   }
 
   private processContent(req, res, courseId_batchId) {
