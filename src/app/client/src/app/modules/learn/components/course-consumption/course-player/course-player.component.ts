@@ -16,6 +16,9 @@ import {
   IImpressionEventInput, IEndEventInput, IStartEventInput, IInteractEventObject, IInteractEventEdata
 } from '@sunbird/telemetry';
 
+// Julia related services
+import { JuliaNoteBookService } from './../../../services';
+
 @Component({
   selector: 'app-course-player',
   templateUrl: './course-player.component.html',
@@ -140,6 +143,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   statePullingClearTimeInterval: any;
   statePullingTimeInterval = 4000;
+    /**
+   * This variable is use for note book ping
+   */
+  private warnShown = false;
+
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -147,7 +155,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private toasterService: ToasterService, private resourceService: ResourceService, public breadcrumbsService: BreadcrumbsService,
     private cdr: ChangeDetectorRef, public courseBatchService: CourseBatchService, public permissionService: PermissionService,
     public externalUrlPreviewService: ExternalUrlPreviewService, public coursesService: CoursesService,
-    private courseProgressService: CourseProgressService, ) {
+    private courseProgressService: CourseProgressService,
+    public juliaNoteBookService: JuliaNoteBookService ) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -503,5 +512,25 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   stopPullingContentStatus = () => {
     console.log('Stop pulling status', this.statePullingClearTimeInterval);
     clearTimeout(this.statePullingClearTimeInterval);
+  }
+  public startJuliaNoteBookPing = () => {
+    setInterval(() => {
+      this.juliaNoteBookService.getPing().subscribe((r) => {
+        console.log('Ping received by server');
+        const activeTime = Math.floor(Date.now() / 1000) - r['create_time'];
+        const timeout = r['timeout'];
+        if (activeTime > timeout - 60) {
+          $('#jupyter-frame').remove();
+          this.toasterService.error('Your session on notebooks has timed out. Please close notebook tab(s) ' +
+            'and relanch the same.');
+        } else if (activeTime > timeout - 900 && !this.warnShown) {
+          this.toasterService.error('You have 15 minutes left on your notebook session. Please save your ' +
+            'open notebooks to avoid losing data.');
+            this.warnShown = true;
+        }
+      }, (err) => {
+        console.log('Ping failed', JSON.stringify(err));
+      });
+    }, 60000);
   }
 }

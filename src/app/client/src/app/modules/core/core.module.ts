@@ -20,6 +20,9 @@ import { AuthGuard } from './guard/auth-gard.service';
 import { CacheService } from 'ng2-cache-service';
 import { WebExtensionModule } from 'sunbird-web-extension';
 import { TelemetryModule } from '@sunbird/telemetry';
+
+// Julia related service
+import { JuliaBoxService } from './services';
 @NgModule({
   imports: [
     CommonModule,
@@ -45,7 +48,8 @@ export class CoreModule {
       providers: [LearnerService, UserService, TenantService, SearchService, CopyContentService,
         PermissionService, AnnouncementService, BadgesService, ContentService, CoursesService, PageApiService,
         AuthGuard, FrameworkService, FormService, CacheService,
-        ConceptPickerService, BreadcrumbsService, PlayerService, OrgDetailsService]
+        ConceptPickerService, BreadcrumbsService, PlayerService, OrgDetailsService,
+        JuliaBoxService]
     };
   }
 }

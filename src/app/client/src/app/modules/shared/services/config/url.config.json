@@ -128,6 +128,10 @@
     "TELEMETRY": {
        "APISLUG": "service/v1/content/",
       "SYNC": "data/v1/telemetry"
+    },
+    "JULIA_PREFIX": "/juliabox/",
+    "JULIA_BOX": {
+      "PING": "jbox/ping"
     }
   }
 }

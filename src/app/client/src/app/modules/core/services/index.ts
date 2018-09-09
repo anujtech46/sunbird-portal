@@ -18,3 +18,6 @@ export * from './player/player.service';
 export * from './copy-content/copy-content.service';
 export * from './org-details/org-details.service';
 export *  from './public-data/public-data.service';
+
+// Julia related service
+export * from './julia-box/julia-box.service';

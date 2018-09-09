@@ -166,7 +166,16 @@
         "showStartPage": true,
         "host": "",
         "overlay": {
-          "showUser": false
+          "enableUserSwitcher": false,
+          "showUser": false,
+          "showOverlay": false,
+          "showNext": false,
+          "showPrevious": false,
+          "showSubmit": false,
+          "showReload": false,
+          "menu": {
+            "showTeachersInstruction": false
+          }
         },
         "splash": {
           "text": "",

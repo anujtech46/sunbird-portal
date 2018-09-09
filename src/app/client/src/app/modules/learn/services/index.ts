@@ -4,3 +4,4 @@ export * from './courseProgress/course-progress.service';
 
 // Julia related services
 export * from './course-badge/course-badge.service';
+export * from './julia-note-book/julia-note-book.service';
