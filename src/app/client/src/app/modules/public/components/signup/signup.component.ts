@@ -36,6 +36,8 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   public unsubscribe$ = new Subject<void>();
 
+  signUpProvider: string;
+
   constructor(public resourceService: ResourceService, public configService: ConfigService, public activatedRoute: ActivatedRoute,
     public router: Router, public signupService: SignupService, public toasterService: ToasterService) {
     this.languages = this.configService.dropDownConfig.COMMON.languages;
@@ -46,13 +48,13 @@ export class SignupComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.signUpForm = new FormGroup({
       userName: new FormControl(null, [Validators.required, Validators.pattern('^[-\\w\.\\$@\*\\!]{5,256}$')]),
+      providerName: new FormControl({value: this.signUpProvider, disabled: true}),
       password: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s@#!$?*^&0-9]*(?<! )$')]),
       firstName: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s]*(?<! )$')]),
       lastName: new FormControl(null),
-      phone: new FormControl(null, [Validators.required, Validators.pattern('^\\d{10}$')]),
+      phone: new FormControl(null, [Validators.pattern('^\\d{10}$')]),
       email: new FormControl(null, [Validators.required,
-      Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)]),
-      language: new FormControl(null, [Validators.required])
+        Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)])
     });
     this.telemetryImpression = {
       context: {
@@ -65,6 +67,8 @@ export class SignupComponent implements OnInit, OnDestroy {
         subtype: this.activatedRoute.snapshot.data.telemetry.subtype
       }
     };
+
+    this.signUpProvider = '@' + (<HTMLInputElement>document.getElementById('defaultTenant')).value;
   }
   /**
    * This method is used to navigate back

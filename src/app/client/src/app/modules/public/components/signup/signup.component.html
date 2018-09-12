@@ -51,12 +51,9 @@
         {{resourceService?.messages?.stmsg?.m0092}}
       </div>
       <div class="two fields">
-        <div class="required field" [ngClass]="signUpForm.controls.phone.invalid && signUpForm.controls['phone'].errors.required && !signUpForm.controls['phone'].pristine || (signUpForm.controls['phone'].errors && signUpForm.controls['phone'].errors.pattern) ? 'error' : ''">
+        <div class="field">
           <label>{{resourceService?.frmelmnts?.lbl?.phonenumber}}</label>
           <input type="text" formControlName="phone" placeholder="eg:XXXXXXXXXX">
-          <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="signUpForm.controls.phone.invalid && signUpForm.controls['phone'].errors.required && !signUpForm.controls['phone'].pristine || (signUpForm.controls['phone'].errors && signUpForm.controls['phone'].errors.pattern)">
-            {{resourceService?.messages?.stmsg?.m0091}}
-          </div>
         </div>
         <div class="required field" [ngClass]="signUpForm.controls.email.invalid && signUpForm.controls['email'].errors.required && !signUpForm.controls['email'].pristine || (signUpForm.controls['email'].errors && signUpForm.controls['email'].errors.pattern) ? 'error' : ''">
           <label>{{resourceService?.frmelmnts?.lbl?.email}}</label>
@@ -65,17 +62,6 @@
             {{resourceService?.messages?.stmsg?.m0089}}
           </div>
         </div>
-      </div>
-      <div class="required field" [ngClass]="signUpForm.controls.language.invalid && signUpForm.controls['language'].errors.required && !signUpForm.controls['language'].pristine ? 'error' : ''">
-        <label>{{resourceService?.frmelmnts?.lbl?.lang}}</label>
-        <div class="field">
-          <sui-multi-select class="selection" formControlName="language" [options]="languages" #multiSelect>
-            <sui-select-option *ngFor="let option of languages" [value]="option"> </sui-select-option>
-          </sui-multi-select>
-        </div>
-      </div>
-      <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="signUpForm.controls.language.invalid && signUpForm.controls['language'].errors.required && !signUpForm.controls['language'].pristine">
-        {{resourceService?.messages?.stmsg?.m0090}}
       </div>
       <div class="ui error message">
       </div>
