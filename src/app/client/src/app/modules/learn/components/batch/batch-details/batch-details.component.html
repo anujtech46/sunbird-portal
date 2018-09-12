@@ -58,11 +58,11 @@
             <span *ngIf="enrolledBatchInfo.endDate" class="date"> {{enrolledBatchInfo.endDate | dateFormat}}</span>
         </div>
     </div>
-    <div class="selectedBatchContent extra content">
-        <span class="right floated">
+    <div class="selectedBatchContent extra content" *ngIf="enrolledBatchInfo.participant.length > 0 || enrolledBatchInfo.mentors.length >0">
+        <span class="right floated" *ngIf="enrolledBatchInfo.participant.length > 0">
             {{enrolledBatchInfo.participant.length}} {{resourceService.frmelmnts.lbl.learners}}
         </span>
-        <span>
+        <span *ngIf="enrolledBatchInfo.mentors.length > 0">
             {{enrolledBatchInfo.mentors.length}} {{resourceService.frmelmnts.lbl.mentors}}
         </span>
     </div>

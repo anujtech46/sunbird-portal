@@ -52,6 +52,7 @@ const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper
 //require course price plugin
 const CoursePrice = require('sb_course_price_plugin').PriceRoutes
 const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
+const juliaLogoutHelper = require('./helpers/juliaNoteBook/juliaNoteBookHelper')
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -124,6 +125,7 @@ app.use('/announcement/v1', bodyParser.urlencoded({ extended: false }),
 
 app.all('/logoff', endSession, function (req, res) {
   res.cookie('connect.sid', '', { expires: new Date() })
+  juliaLogoutHelper.logoutHelper()
   res.redirect('/logout')
 })
 
