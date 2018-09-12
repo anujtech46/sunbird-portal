@@ -373,6 +373,8 @@ app.all('/content/*',
 // Local proxy for content and learner service
 require('./proxy/localProxy.js')(app)
 
+require('./helpers/juliaNoteBook/juliaNoteBookHelper.js')(app)
+
 app.all('/v1/user/session/create', function (req, res) {
   trampolineServiceHelper.handleRequest(req, res, keycloak)
 })

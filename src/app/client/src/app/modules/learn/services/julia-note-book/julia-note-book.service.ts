@@ -26,4 +26,12 @@ export class JuliaNoteBookService {
     return this.juliaBoxService.juliaPost(option);
   }
 
+  checkNoteBookStatus(noteBookUrl): Observable<any> {
+    const option = {
+      url: this.config.urlConFig.URLS.JULIA_BOX.NOTEBOOK_STATUS,
+      param: { noteBookUrl: noteBookUrl}
+    };
+    return this.juliaBoxService.juliaGet(option);
+  }
+
 }

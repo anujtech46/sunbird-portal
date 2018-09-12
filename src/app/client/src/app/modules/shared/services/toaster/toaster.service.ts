@@ -76,4 +76,17 @@ export class ToasterService {
       title: message
     });
   }
+
+    /**
+   * Format info message with manual close
+   * @memberOf Services.toasterService
+   * @param {string}  message - Warning message
+   */
+  impInfo(message: string) {
+    this.iziToast.info({
+      title: message,
+      close: true,
+      timeout: 36000000
+    });
+  }
 }

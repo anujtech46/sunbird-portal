@@ -359,8 +359,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       || this.courseStatus === 'Unlisted' || this.permissionService.checkRolesPermissions(['COURSE_MENTOR', 'CONTENT_REVIEWER'])
       || this.courseHierarchy.createdBy === this.userService.userid) {
       this.router.navigate([], navigationExtras);
+    } else {
+      this.toasterService.info('Please enrol to the course …');
     }
   }
+
   public contentProgressEvent(event) {
     if (this.batchId && this.enrolledBatchInfo && this.enrolledBatchInfo.status === 1) {
       const eid = event.detail.telemetryData.eid;
@@ -580,7 +583,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
       const newUrl = url + this.loadCourseDetails();
       console.log('SSO successful :: Opening notebook :: ', newUrl);
-      window.open(newUrl);
+      this.checkNotebookStatus(newUrl);
+      const windowPopup = window.open(newUrl);
+      if (!windowPopup) {
+        const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
+        this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
+      }
       (<any>$('#openNoteBookModal')).modal('hide');
       if (!this.juliaBoxPingIntervalTime) {
         this.startJuliaNoteBookPing();
@@ -610,6 +618,49 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }, (err) => {
       console.log('err', err);
+    });
+  }
+
+  /**
+   * Open notebook
+   * @param url : string
+   */
+  private openNoteBook(url) {
+    const windowPopup = window.open(url);
+    if (!windowPopup) {
+      const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
+      this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
+    }
+    (<any>$('#openNoteBookModal')).modal('hide');
+    if (!this.juliaBoxPingIntervalTime) {
+      this.startJuliaNoteBookPing();
+    }
+  }
+   /**
+   * Check notebook status: Notebook copied or not
+   * @param url : string
+   * @param noteBookStatusCount : number
+   */
+  private checkNotebookStatus(url: string, noteBookStatusCount: number = 1) {
+    this.juliaNoteBookService.checkNoteBookStatus(url).subscribe((response) => {
+      if (response && response.responseCode === 'OK') {
+        this.openNoteBook(url);
+      }
+    }, (err) => {
+      if (err.error && err.error.responseCode === 'RESOURCE_NOT_FOUND') {
+        console.log('Getting 404 :: checkNotebookStatus ::', noteBookStatusCount);
+        if (noteBookStatusCount <= 10) {
+          setTimeout(() => {
+            this.checkNotebookStatus(url, noteBookStatusCount + 1);
+          }, 1000);
+        } else {
+          (<any>$('#openNoteBookModal')).modal('hide');
+          this.toasterService.error('Loading notebook failed, Please try again later...');
+        }
+      } else {
+        (<any>$('#openNoteBookModal')).modal('hide');
+        this.toasterService.error('Loading notebook failed, Please try again later...');
+      }
     });
   }
 }

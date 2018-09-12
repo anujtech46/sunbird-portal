@@ -132,7 +132,8 @@
     "JULIA_PREFIX": "/juliabox/",
     "JULIA_BOX": {
       "PING": "jbox/ping",
-      "SSO": "jbox/load_notebook_sso"
+      "SSO": "jbox/load_notebook_sso",
+      "NOTEBOOK_STATUS": "notebook/status"
     },
     "PRICE_PREFIX": "/price/v1/",
     "PRICE": {
