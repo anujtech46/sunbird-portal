@@ -8,6 +8,7 @@ interface Window {
   config: any;
   context: any;
   redirectUrl: any;
+  open_noteBook: any;
 }
 
 declare module '*.json' {

@@ -11,19 +11,19 @@ export class JuliaNoteBookService {
 
   constructor(public config: ConfigService, public juliaBoxService: JuliaBoxService) { }
 
-  getPing(): Observable<ServerResponse> {
+  getPing(): Observable<any> {
     const option = {
       url: this.config.urlConFig.URLS.JULIA_BOX.PING
     };
-    return this.juliaBoxService.get(option);
+    return this.juliaBoxService.juliaGet(option);
   }
 
-  ssoPing(data): Observable<ServerResponse> {
+  ssoPing(data): Observable<any> {
     const option = {
       url: this.config.urlConFig.URLS.JULIA_BOX.SSO,
       data: data
     };
-    return this.juliaBoxService.post(option);
+    return this.juliaBoxService.juliaPost(option);
   }
 
 }

@@ -150,4 +150,37 @@ export class DataService {
       return { ...default_headers };
     }
   }
+
+      /**
+   * for making get api calls
+   *
+   * @param requestParam interface
+   */
+  juliaGet(requestParam: RequestParam): Observable<any> {
+    const httpOptions: HttpOptions = {
+      headers: requestParam.header ? requestParam.header : this.getHeader(),
+      params: requestParam.param
+    };
+    return this.http.get(this.baseUrl + requestParam.url, httpOptions).pipe(
+    mergeMap((data: any) => {
+      return Observable.of(data);
+    }));
+  }
+
+     /**
+   * for making post api calls
+   *
+   * @param {RequestParam} requestParam interface
+   *
+   */
+  juliaPost(requestParam: RequestParam): Observable<any> {
+    const httpOptions: HttpOptions = {
+      headers: requestParam.header ? this.getHeader(requestParam.header) : this.getHeader(),
+      params: requestParam.param
+    };
+    return this.http.post(this.baseUrl + requestParam.url, requestParam.data, httpOptions).pipe
+    (mergeMap((data: any) => {
+        return Observable.of(data);
+    }));
+  }
 }

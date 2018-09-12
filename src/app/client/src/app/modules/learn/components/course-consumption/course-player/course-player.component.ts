@@ -148,6 +148,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private warnShown = false;
 
+  progress: number;
+
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -221,6 +223,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     takeUntil(this.unsubscribe))
     .subscribe((courseProgressData) => {
       this.courseProgressData = courseProgressData;
+      this.progress = courseProgressData.progress ? Math.round(courseProgressData.progress) :
+        this.progress;
     });
   }
   private parseChildContent() {

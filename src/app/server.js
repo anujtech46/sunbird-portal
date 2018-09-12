@@ -135,6 +135,11 @@ const config = {
 }
 coursePrice.init(app, config)
 
+
+// Handle course routes
+require('./helpers/contentStateUpdateHelper.js')(app)
+require('./helpers/pdfCreator/pdfCreator.js')(app)
+
 function getLocals(req) {
   var locals = {};
   locals.userId = _.get(req, 'kauth.grant.access_token.content.sub') ? req.kauth.grant.access_token.content.sub : null
@@ -462,10 +467,6 @@ app.all('/juliabox/*',
     }
   })
 )
-
-// Handle course routes
-require('./helpers/contentStateUpdateHelper.js')(app)
-require('./helpers/pdfCreator/pdfCreator.js')(app)
 
 // Resource bundles apis
 

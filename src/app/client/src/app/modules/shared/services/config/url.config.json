@@ -140,6 +140,10 @@
       "UPDATE": "update",
       "READ": "read",
       "SEARCH": "search"
+    },
+    "CERTIFICATE_PREFIX": "/certificate/v1",
+    "CERTIFICATE": {
+      "COURSE_CERTIFICATE": "/course/download"
     }
   }
 }
