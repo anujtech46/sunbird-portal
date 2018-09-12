@@ -144,6 +144,14 @@
     "CERTIFICATE_PREFIX": "/certificate/v1",
     "CERTIFICATE": {
       "COURSE_CERTIFICATE": "/course/download"
+    },
+    "PAYMENT_PREFIX": "payment/v1/",
+    "PAYMENT": {
+      "START": "start",
+      "CREATE": "create",
+      "SUBMIT": "update",
+      "STATUS": "status",
+      "SEND": "send"
     }
   }
 }

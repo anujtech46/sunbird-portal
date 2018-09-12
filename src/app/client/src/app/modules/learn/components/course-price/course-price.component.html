@@ -32,7 +32,7 @@
   <div class="twelve wide column" *ngIf="showLoader">
     <app-loader [data]="loaderMessage"></app-loader>
   </div>
-  <div class="ui warning message" *ngIf="data && !data.price && !showLoader">
+    <div class="ui warning message" *ngIf="data && !data.price">
     <div class="header">
       Price is not defined for this batch, Please contact admin...
     </div>

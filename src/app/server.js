@@ -140,6 +140,9 @@ coursePrice.init(app, config)
 require('./helpers/contentStateUpdateHelper.js')(app)
 require('./helpers/pdfCreator/pdfCreator.js')(app)
 
+var Payment = require('sb_payment_plugin').PaymentRoutes
+const payment = new Payment(app)
+
 function getLocals(req) {
   var locals = {};
   locals.userId = _.get(req, 'kauth.grant.access_token.content.sub') ? req.kauth.grant.access_token.content.sub : null

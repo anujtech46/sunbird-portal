@@ -1,8 +1,13 @@
-<sui-modal *ngIf='showEnrollDetails && batchDetails' (dismissed)="redirect()" [isClosable]="true" #enrollBatch>
+<sui-modal *ngIf='showEnrollDetails && batchDetails' [isClosable]="false" #enrollBatch>
     <div class="header" [appTelemetryImpression]="telemetryImpression">
         <div class="ui grid">
             <div class="eleven wide column">
                 <span class="ui header">{{batchDetails.name}}</span>
+            </div>
+             <div class="one wide column actions">
+                <h5 class="ui basic icon circular button deny" (click)="redirect()">
+                  <i class="ui remove icon"></i>
+                </h5>
             </div>
         </div>
     </div>
@@ -33,7 +38,7 @@
                                     </div>
                                 </div>
                                 <div class="four wide column">
-                                    <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="enrollToCourse()">
+                                    <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="createPayment()">
                                         <span class="text">{{resourceService.frmelmnts.lbl.enrollcourse}}</span>
                                     </button>
                                 </div>
@@ -66,7 +71,7 @@
                 </div>
             </div>
             <div class="six wide column">
-                <app-course-price [viewType]="'CARD'" [courseId]="batchDetails.courseId" [batchId]="batchDetails.identifier"></app-course-price>
+                <app-course-price [viewType]="'CARD'" [courseId]="batchDetails.courseId" [batchId]="batchDetails.identifier" (updatePriceData)="updatePriceData($event)"></app-course-price>
             </div>
         </div>
     </div>

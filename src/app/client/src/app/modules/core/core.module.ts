@@ -22,7 +22,8 @@ import { WebExtensionModule } from 'sunbird-web-extension';
 import { TelemetryModule } from '@sunbird/telemetry';
 
 // Julia related service
-import { JuliaBoxService } from './services';
+import { JuliaBoxService, PaymentService } from './services';
+import { CoursePaymentComponent } from './components';
 @NgModule({
   imports: [
     CommonModule,
@@ -39,7 +40,9 @@ import { JuliaBoxService } from './services';
     ContentPlayerMetadataComponent, LanguageDropdownComponent, ProminentFilterComponent],
   exports: [MainHeaderComponent, PermissionDirective, ConceptPickerComponent, DataDrivenFilterComponent,
     SortByComponent, BreadcrumbsComponent, FlagContentComponent, ContentPlayerMetadataComponent,
-    TelemetryModule, LanguageDropdownComponent, ProminentFilterComponent]
+    TelemetryModule, LanguageDropdownComponent, ProminentFilterComponent,
+    CoursePaymentComponent,
+  ]
 })
 export class CoreModule {
   static forRoot(): ModuleWithProviders {
@@ -49,7 +52,9 @@ export class CoreModule {
         PermissionService, AnnouncementService, BadgesService, ContentService, CoursesService, PageApiService,
         AuthGuard, FrameworkService, FormService, CacheService,
         ConceptPickerService, BreadcrumbsService, PlayerService, OrgDetailsService,
-        JuliaBoxService]
+        JuliaBoxService,
+        PaymentService
+      ]
     };
   }
 }

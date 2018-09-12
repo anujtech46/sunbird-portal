@@ -13,7 +13,7 @@
         <div class="description annannouncement-description">
             <div *ngIf="showBatchList" class="ui divided list">
                 <div class="item padding-top-10" *ngFor="let batch of batchList">
-                    <i class="write icon float-ContentRight cursor-pointer" appTelemetryInteract [telemetryInteractEdata]="updateBatchIntractEdata"
+                    <i class="write icon blue large  float-ContentRight cursor-pointer" appTelemetryInteract [telemetryInteractEdata]="updateBatchIntractEdata"
                         [telemetryInteractObject]="{id:batch.identifier,type:'batch',ver:'1',rollup:{l1:courseId}}" (click)="batchUpdate(batch)"
                         *ngIf="courseMentor"></i>
                     <app-course-price *ngIf="courseMentor" [viewType]="'ICON'" [courseId]="courseId" [batchId]="batch.identifier"></app-course-price>
@@ -46,6 +46,7 @@
             <i class="add icon"></i>{{resourceService.frmelmnts.lbl.createbatch}}</a>
     </div>
 </div>
+<br>
 <div *ngIf="enrolledCourse && enrolledBatchInfo" class="rightSideSectionCards ui card">
     <div class="content">
         <div class="header">{{resourceService.frmelmnts.lbl.batchdetails}}</div>

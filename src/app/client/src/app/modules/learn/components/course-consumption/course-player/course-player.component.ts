@@ -17,7 +17,8 @@ import {
 } from '@sunbird/telemetry';
 
 // Julia related services
-import { JuliaNoteBookService } from './../../../services';
+import { JuliaNoteBookService, CoursePriceService } from './../../../services';
+import { PaymentService } from '@sunbird/core';
 
 @Component({
   selector: 'app-course-player',
@@ -150,6 +151,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   progress: number;
 
+  productData: any;
+  orderData: any;
+
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -158,7 +162,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef, public courseBatchService: CourseBatchService, public permissionService: PermissionService,
     public externalUrlPreviewService: ExternalUrlPreviewService, public coursesService: CoursesService,
     private courseProgressService: CourseProgressService,
-    public juliaNoteBookService: JuliaNoteBookService ) {
+    public juliaNoteBookService: JuliaNoteBookService,
+    public coursePriceService: CoursePriceService,
+    public paymentService: PaymentService ) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -199,6 +205,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
           this.enrolledBatchInfo = response.enrolledBatchDetails;
           this.enrolledCourse = true;
           this.setTelemetryStartEndData();
+          this.getPriceDetail();
           this.parseChildContent();
           if (this.enrolledBatchInfo.status > 0 && this.contentIds.length > 0) {
             this.getContentState();
@@ -507,7 +514,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   startPullingContentStatus = () => {
     console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
-    if (this.courseHierarchy.progress !== 2 && !this.statePullingClearTimeInterval) {
+    if (this.progress !== 100 && !this.statePullingClearTimeInterval) {
       this.statePullingClearTimeInterval = setInterval(() => {
         console.log('Time', Date.now());
         this.getContentState();
@@ -568,4 +575,40 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log('Fail to load notebook failed', JSON.stringify(err));
     });
   }
+
+  /**
+   * Get price detail
+   */
+  private getPriceDetail() {
+    const request: any = {
+      filters: {
+        courseid: this.courseId,
+        batchid: this.batchId
+      }
+    };
+    this.coursePriceService.searchPrice(request).subscribe((response) => {
+      if (response && response.responseCode === 'OK') {
+        this.productData = response.result.response.content[0];
+       } else {
+        this.toasterService.error('Unable to get course price, Please try again later');
+      }
+    }, (err) => {
+      console.log('err', err);
+    });
+  }
+   private getOrderDetail() {
+    const request = {
+      productId: this.productData.priceId,
+      userId: this.userService.userid
+    };
+    this.paymentService.paymentStatus(request).subscribe((response) => {
+      if (response && response.responseCode === 'OK') {
+        this.orderData = response.result.response;
+      } else {
+        this.toasterService.error('Unable to get order detail, Please try again later');
+      }
+    }, (err) => {
+      console.log('err', err);
+    });
+   }
 }

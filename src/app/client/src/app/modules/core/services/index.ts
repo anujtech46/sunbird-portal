@@ -22,3 +22,4 @@ export *  from './public-data/public-data.service';
 // Julia related service
 export * from './julia-box/julia-box.service';
 export * from './data/data.service';
+export * from './payment/payment.service';

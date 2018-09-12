@@ -111,6 +111,7 @@
     "sb_api_interceptor": "file:libs/sb_api_interceptor",
     "sb_cache_manager": "file:libs/sb_cache_manager",
     "sb_course_price_plugin": "0.0.6",
+    "sb_payment_plugin": "file:../../../../payment-plugins/payment-plugins/sb_payment_plugin",
     "sb_telemetry_util": "file:libs/sb_telemetry_util",
     "tar-fs": "^1.16.3",
     "ua-parser-js": "^0.7.13",

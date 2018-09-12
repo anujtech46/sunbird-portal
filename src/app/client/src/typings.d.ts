@@ -9,6 +9,7 @@ interface Window {
   context: any;
   redirectUrl: any;
   open_noteBook: any;
+  Razorpay: any;
 }
 
 declare module '*.json' {

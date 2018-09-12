@@ -12,3 +12,4 @@ export * from './course-consumption/carriculum-card/carriculum-card.component';
 export * from './course-consumption/course-badge/course-badge.component';
 export * from './course-price/course-price.component';
 export * from './course-certificate/course-certificate.component';
+export * from './course-benefit/course-benefit.component';
