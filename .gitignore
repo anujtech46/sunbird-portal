@@ -19,3 +19,5 @@ src/app/app_dist
 **/node_modules
 /src/app/client/coverage
 /src/app/client/documentation
+
+src/app/helpers/localVariables\.js

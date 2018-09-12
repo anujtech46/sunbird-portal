@@ -11,5 +11,3 @@ export * from './content-player-metadata/content-player-metadata.component';
 export * from './language-dropdown/language-dropdown.component';
 export * from './prominent-filter/prominent-filter.component';
 
-// Julia related code
-export * from './course-payment/course-payment.component';

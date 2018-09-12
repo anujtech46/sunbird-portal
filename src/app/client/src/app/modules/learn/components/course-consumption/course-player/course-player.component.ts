@@ -398,8 +398,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.enableContentPlayer = false;
       this.router.navigate([], navigationExtras);
 
-      // Start pulling status
-      this.startPullingContentStatus();
+      // Start pulling status for sometime
+      // this.startPullingContentStatus();
     }
   }
   public createEventEmitter(data) {

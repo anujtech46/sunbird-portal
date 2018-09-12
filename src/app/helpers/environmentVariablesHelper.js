@@ -4,17 +4,17 @@ const fs = require('fs')
 const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
 let envVariables = {
-  LEARNER_URL: 'http://40.117.159.161/api/' || env.sunbird_learner_player_url || 'https://staging.open-sunbird.org/api/',
-  CONTENT_URL: 'http://40.117.159.161/api/' || env.sunbird_content_player_url || 'https://staging.open-sunbird.org/api/',
-  CONTENT_PROXY_URL: 'http://40.117.159.161' || env.sunbird_content_proxy_url || 'https://staging.open-sunbird.org',
+  LEARNER_URL: env.sunbird_learner_player_url || 'https://staging.open-sunbird.org/api/',
+  CONTENT_URL: env.sunbird_content_player_url || 'https://staging.open-sunbird.org/api/',
+  CONTENT_PROXY_URL: env.sunbird_content_proxy_url || 'https://staging.open-sunbird.org',
   PORTAL_REALM: env.sunbird_portal_realm || 'sunbird',
-  PORTAL_AUTH_SERVER_URL: 'http://40.117.159.161/auth' || env.sunbird_portal_auth_server_url || 'https://staging.open-sunbird.org/auth',
+  PORTAL_AUTH_SERVER_URL: env.sunbird_portal_auth_server_url || 'https://staging.open-sunbird.org/auth',
   PORTAL_AUTH_SERVER_CLIENT: env.sunbird_portal_auth_server_client || 'portal',
   APPID: process.env.sunbird_environment + '.' + process.env.sunbird_instance + '.portal',
   DEFAULT_CHANNEL: env.sunbird_default_channel || 'aiprohub',
   EKSTEP_ENV: env.ekstep_env || 'qa',
   PORTAL_PORT: env.sunbird_port || 3000,
-  PORTAL_API_AUTH_TOKEN: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxMTkyNTBlMGI0Yzc0NWEwOGIyMjFiM2M3OTE3ZTk5MyJ9.2ow7e28seHQNKQ_ZjME1_0QhTGtJKDwu4FQ0qs4CVxU' || env.sunbird_api_auth_token,
+  PORTAL_API_AUTH_TOKEN: env.sunbird_api_auth_token,
   PORTAL_TELEMETRY_PACKET_SIZE: env.sunbird_telemetry_packet_size || 1000,
   PORTAL_ECHO_API_URL: env.sunbird_echo_api_url || 'https://staging.open-sunbird.org/api/echo/',
   PORTAL_AUTOCREATE_TRAMPOLINE_USER: env.sunbird_autocreate_trampoline_user || 'true',
@@ -69,5 +69,9 @@ const julia_env_variable = {
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')
   ? env.sunbird_cassandra_urls.split(',') : ['localhost']
+
+if (process.env.NODE_ENV === 'local') {   
+  envVariables = Object.assign({}, envVariables,  require('./localVariables'))   
+}
 
 module.exports = { ...envVariables, ...julia_env_variable }

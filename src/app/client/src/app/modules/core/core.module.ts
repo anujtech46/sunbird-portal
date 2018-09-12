@@ -23,7 +23,6 @@ import { TelemetryModule } from '@sunbird/telemetry';
 
 // Julia related service
 import { JuliaBoxService, PaymentService } from './services';
-import { CoursePaymentComponent } from './components';
 @NgModule({
   imports: [
     CommonModule,
@@ -40,8 +39,7 @@ import { CoursePaymentComponent } from './components';
     ContentPlayerMetadataComponent, LanguageDropdownComponent, ProminentFilterComponent],
   exports: [MainHeaderComponent, PermissionDirective, ConceptPickerComponent, DataDrivenFilterComponent,
     SortByComponent, BreadcrumbsComponent, FlagContentComponent, ContentPlayerMetadataComponent,
-    TelemetryModule, LanguageDropdownComponent, ProminentFilterComponent,
-    CoursePaymentComponent,
+    TelemetryModule, LanguageDropdownComponent, ProminentFilterComponent
   ]
 })
 export class CoreModule {
