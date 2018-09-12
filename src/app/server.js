@@ -163,6 +163,9 @@ function getLocals(req) {
 
   //Julia related code
   locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
+  locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_APP_URL;
+  locals.addToDigiLockerAppID = envHelper.ADD_TO_DIGILOCKER_APP_ID;
+  locals.addToDigiLockerAppKey = envHelper.ADD_TO_DIGILOCKER_APP_KEY;
   return locals;
 }
 
@@ -462,10 +465,12 @@ app.all('/juliabox/*',
     proxyReqPathResolver: function (req) {
       let urlParam = req.params['0']
       let query = require('url').parse(req.url).query
+      let auth_query = "Authorization=" + req.kauth && req.kauth.grant  && req.kauth.grant.id_token['token']
       if (query) {
+        query = query + '&' + auth_query
         return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
       } else {
-        return require('url').parse(juliaBoxBaseUrl + urlParam).path
+        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + auth_query).path
       }
     }
   })

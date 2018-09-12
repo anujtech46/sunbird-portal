@@ -145,4 +145,14 @@
         <div class="one wide column"></div>
     </div>
 </div>
+<sui-modal [hidden]="true" [isClosable]="false" id="openNoteBookModal" #modal>
+    <div class="content">
+        <div class="ui tweleve wide column margin-bottom-20">
+            <h2 class="ui center aligned icon header">
+                <i class="notched circle loading icon"></i>
+                <p>We requested to open notebook, Please wait... !</p>
+            </h2>
+        </div>
+    </div>
+</sui-modal>
 <router-outlet></router-outlet>

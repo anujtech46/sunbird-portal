@@ -64,6 +64,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "dev": "gulp update:index:file && NODE_ENV=local nodemon server",
     "test-announcements": "mocha 'test/announcements/server/**/*.js' --reporter mochawesome",
     "preinstall": "npm install ./libs/sb_api_interceptor && npm install ./libs/sb_cache_manager  && npm install ./libs/sb_telemetry_util",
     "validate": "npm ls",
@@ -82,6 +83,7 @@
     "cassandra-session-store": "1.0.6",
     "codacy-coverage": "3.0.0",
     "compression": "1.7.2",
+    "crypto-js": "^3.1.9-1",
     "dateformat": "^2.0.0",
     "ejs": "^2.5.6",
     "express": "^4.15.3",
@@ -111,7 +113,7 @@
     "sb_api_interceptor": "file:libs/sb_api_interceptor",
     "sb_cache_manager": "file:libs/sb_cache_manager",
     "sb_course_price_plugin": "0.0.6",
-    "sb_payment_plugin": "file:../../../../payment-plugins/payment-plugins/sb_payment_plugin",
+    "sb_payment_plugin": "0.0.1",
     "sb_telemetry_util": "file:libs/sb_telemetry_util",
     "tar-fs": "^1.16.3",
     "ua-parser-js": "^0.7.13",

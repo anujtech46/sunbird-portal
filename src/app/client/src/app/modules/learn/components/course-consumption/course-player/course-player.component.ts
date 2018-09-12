@@ -153,7 +153,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   productData: any;
   orderData: any;
-
+  public showOpenNoteBookModal = false;
+  juliaBoxPingIntervalTime: any;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -530,7 +531,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     clearTimeout(this.statePullingClearTimeInterval);
   }
   public startJuliaNoteBookPing = () => {
-    setInterval(() => {
+    this.juliaBoxPingIntervalTime = setInterval(() => {
       this.juliaNoteBookService.getPing().subscribe((r) => {
         console.log('Ping received by server');
         const activeTime = Math.floor(Date.now() / 1000) - r['create_time'];
@@ -566,13 +567,25 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    * This function is use to open note book in new tab
    */
   open_notebook = (url) => {
-    this.juliaNoteBookService.ssoPing({}).subscribe((r) => {
+    // TODO: ssoPing should be renamed to doSSO or ssoJuliaBox or something like that
+    // TODO: this method is required to be invoked only the very first time. It is not required all the time
+    // TODO: We should clear ping happening through startJuliaNoteBookPing OR
+    //// should not call startJuliaNoteBookPing every time this is called
+    // TODO: Show a loaded screen till the time window.open is called
+
+    (<any>$('#openNoteBookModal')).modal('show');
+    this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
       const newUrl = url + this.loadCourseDetails();
-      console.log('Open notebook link:', newUrl);
-      this.startJuliaNoteBookPing();
+      console.log('SSO successful :: Opening notebook :: ', newUrl);
+      (<any>$('#openNoteBookModal')).modal('hide');
       window.open(newUrl);
+      if (!this.juliaBoxPingIntervalTime) {
+        this.startJuliaNoteBookPing();
+      }
     }, (err) => {
-      console.log('Fail to load notebook failed', JSON.stringify(err));
+      (<any>$('#openNoteBookModal')).modal('hide');
+      this.toasterService.error('Loading notebook failed, Please try again later...');
+      console.log('Failed to load notebook :: ', JSON.stringify(err));
     });
   }
 
@@ -596,19 +609,4 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log('err', err);
     });
   }
-   private getOrderDetail() {
-    const request = {
-      productId: this.productData.priceId,
-      userId: this.userService.userid
-    };
-    this.paymentService.paymentStatus(request).subscribe((response) => {
-      if (response && response.responseCode === 'OK') {
-        this.orderData = response.result.response;
-      } else {
-        this.toasterService.error('Unable to get order detail, Please try again later');
-      }
-    }, (err) => {
-      console.log('err', err);
-    });
-   }
 }

@@ -2770,3 +2770,9 @@ iframe.iziModal-iframe {
   font-size: 1.4em;
   line-height: 1.35;
 }
+
+
+/* Julia open notebook modal*/ 
+#openNoteBookModal .ui.modal{
+  transform: translateY(-100px);
+}
