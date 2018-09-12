@@ -465,7 +465,7 @@ app.all('/juliabox/*',
     proxyReqPathResolver: function (req) {
       let urlParam = req.params['0']
       let query = require('url').parse(req.url).query
-      let auth_query = "Authorization=" + req.kauth && req.kauth.grant  && req.kauth.grant.id_token['token']
+      let auth_query = "Authorization=" + (req.kauth && req.kauth.grant  && req.kauth.grant.id_token['token'])
       if (query) {
         query = query + '&' + auth_query
         return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
