@@ -38,8 +38,11 @@
                                     </div>
                                 </div>
                                 <div class="four wide column">
-                                    <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="createPayment()">
-                                        <span class="text">{{resourceService.frmelmnts.lbl.enrollcourse}}</span>
+                                    <button *ngIf="paymentType && paymentType.toLowerCase() === 'optional'" [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="enrollToCourse()">
+                                        <span class="text">SKIP AND ENROLL</span>
+                                    </button>
+                                    <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated ui button margin-top-20" id="enrollToCourse" (click)="createPayment()">
+                                        <span class="text">PAY AND ENROLL</span>
                                     </button>
                                 </div>
                             </div>

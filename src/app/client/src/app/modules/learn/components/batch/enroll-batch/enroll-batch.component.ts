@@ -219,12 +219,6 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
       this.showEnrollDetails = false;
       return;
     }
-    if (this.paymentType.toLowerCase() === 'optional') {
-      console.log('For this course payment is optional, so directly enroll');
-      this.enrollToCourse(batchId);
-      this.showEnrollDetails = false;
-      return;
-    }
     if (!this.apiKey || !this.sdkUrl || !this.productId || !this.amount) {
       this.toasterService.error('Process failed, Please try again later...');
       return;

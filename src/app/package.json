@@ -1,7 +1,7 @@
 {
   "name": "player",
-  "author": "sunbird",
-  "version": "1.9.1",
+  "author": "tarento",
+  "version": "1.9.2",
   "buildNumber": "40",
   "private": true,
   "devDependencies": {
@@ -113,7 +113,7 @@
     "sb_api_interceptor": "file:libs/sb_api_interceptor",
     "sb_cache_manager": "file:libs/sb_cache_manager",
     "sb_course_price_plugin": "0.0.6",
-    "sb_payment_plugin": "0.0.1",
+    "sb_payment_plugin": "0.0.3",
     "sb_telemetry_util": "file:libs/sb_telemetry_util",
     "tar-fs": "^1.16.3",
     "ua-parser-js": "^0.7.13",
