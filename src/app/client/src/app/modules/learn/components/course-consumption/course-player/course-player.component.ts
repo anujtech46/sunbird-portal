@@ -264,7 +264,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.courseConsumptionService.getContentState(req).pipe(
       takeUntil(this.unsubscribe))
       .subscribe((res) => {
-        this.contentStatus = res.content;
+        const diff = _.differenceWith(this.contentStatus, res.content, _.isEqual) || []; 
+        console.log('Content state diff check :: ', diff);
+        if (diff.length > 0 || !this.contentStatus) {
+          this.contentStatus = res.content;
+        }
       }, (err) => {
         console.log(err, 'content read api failed');
       });

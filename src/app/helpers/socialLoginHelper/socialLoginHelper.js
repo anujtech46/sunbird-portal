@@ -76,7 +76,7 @@ module.exports = {
           userId: payload['sub'],
           phone: payload['phone_number'],
           phoneVerified: false,
-          channel: envHelper.SIGN_UP_USER_PROVIDER,
+          channel: envHelper.DEFAULT_CHANNEL,
           isSocialRegister: true
         }
       },

@@ -81,7 +81,8 @@ export class CoursePriceComponent implements OnInit {
       }
     }, (err) => {
       this.showLoader = false;
-      console.log('err', err);
+      console.log('search price err :: ', err);
+      this.toasterService.error('Unable to update price, please try again later');
     });
   }
 
