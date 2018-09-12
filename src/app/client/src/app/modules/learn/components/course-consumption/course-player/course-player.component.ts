@@ -371,12 +371,15 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         batchId: this.batchId,
         status: eid === 'END' ? 2 : 1
       };
-      this.updateContentsStateSubscription = this.courseConsumptionService.updateContentsState(request)
+      if (this.playerConfig.metadata.mimeType !== 'application/vnd.ekstep.html-archive') {
+        console.log('Update course progress for content', request);
+        this.updateContentsStateSubscription = this.courseConsumptionService.updateContentsState(request)
         .subscribe((updatedRes) => {
           this.contentStatus = updatedRes.content;
         }, (err) => {
           console.log('updating content status failed', err);
         });
+      }
     }
   }
   public closeContentPlayer() {
