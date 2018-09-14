@@ -21,7 +21,10 @@
         <div class=" two fields">
           <div class="required field" [ngClass]="signUpForm.controls.userName.invalid && signUpForm.controls['userName'].errors.required && !signUpForm.controls['userName'].pristine || (signUpForm.controls['userName'].errors && signUpForm.controls['userName'].errors.pattern) ? 'error' : ''">
             <label>{{resourceService?.frmelmnts?.lbl?.username}}</label>
-            <input type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required">
+              <div class="ui grid margin-none">
+                <input class="eight wide field padding-right-none" type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required">
+                <input class="four wide field padding-left-none" type="text" formControlName="providerName">
+              </div>
             <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="signUpForm.controls.userName.invalid && signUpForm.controls['userName'].errors.required && !signUpForm.controls['userName'].pristine || (signUpForm.controls['userName'].errors && signUpForm.controls['userName'].errors.pattern)">
               {{resourceService?.messages?.stmsg?.m0087}}
             </div>

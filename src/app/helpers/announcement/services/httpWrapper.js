@@ -29,7 +29,6 @@ class HttpWrapper {
         webService(options, (error, response, body) => {
           if (error || response.statusCode >= 400) {
             console.log('Announcement - Httpwrapper - Call Error', error)
-            console.log('Announcement - Httpwrapper - Call ErrorResponse', response)
 
             const msg = response && response.params ? response.params.errmsg : 'Internal Server Error'
             const statusCode = response.statusCode ? response.statusCode : HttpStatus.INTERNAL_SERVER_ERROR

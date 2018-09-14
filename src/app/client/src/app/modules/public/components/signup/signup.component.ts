@@ -46,6 +46,7 @@ export class SignupComponent implements OnInit, OnDestroy {
    * This method is used to create formgroup instance
    */
   ngOnInit() {
+    this.signUpProvider = '@' + (<HTMLInputElement>document.getElementById('defaultTenant')).value;
     this.signUpForm = new FormGroup({
       userName: new FormControl(null, [Validators.required, Validators.pattern('^[-\\w\.\\$@\*\\!]{5,256}$')]),
       providerName: new FormControl({value: this.signUpProvider, disabled: true}),
@@ -67,8 +68,6 @@ export class SignupComponent implements OnInit, OnDestroy {
         subtype: this.activatedRoute.snapshot.data.telemetry.subtype
       }
     };
-
-    this.signUpProvider = '@' + (<HTMLInputElement>document.getElementById('defaultTenant')).value;
   }
   /**
    * This method is used to navigate back

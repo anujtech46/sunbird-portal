@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SubscriptionLike as ISubscription } from 'rxjs';
 import { CoursesService, UserService, PlayerService } from '@sunbird/core';
-import { ResourceService, ToasterService, ServerResponse, ConfigService, UtilService} from '@sunbird/shared';
+import { ResourceService, ToasterService, ServerResponse, ConfigService, UtilService, NavigationHelperService } from '@sunbird/shared';
 import {  IInteractEventObject, IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
 import * as _ from 'lodash';
 /**
@@ -94,7 +94,7 @@ public configService: ConfigService;
   constructor(resourceService: ResourceService, private playerService: PlayerService,
     userService: UserService, courseService: CoursesService, toasterService: ToasterService,
     route: Router, activatedRoute: ActivatedRoute, configService: ConfigService, utilService: UtilService,
-    public router: Router) {
+    public router: Router, public navigationHelperService: NavigationHelperService) {
     this.userService = userService;
     this.courseService = courseService;
     this.resourceService = resourceService;
@@ -151,7 +151,7 @@ public configService: ConfigService;
             };
             const courses = this.utilService.getDataForCard(data.enrolledCourses,
               constantData, dynamicFields, metaData);
-              if (data.enrolledCourses.length === 0) {
+              if (data.enrolledCourses.length === 0 && this.navigationHelperService.history.length === 1) {
                 this.router.navigate(['learn']);
               } else {
                 this.toDoList = this.toDoList.concat(courses);
