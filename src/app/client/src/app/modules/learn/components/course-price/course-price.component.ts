@@ -38,7 +38,7 @@ export class CoursePriceComponent implements OnInit {
   showCoursePriceModal = false;
   showLoader = false;
   loaderMessage = {
-    loaderMessage: 'Submitting price detail, Please wait...'
+    loaderMessage: 'Fetching price detail, Please wait...'
   };
   modelDataForm: FormGroup;
 

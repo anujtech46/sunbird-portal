@@ -264,8 +264,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.courseConsumptionService.getContentState(req).pipe(
       takeUntil(this.unsubscribe))
       .subscribe((res) => {
-        const diff = _.differenceWith(this.contentStatus, res.content, _.isEqual) || []; 
-        console.log('Content state diff check :: ', diff);
+        const diff = _.differenceWith(this.contentStatus, res.content, _.isEqual) || [];
+        console.log('Content state diff check :: ', diff, new Date());
         if (diff.length > 0 || !this.contentStatus) {
           this.contentStatus = res.content;
         }
@@ -342,10 +342,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       }, (err) => {
         this.loader = false;
         this.toasterService.error(this.resourceService.messages.stmsg.m0009);
-      });
-
-      // Julia related code
-      this.stopPullingContentStatus();
+    });
   }
 
   public navigateToContent(content: { title: string, id: string }): void {
@@ -399,7 +396,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate([], navigationExtras);
 
       // Start pulling status for sometime
-      // this.startPullingContentStatus();
+      console.log('Check pooling is started or not :: ', this.statePullingClearTimeInterval);
+      if (!this.statePullingClearTimeInterval) {
+        this.startPullingContentStatus();
+      }
     }
   }
   public createEventEmitter(data) {
@@ -526,8 +526,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   startPullingContentStatus = () => {
     console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
     if (this.progress !== 100 && !this.statePullingClearTimeInterval) {
+      console.log('Course not completed :: and pooling id not started ::', this.progress, this.statePullingClearTimeInterval);
       this.statePullingClearTimeInterval = setInterval(() => {
-        console.log('Time', Date.now());
         this.getContentState();
       }, this.statePullingTimeInterval);
     }
@@ -538,6 +538,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   stopPullingContentStatus = () => {
     console.log('Stop pulling status', this.statePullingClearTimeInterval);
+    this.statePullingClearTimeInterval = 0;
     clearTimeout(this.statePullingClearTimeInterval);
   }
   public startJuliaNoteBookPing = () => {
