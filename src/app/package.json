@@ -1,7 +1,7 @@
 {
   "name": "player",
   "author": "tarento",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "buildNumber": "40",
   "private": true,
   "devDependencies": {
