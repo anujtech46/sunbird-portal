@@ -327,6 +327,9 @@ app.all('/action/data/v3/telemetry',
     }
   }))
 
+// Content preview proxy route
+app.use('/content/preview', express.static(path.join(__dirname + '/content/preview')))
+
 // proxy urls
 require('./proxy/contentEditorProxy.js')(app, keycloak)
 
