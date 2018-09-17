@@ -14470,40 +14470,13 @@ visited {
     background-color: rgba(255, 255, 255, 0.9)
 }
 @font-face {
-    font-family: 'NotoSansDevanagari';
-    src: url(fonts/NotoSansDevanagari-Regular.woff) format('woff')
-}
-
-@font-face {
-    font-family: 'flavours';
-    src: url(fonts/Flavors-Regular.ttf) format('truetype')
-}
-
-@font-face {
     font-family: 'NotoSans';
     src: url(fonts/NotoSans-Regular.woff) format('woff')
 }
 
 @font-face {
-    font-family: 'lato-bold';
-    src: url(fonts/Lato-Bold.woff) format('woff')
-}
-
-@font-face {
-    font-family: 'lato-light';
-    src: url(fonts/Lato-Light.woff) format('woff')
-}
-
-
-@font-face {
-    font-family: 'lato-regular';
-    src: url(fonts/Lato-Regular.woff) format('woff')
-}
-
-
-@font-face {
-    font-family: 'NotoSans-Bold';
-    src: url(fonts/NotoSans-Bold.woff) format('woff')
+    font-family: 'lato-medium';
+    src: url(fonts/Lato-Medium.woff) format('woff')
 }
 
 .splashText {
@@ -16049,7 +16022,9 @@ body {
     text-transform: uppercase;
 }
 
+
 /* The Close Button */
+
 #userSwitchingModal .close {
     color: #333;
     float: right;
