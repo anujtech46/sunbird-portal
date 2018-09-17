@@ -328,7 +328,7 @@ app.all('/action/data/v3/telemetry',
   }))
 
 // Content preview proxy route
-app.use('/ailp/player/preview', express.static(path.join(__dirname + '/ailp/player/preview')))
+app.use('/sunbird-plugins/ailp/player/preview', express.static(path.join(__dirname + '/sunbird-plugins/ailp/player/preview')))
 
 // proxy urls
 require('./proxy/contentEditorProxy.js')(app, keycloak)
