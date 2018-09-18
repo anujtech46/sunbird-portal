@@ -46,7 +46,7 @@ let envVariables = {
   TENANT_CDN_URL: env.sunbird_tenant_cdn_url || '',
   CLOUD_STORAGE_URLS: env.sunbird_cloud_storage_urls,
   SUB_DOMAIN: env.sunbird_sub_domain || '500k.ai', //This variable is used for upload content player in cdn,
-  CDN_BASE_URL: env.sunbird_cdn_base_url || 'http://stage-cdn.500k.ai/'
+  CDN_BASE_URL: env.sunbird_cdn_base_url || 'https://stage-cdn.500k.ai/'
 }
 
 const julia_env_variable = {
