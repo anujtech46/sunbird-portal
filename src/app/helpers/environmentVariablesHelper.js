@@ -44,7 +44,8 @@ let envVariables = {
   PORTAL_API_CACHE_TTL: env.sunbird_api_response_cache_ttl || '600',
   SUNBIRD_EXTCONT_WHITELISTED_DOMAINS: env.sunbird_extcont_whitelisted_domains || 'youtube.com,youtu.be',
   TENANT_CDN_URL: env.sunbird_tenant_cdn_url || '',
-  CLOUD_STORAGE_URLS: env.sunbird_cloud_storage_urls
+  CLOUD_STORAGE_URLS: env.sunbird_cloud_storage_urls,
+  SUB_DOMAIN: env.sunbird_sub_domain || '500k.ai' //This variable is used for upload content player in cdn
 }
 
 const julia_env_variable = {

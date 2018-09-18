@@ -163,6 +163,9 @@ function getLocals(req) {
   locals.apiCacheTtl = envHelper.PORTAL_API_CACHE_TTL
   locals.cloudStorageUrls = envHelper.CLOUD_STORAGE_URLS
 
+  // CDN Variable
+  locals.subDomain = envHelper.SUB_DOMAIN
+
   //Julia related code
   locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID
   locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_APP_URL;

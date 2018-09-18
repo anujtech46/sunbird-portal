@@ -6,6 +6,9 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon">
+  <script>
+    document.domain = "<%=subDomain%>"
+  </script>
 </head>
 <body>
   <% if (userId) { %>
@@ -25,6 +28,9 @@
   <% } %>
   <% if (exploreButtonVisibility) { %>
     <input type="hidden" id="exploreButtonVisibility" value="<%=exploreButtonVisibility%>" />
+  <% } %>
+  <% if (subDomain) { %>
+    <input type="hidden" id="subDomain" value="<%=subDomain%>" />
   <% } %>
   <!-- Julia related code-->
     <input type="hidden" id="courseCompletionBadgeId" value="<%=courseCompletionBadgeId%>" />  
