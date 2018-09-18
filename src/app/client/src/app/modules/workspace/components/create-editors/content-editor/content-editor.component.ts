@@ -74,6 +74,7 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public logo: string;
   public listener;
+  playerCdnBaseUrl: string;
 
   /**
   * Default method of classs ContentEditorComponent
@@ -107,6 +108,7 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
     this.tenantService = tenantService;
     try {
       this.buildNumber = (<HTMLInputElement>document.getElementById('buildNumber')).value;
+      this.playerCdnBaseUrl = (<HTMLInputElement>document.getElementById('cdnBaseUrl')).value;
     } catch (error) {
       this.buildNumber = '1.0';
     }
@@ -155,7 +157,7 @@ export class ContentEditorComponent implements OnInit, AfterViewInit, OnDestroy 
     jQuery('#contentEditor').iziModal({
       title: '',
       iframe: true,
-      iframeURL: '/thirdparty/editors/content-editor/index.html?' + this.buildNumber,
+      iframeURL: this.playerCdnBaseUrl + 'player/editors/content-editor/index.html?' + this.buildNumber,
       navigateArrows: false,
       fullscreen: true,
       openFullscreen: true,

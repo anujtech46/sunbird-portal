@@ -15,8 +15,11 @@ export class PlayerComponent implements OnInit, OnChanges {
   @Output() contentProgressEvent = new EventEmitter<any>();
   @ViewChild('contentIframe') contentIframe: ElementRef;
   buildNumber: string;
+  playerCdnBaseUrl: string;
+
   constructor(public configService: ConfigService) {
     try {
+      this.playerCdnBaseUrl = (<HTMLInputElement>document.getElementById('cdnBaseUrl')).value;
       this.buildNumber = (<HTMLInputElement>document.getElementById('buildNumber')).value;
     } catch (error) {
       this.buildNumber = '1.0';
@@ -37,7 +40,7 @@ export class PlayerComponent implements OnInit, OnChanges {
    * Emits event when content starts playing and end event when content was played/read completely
    */
   showPlayer () {
-    const iFrameSrc = this.configService.appConfig.PLAYER_CONFIG.baseURL + '&build_number=' + this.buildNumber;
+    const iFrameSrc = this.playerCdnBaseUrl + this.configService.appConfig.PLAYER_CONFIG.baseURL;
     setTimeout(() => {
       this.contentIframe.nativeElement.src = iFrameSrc;
       this.contentIframe.nativeElement.onload = () => {

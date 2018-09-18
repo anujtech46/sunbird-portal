@@ -86,6 +86,8 @@ export class CollectionEditorComponent implements OnInit, AfterViewInit, OnDestr
    * Show Modal for loader
    */
   public showModal: boolean;
+
+  playerCdnBaseUrl: string;
   /**
   * Default method of classs CollectionEditorComponent
   *
@@ -116,6 +118,7 @@ export class CollectionEditorComponent implements OnInit, AfterViewInit, OnDestr
     this.tenantService = tenantService;
     // buildNumber
     try {
+      this.playerCdnBaseUrl = (<HTMLInputElement>document.getElementById('cdnBaseUrl')).value;
       this.buildNumber = (<HTMLInputElement>document.getElementById('buildNumber')).value;
     } catch (error) {
       this.buildNumber = '1.0';
@@ -168,7 +171,7 @@ export class CollectionEditorComponent implements OnInit, AfterViewInit, OnDestr
     jQuery('#collectionEditor').iziModal({
       title: '',
       iframe: true,
-      iframeURL: '/thirdparty/editors/collection-editor/index.html?' + this.buildNumber,
+      iframeURL: this.playerCdnBaseUrl + 'player/editors/collection-editor/index.html',
       navigateArrows: false,
       fullscreen: false,
       openFullscreen: true,

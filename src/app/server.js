@@ -165,6 +165,7 @@ function getLocals(req) {
 
   // CDN Variable
   locals.subDomain = envHelper.SUB_DOMAIN
+  locals.cdnBaseUrl = envHelper.CDN_BASE_URL
 
   //Julia related code
   locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID

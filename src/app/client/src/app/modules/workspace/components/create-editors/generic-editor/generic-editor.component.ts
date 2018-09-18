@@ -74,6 +74,7 @@ export class GenericEditorComponent implements OnInit, AfterViewInit, OnDestroy 
   */
   private activatedRoute: ActivatedRoute;
   public listener;
+  playerCdnBaseUrl: string;
 
   constructor(userService: UserService, router: Router, public _zone: NgZone,
     activatedRoute: ActivatedRoute, tenantService: TenantService,
@@ -87,6 +88,7 @@ export class GenericEditorComponent implements OnInit, AfterViewInit, OnDestroy 
     this.resourceService = resourceService;
     try {
       this.buildNumber = (<HTMLInputElement>document.getElementById('buildNumber')).value;
+      this.playerCdnBaseUrl = (<HTMLInputElement>document.getElementById('cdnBaseUrl')).value;
     } catch (error) {
       this.buildNumber = '1.0';
     }
@@ -137,7 +139,7 @@ export class GenericEditorComponent implements OnInit, AfterViewInit, OnDestroy 
     jQuery('#genericEditor').iziModal({
       title: '',
       iframe: true,
-      iframeURL: '/thirdparty/editors/generic-editor/index.html?' + this.buildNumber,
+      iframeURL: this.playerCdnBaseUrl + 'player/editors/generic-editor/index.html',
       navigateArrows: false,
       fullscreen: true,
       openFullscreen: true,

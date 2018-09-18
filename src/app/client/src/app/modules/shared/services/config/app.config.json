@@ -228,7 +228,7 @@
       "webm": "video/webm",
       "xUrl": "text/x-url"
     },
-    "baseURL": "/sunbird-plugins/ailp/player/preview/preview.html?webview=true"
+    "baseURL": "player/preview/preview.html"
   },
   "WORKSPACE": {
     "PAGE_LIMIT": 9,

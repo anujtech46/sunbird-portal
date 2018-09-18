@@ -32,6 +32,9 @@
   <% if (subDomain) { %>
     <input type="hidden" id="subDomain" value="<%=subDomain%>" />
   <% } %>
+  <% if (cdnBaseUrl) { %>
+    <input type="hidden" id="cdnBaseUrl" value="<%=cdnBaseUrl%>" />
+  <% } %>
   <!-- Julia related code-->
     <input type="hidden" id="courseCompletionBadgeId" value="<%=courseCompletionBadgeId%>" />  
     <input type="hidden" id="addToDigiLockerUrl" value="<%=addToDigiLockerUrl%>" />
