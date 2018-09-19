@@ -1,8 +1,8 @@
 {
   "name": "player",
   "author": "tarento",
-  "version": "1.9.9",
-  "buildNumber": "45",
+  "version": "1.9.10",
+  "buildNumber": "46",
   "private": true,
   "devDependencies": {
     "chai": "^4.1.2",
