@@ -228,7 +228,7 @@
       "webm": "video/webm",
       "xUrl": "text/x-url"
     },
-    "baseURL": "player/preview/preview.html"
+    "baseURL": "player/preview/preview.html?webview=true"
   },
   "WORKSPACE": {
     "PAGE_LIMIT": 9,
