@@ -49,10 +49,10 @@
     <!-- injector:js -->
     <script src="script.min.1.1.js"></script>
     <!-- endinjector -->
-<script>
+ <script>
     function initPlayer(evt) {
         
-        if(evt.data) {
+        if(evt.data && typeof evt.data === 'object') {
             console.log("evt data: " + JSON.stringify(evt.data) + " | origin: " + evt.origin);
             org.ekstep.contentrenderer.initializePreview(evt.data)
         }
