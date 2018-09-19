@@ -45,7 +45,8 @@ export class PlayerComponent implements OnInit, OnChanges {
       this.contentIframe.nativeElement.src = iFrameSrc;
       this.contentIframe.nativeElement.onload = () => {
         this.adjustPlayerHeight();
-        this.contentIframe.nativeElement.contentWindow.initializePreview(this.playerConfig);
+        // this.contentIframe.nativeElement.contentWindow.initializePreview(this.playerConfig);
+        this.contentIframe.nativeElement.contentWindow.postMessage(this.playerConfig, '*');
       };
     }, 0);
     this.contentIframe.nativeElement.addEventListener('renderer:telemetry:event', (event: any) => {

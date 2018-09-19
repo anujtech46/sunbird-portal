@@ -79,7 +79,14 @@ let keycloak = new Keycloak({ store: memoryStore }, {
 })
 let tenantId = ''
 
-app.use(helmet())
+app.use(helmet(
+  {
+    frameguard: {
+      action: 'allow-from',
+      domain: '*'
+    }
+   }
+))
 app.use(session({
   secret: '717b3357-b2b1-4e39-9090-1c712d1b8b64',
   resave: false,
