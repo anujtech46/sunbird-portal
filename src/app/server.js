@@ -168,6 +168,9 @@ function getLocals(req) {
   locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_APP_URL;
   locals.addToDigiLockerAppID = envHelper.ADD_TO_DIGILOCKER_APP_ID;
   locals.addToDigiLockerAppKey = envHelper.ADD_TO_DIGILOCKER_APP_KEY;
+  locals.isDigiLockerEnabled = envHelper.IS_DIGILOCKER_ENABLED;
+  locals.isCollectPaymentEnabled = envHelper.IS_COLLECT_PAYMENT_ENABLED;
+  locals.isRefundPaymentEnabled = envHelper.IS_REFUND_PAYMENT_ENABLED;
   return locals;
 }
 

@@ -37,12 +37,17 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="four wide column" *ngIf="paymentType && orderDataStatus" >
+                                <div class="four wide column" *ngIf="paymentType && orderDataStatus && isCollectPaymentEnabled" >
                                     <button *ngIf="paymentType && paymentType.toLowerCase() === 'optional'" [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="enrollToCourse()">
                                         <span class="text">SKIP AND ENROLL</span>
                                     </button>
                                     <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated ui button margin-top-20" id="enrollToCourse" (click)="createPayment()">
                                         <span class="text">PAY AND ENROLL</span>
+                                    </button>
+                                </div>
+                                <div class="four wide column" *ngIf="!isCollectPaymentEnabled" >
+                                    <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="enrollToCourse()">
+                                        <span class="text">ENROLL</span>
                                     </button>
                                 </div>
                             </div>
@@ -73,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="six wide column">
+            <div class="six wide column" *ngIf="isCollectPaymentEnabled">
                 <app-course-price [viewType]="'CARD'" [courseId]="batchDetails.courseId" [batchId]="batchDetails.identifier" (updatePriceData)="updatePriceData($event)"></app-course-price>
             </div>
         </div>

@@ -64,14 +64,19 @@ const julia_env_variable = {
   ADD_TO_DIGILOCKER_APP_ID: env.julia_add_to_digilocker_app_id,
   ADD_TO_DIGILOCKER_APP_KEY: env.julia_add_to_digilocker_app_key,
   API_REQUEST_LIMIT_SIZE: env.julia_api_request_limit_size || '50mb',
-  CERTIFICATE_PLATFORM_NAME: env.julia_certificate_platform_name || 'On the 500k.ai platform'
+  CERTIFICATE_PLATFORM_NAME: env.julia_certificate_platform_name || 'On the 500k.ai platform',
+  IS_DIGILOCKER_ENABLED: env.julia_is_digiLocker_enabled || 'false',
+  IS_COLLECT_PAYMENT_ENABLED: env.julia_is_collect_payment_enabled || 'false',
+  IS_REFUND_PAYMENT_ENABLED: env.julia_is_refund_payment_enabled || 'false'
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')
   ? env.sunbird_cassandra_urls.split(',') : ['localhost']
 
+envVariables = { ...envVariables, ...julia_env_variable }
+
 if (process.env.NODE_ENV === 'local') {   
-  envVariables = Object.assign({}, envVariables,  require('./localVariables'))   
+  envVariables = Object.assign({}, envVariables,  require('./localVariables'));
 }
 
-module.exports = { ...envVariables, ...julia_env_variable }
+module.exports = envVariables;

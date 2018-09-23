@@ -46,6 +46,8 @@ export class CourseBenefitComponent implements OnInit {
    */
   statusMessage: string;
 
+  isRefundPaymentEnabled: boolean;
+
   /**
    * constructor method
    * @param coursePriceService Course Price Service
@@ -54,14 +56,19 @@ export class CourseBenefitComponent implements OnInit {
    * @param toasterService : Toaster Service
    */
   constructor(public coursePriceService: CoursePriceService, public userService: UserService,
-  public paymentService: PaymentService, public toasterService: ToasterService) { }
+  public paymentService: PaymentService, public toasterService: ToasterService) {
+    this.isRefundPaymentEnabled =
+    (<HTMLInputElement>document.getElementById('isRefundPaymentEnabled')).value === 'false' ? false : true;
+  }
 
   /**
    * called when component initialized
    * On init we get the product detail
    */
   ngOnInit() {
-    this.getProductDetail();
+    if (this.isRefundPaymentEnabled) {
+      this.getProductDetail();
+    }
   }
 
   /**

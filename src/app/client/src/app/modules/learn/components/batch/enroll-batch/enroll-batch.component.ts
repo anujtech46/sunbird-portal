@@ -40,12 +40,16 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   paymentId: string;
   paymentType: string;
   orderDataStatus = false;
+  isCollectPaymentEnabled: boolean;
 
   constructor(public router: Router, public activatedRoute: ActivatedRoute, public courseBatchService: CourseBatchService,
     public resourceService: ResourceService, public toasterService: ToasterService, public userService: UserService,
     public configService: ConfigService, public coursesService: CoursesService,
     public paymentService: PaymentService,
-    ) { }
+    ) {
+      this.isCollectPaymentEnabled =
+      (<HTMLInputElement>document.getElementById('isCollectPaymentEnabled')).value === 'false' ? false : true;
+    }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params) => {
@@ -81,7 +85,11 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
           this.toasterService.error(this.resourceService.messages.fmsg.m0054);
           this.redirect();
         });
-        this.startPayment();
+        if (this.isCollectPaymentEnabled) {
+          this.startPayment();
+        } else {
+          this.disableSubmitBtn = false;
+        }
     });
   }
   ngOnDestroy() {

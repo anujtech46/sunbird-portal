@@ -57,9 +57,13 @@ export class CourseBadgeComponent implements OnInit, OnDestroy {
    /**
    * @param  {UserService} public userService
    */
+
+  isDigiLockerEnabled: boolean;
   constructor(public userService: UserService, public courseBadgeService: CourseBadgeService,
     public activatedRoute: ActivatedRoute, public courseConsumptionService: CourseConsumptionService,
     public courseCertificateService: CourseCertificateService) {
+      this.isDigiLockerEnabled =
+      (<HTMLInputElement>document.getElementById('isDigiLockerEnabled')).value === 'false' ? false : true;
   }
    /**
    * On init:
