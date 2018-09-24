@@ -580,24 +580,14 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   open_notebook = (url) => {
     // TODO: ssoPing should be renamed to doSSO or ssoJuliaBox or something like that
     // TODO: this method is required to be invoked only the very first time. It is not required all the time
-    // TODO: We should clear ping happening through startJuliaNoteBookPing OR
-    //// should not call startJuliaNoteBookPing every time this is called
+    // TODO: We should clear ping happening through startJuliaNoteBookPing OR should not
+    // call startJuliaNoteBookPing every time this is called
     // TODO: Show a loaded screen till the time window.open is called
-
     (<any>$('#openNoteBookModal')).modal('show');
     this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
       const newUrl = url + this.loadCourseDetails();
       console.log('SSO successful :: Opening notebook :: ', newUrl);
       this.checkNotebookStatus(newUrl);
-      const windowPopup = window.open(newUrl);
-      if (!windowPopup) {
-        const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
-        this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
-      }
-      (<any>$('#openNoteBookModal')).modal('hide');
-      if (!this.juliaBoxPingIntervalTime) {
-        this.startJuliaNoteBookPing();
-      }
     }, (err) => {
       (<any>$('#openNoteBookModal')).modal('hide');
       this.toasterService.error('Loading notebook failed, Please try again later...');
