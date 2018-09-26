@@ -34,4 +34,11 @@ export class JuliaNoteBookService {
     return this.juliaBoxService.juliaGet(option);
   }
 
+  checkNoteBookToken(): Observable<any> {
+    const option = {
+      url: this.config.urlConFig.URLS.JULIA_BOX.NOTEBOOK_TOKEN
+    };
+    return this.juliaBoxService.juliaGet(option);
+  }
+
 }

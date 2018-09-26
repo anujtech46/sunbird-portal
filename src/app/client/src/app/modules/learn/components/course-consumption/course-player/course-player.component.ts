@@ -621,15 +621,28 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param url : string
    */
   private openNoteBook(url) {
-    const windowPopup = window.open(url);
-    if (!windowPopup) {
-      const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
-      this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
-    }
-    (<any>$('#openNoteBookModal')).modal('hide');
-    if (!this.juliaBoxPingIntervalTime) {
-      this.startJuliaNoteBookPing();
-    }
+    this.juliaNoteBookService.checkNoteBookToken().subscribe((response) => {
+      if (response && response.responseCode === 'OK') {
+        const newUrl = url + '&Authorization=' + (response.result && response.result.token);
+        const windowPopup = window.open(newUrl);
+        if (!windowPopup) {
+          const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
+          this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
+        }
+        (<any>$('#openNoteBookModal')).modal('hide');
+        if (!this.juliaBoxPingIntervalTime) {
+          this.startJuliaNoteBookPing();
+        }
+      } else {
+        (<any>$('#openNoteBookModal')).modal('hide');
+        console.log('Failed to get token', JSON.stringify(response));
+        this.toasterService.error('Loading notebook failed, Please try again later...');
+      }
+    }, (err) => {
+      (<any>$('#openNoteBookModal')).modal('hide');
+      console.log('Failed to get token ::', JSON.stringify(err));
+      this.toasterService.error('Loading notebook failed, Please try again later...');
+    });
   }
    /**
    * Check notebook status: Notebook copied or not

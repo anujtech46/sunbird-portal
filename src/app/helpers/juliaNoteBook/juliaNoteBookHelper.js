@@ -2,9 +2,13 @@ const request = require('request')
 const envHelper = require('./../environmentVariablesHelper.js')
 const bodyParser = require('body-parser')
 const uuidv1 = require('uuid')
+const _ = require('lodash')
+
  module.exports = function (app) {
   app.get('/juliabox/notebook/status', bodyParser.json({ limit: '10mb' }), createAndValidateRequestBody,
   checkNoteBookStatus)
+  app.get('/juliabox/notebook/token', bodyParser.json({ limit: '1' }), createAndValidateRequestBody,
+  getUserAuthToken)
 }
 
  /** 
@@ -116,6 +120,20 @@ function getParams(msgId, status, errCode, msg) {
   });
 }
 
+function getUserAuthToken(req, res) {
+  const rspObj = req.rspObj
+  const token = _.get(req, 'kauth.grant.access_token.token');
+  if(token) {
+    rspObj.result = {token: token}
+    return res.status(200).send(successResponse(rspObj))
+  } else {
+    rspObj.errCode = 'CLIENT_ERROR'
+      rspObj.errMsg = 'Invalid Request, Please try again later...'
+      rspObj.responseCode = 'CLIENT_ERROR'
+    return res.status(400).send(errorResponse(rspObj))
+  }
+}
+
 	/**
  * This function helps up to call logout api to julia notebook
  */
@@ -134,4 +152,4 @@ module.exports.logoutHelper = function() {
     if (err) console.log('Julia notebook logout error :: ')
     else console.log('Julia logout status :: ', response && response.statusCode)
   });
-} 
+}
