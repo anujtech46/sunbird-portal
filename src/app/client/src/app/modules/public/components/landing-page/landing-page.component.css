@@ -1,5 +1,5 @@
 .landing-page-section {
-    background-color: #ffffff;
+    background-color: #d4d4d587;
     border-bottom: 1px solid rgba(206, 197, 197, 0.79);
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
@@ -24,4 +24,18 @@
     padding: 0 0 1em 1em;
     font-family: 'sunbirdboldfont';
     font-size: 1.25em;
+}
+
+.landing-page-image-text {
+    position: 'absolute';
+    bottom: 0;
+    width: '100%';
+    height: 'auto';
+}
+
+.landing-page-text {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    margin-left: 0px;
+    margin-right: 0px;
 }

@@ -1140,8 +1140,6 @@ i.large.icon.limitedPublishingLinkIcon {
 }
 .header-logo-before-login {
   display: block;
-  max-width: 90px;
-  max-height: 40px;
   width: auto;
   height: auto;
 }
