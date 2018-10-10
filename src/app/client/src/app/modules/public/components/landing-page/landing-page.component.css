@@ -94,6 +94,8 @@
     padding: 2em 3em;
     line-height: 1.6em;
     font-size: 14px;
+    height: 150px;
+    overflow-y: scroll;
 }
 .custom-best .extra {
     padding: .75em 3em;
