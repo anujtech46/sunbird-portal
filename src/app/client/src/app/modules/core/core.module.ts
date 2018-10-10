@@ -12,9 +12,9 @@ import {
   CopyContentService, BreadcrumbsService, OrgDetailsService
 } from './services';
 import {
-  MainHeaderComponent, MainMenuComponent, SearchComponent, ConceptPickerComponent, DataDrivenFilterComponent,
+  MainHeaderComponent, MainFooterComponent, MainMenuComponent, SearchComponent, ConceptPickerComponent, DataDrivenFilterComponent,
   ErrorPageComponent, SortByComponent, FlagContentComponent, ContentPlayerMetadataComponent,
-  BreadcrumbsComponent, LanguageDropdownComponent, ProminentFilterComponent
+  BreadcrumbsComponent, LanguageDropdownComponent, ProminentFilterComponent, 
 } from './components';
 import { AuthGuard } from './guard/auth-gard.service';
 import { CacheService } from 'ng2-cache-service';
@@ -34,10 +34,10 @@ import { JuliaBoxService, PaymentService } from './services';
     WebExtensionModule,
     TelemetryModule
   ],
-  declarations: [MainHeaderComponent, MainMenuComponent, SearchComponent, PermissionDirective, ConceptPickerComponent,
+  declarations: [MainHeaderComponent, MainFooterComponent, MainMenuComponent, SearchComponent, PermissionDirective, ConceptPickerComponent,
     DataDrivenFilterComponent, BreadcrumbsComponent, SortByComponent, ErrorPageComponent, FlagContentComponent,
     ContentPlayerMetadataComponent, LanguageDropdownComponent, ProminentFilterComponent],
-  exports: [MainHeaderComponent, PermissionDirective, ConceptPickerComponent, DataDrivenFilterComponent,
+  exports: [MainHeaderComponent, MainFooterComponent, PermissionDirective, ConceptPickerComponent, DataDrivenFilterComponent,
     SortByComponent, BreadcrumbsComponent, FlagContentComponent, ContentPlayerMetadataComponent,
     TelemetryModule, LanguageDropdownComponent, ProminentFilterComponent
   ]

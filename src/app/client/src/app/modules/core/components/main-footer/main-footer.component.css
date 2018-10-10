@@ -1,0 +1,14 @@
+.ui.inverted.segment {
+    border-radius: 0 !important;
+    font-size: 1em !important;
+    padding: 14px 0 12px !important
+}
+
+.ui.horizontal.relaxed.list>.item:not(:last-child),
+.ui.horizontal.relaxed.list>.item:not(:first-child) {
+    padding: 0 !important;
+}
+
+.item.P0 {
+    padding: 0 !important;
+}
