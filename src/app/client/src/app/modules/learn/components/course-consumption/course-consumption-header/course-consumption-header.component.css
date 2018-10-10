@@ -4,3 +4,22 @@
 .ui.grid.progress-bar-margin {
     margin-top: 13px;
 } 
+.course-header-divider {
+    border-right: 0 !important;
+    vertical-align: text-bottom !important;
+}
+.courseStructureHeader {
+    background-color: #ffffff !important;
+    background-size: cover !important;
+    min-height: 300px;
+    margin-bottom: 10px !important;
+    border-bottom: 8px solid #88e3ec !important;
+    position: relative;
+}
+.courseStructureHeaderText {
+    position: absolute;
+    font-size: 2.2em;
+    color: #ffffff;
+    bottom: 18%;
+    font-family: 'sunbirdregularfont';
+}

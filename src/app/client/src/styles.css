@@ -22,6 +22,13 @@
   src: url('./assets/fonts/OpenSans-Bold.ttf') format('truetype');
 }
 
+.bluetext {
+  color: #3449d2 !important;
+}
+.ratingsdiv {
+  padding: 1rem 0 0
+}
+
 /*cards fonts*/
 .cardsHeading {
   font-family: 'sunbirdboldfont';
@@ -88,8 +95,13 @@
   font-size: 1.67em;
 }
 .courseStructureHeading {
-  font-family: 'sunbirdboldfont';
+  /* font-family: 'sunbirdboldfont';
+  font-size: 0.85em; */
+  font-family: 'sunbirdregularfont' !important;
   font-size: 0.85em;
+  color: #6d6e71 !important;
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
 }
 .courseStructureDesc {
   font-family: 'sunbirdregularfont';
@@ -440,7 +452,7 @@
   font-size: 1.1em !important;
 }
 .course-header-divider {
-  padding-right: 15px !important;
+  /* padding-right: 15px !important; */
   border-right: 1px solid black !important;
 }
 .capitalizeTextInfo {
@@ -811,6 +823,7 @@ th {
 }
 .rightSideSectionCards.ui.card {
   width: 100%;
+  border-radius: 0 !important;
 }
 .imageInCardsResponsive {
   overflow: hidden;
@@ -848,6 +861,20 @@ div:focus {
 .rightSideSectionCards.ui.card > .content > .header {
   font-size: 1.18em;
 }
+.bluepanel-header {
+  background: #3449d2 !important;
+  padding: 1.4em 1em !important;
+  color: #fff !important;
+}
+.rightSideSectionCards.ui.card  .content.bluepanel-header  .header{
+  background: #3449d2 !important;
+    color: #ffffff !important;
+    border-radius: 0 !important;
+    font-size: 1.2em !important;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
 /*text description height fixed in card*/
 i.large.icon.limitedPublishingLinkIcon {
   margin-left: -4px;
@@ -1406,9 +1433,19 @@ ul li span.text {
 /* fancytree-container border remove */
 ul.fancytree-container {
   border: none !important;
+  font-size: 10pt;
+  white-space: nowrap;
+  padding: 0 !important;
+  margin: 0;
+  background-color: #fff;
+  min-height: 0;
+  position: relative;
 }
 ul.fancytree-container li {
-  padding-bottom: 0.8em;
+  background-image: none !important;
+  background-position: 0 0;
+  padding: 0.5em 1.6em !important;
+  border-bottom: 1px solid #ccc !important;
 }
 .fancytree-lastsib ul li {
   padding-bottom: 0.8em !important;
@@ -1463,16 +1500,24 @@ ul.subList-padding {
 .marginTop {
   margin: 0 !important;
 }
-.ui.styled.accordion.title {
+.ui.styled.accordion {
+  border-radius: 0 !important;
+}
+.ui.styled.accordion .title {
   margin: 0;
-  padding: 2%;
   font-size: 1em;
-  padding: .75em 1em;
-  color: rgba(0, 0, 0, 0.95);
-  /* font-weight: 900; */
-  border-top: 1px solid rgba(34, 36, 38, 0.15);
+  padding: 1em 1em;
+  color: #3449d2 !important;
   transition: background .1s ease,color .1s ease;
-  font-size: 20px;
+  background: #f1f2f2 !important;
+  border-radius: 0 !important;
+}
+.accordian-left-text {
+  padding: 0;
+  font-size: 1.2em;
+  color: #3449d2;
+  font-family: 'sunbirdregularfont';
+  font-weight: normal;
 }
 .text-align-center {
   text-align: center !important;
@@ -1521,12 +1566,6 @@ span.fancytree-title {
 .mycourses-padding.ui.grid > .column:not(.row) {
   padding-top: 0;
   margin-bottom: 1em;
-}
-.accordian-left-text {
-  padding: 8px;
-  font-size: 1.2em;
-  color: #333;
-  font-family: 'sunbirdregularfont';
 }
 .toc-left-nav-btn-content {
   text-align: left;
@@ -2692,6 +2731,9 @@ iframe.iziModal-iframe {
   margin-bottom: 20px;
   padding:16px;
   width: 100%;
+}
+.ui.styled.accordion .content {
+  padding: 0;
 }
 .ui.styled.accordion>.header.accordian-heading {
   font-family: 'sunbirdboldfont';

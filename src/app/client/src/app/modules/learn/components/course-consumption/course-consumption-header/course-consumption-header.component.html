@@ -2,32 +2,44 @@
     <div class="ui active inverted dimmer" *ngIf="showCopyLoader">
         <div class="ui text centered inline loader margin-top-40">{{resourceService.frmelmnts.lbl.copycontent}}</div>
     </div>
-    <div class="ui grid margin-top-4rem courseStructureHeader">
+    <div class="ui stackable grid contianer courseStructureHeader" style="background: url('../../../../../../assets/images/landingPage.jpg') no-repeat transparent">
         <div class="one wide column"></div>
         <div class="ten wide column padding-top-none">
             <div class="ui grid">
-                <div class="nine wide column padding-top-none">
-                    <div class="courseStructureHeaderText courseStructureSectionHeading">{{courseHierarchy.name}}</div>
-                    <br>
-                    <sui-rating *ngIf="courseStatus !== 'Unlisted'" class="courseHeader-rating ui star rating course-header-divider" [isReadonly]="true"
-                        [ngModel]="courseHierarchy.me_averageRating || 0" [maximum]="5"></sui-rating>&nbsp;&nbsp;
-                    <a (click)="onShareLink();sharelinkModal=true;">
-                        <i class="cursor-pointer large blue share alternate icon"></i>
-                    </a>
-                    <span *ngIf="permissionService.permissionAvailable && courseStatus !== 'Unlisted'" appPermission [permission]="['CONTENT_CREATOR', 'CONTENT_REVIEWER']"
-                        (click)="copyContent(courseHierarchy)" class="ui mouse-pointer content-font margin-left-10 ng-isolate-scope"
-                        title="Copy content">
-                        <i class="ui large blue clone outline icon"></i>
-                    </span>
-                    <h6 class="ui small negative message" *ngIf="courseHierarchy.status === 'Flagged'">{{resourceService?.messages?.imsg?.m0001}}</h6>
+                <div class="courseStructureHeaderText courseStructureSectionHeading">{{courseHierarchy.name}}</div>
+            </div>
+        </div>
+        <div class="one wide column"></div>
+    </div>
+    <div class="ui grid">
+        <div class="one wide column"></div>
+        <div class="ten wide column">
+            <div class="ui grid">
+                <div class="nine wide column" style="padding: 0 1rem;">
+                    <div class="ratingsdiv">
+                        <sui-rating *ngIf="courseStatus !== 'Unlisted'" class="courseHeader-rating ui star rating course-header-divider" [isReadonly]="true"
+                            [ngModel]="courseHierarchy.me_averageRating || 0" [maximum]="5"></sui-rating>&nbsp;&nbsp;
+                        <!-- <a (click)="onShareLink();sharelinkModal=true;">
+                            <i class="cursor-pointer large blue share alternate icon"></i>
+                        </a> -->  &nbsp;|&nbsp;
+                        <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp;
+                        <span>COST: <span class="bluetext">INR 1500</span></span>
+
+                        <!-- <span *ngIf="permissionService.permissionAvailable && courseStatus !== 'Unlisted'" appPermission [permission]="['CONTENT_CREATOR', 'CONTENT_REVIEWER']"
+                            (click)="copyContent(courseHierarchy)" class="ui mouse-pointer content-font margin-left-10 ng-isolate-scope"
+                            title="Copy content">
+                            <i class="ui large blue clone outline icon"></i>
+                        </span>
+                        <h6 class="ui small negative message" *ngIf="courseHierarchy.status === 'Flagged'">{{resourceService?.messages?.imsg?.m0001}}</h6> -->
+                    </div>
                 </div>
-                <div class="three wide column">
-                    <div *ngIf="enrolledCourse" class="margin-top-Negative30">
+                <div class="three wide column" style="padding: 0 1rem 1rem;">
+                    <div *ngIf="enrolledCourse" class="text-align-center">
                         <span>
                             <p class="text-align-center">{{resourceService?.messages?.stmsg?.m0108}} {{ progress }}%</p>
                         </span>
                         <button appTelemetryInteract [telemetryInteractEdata]="resumeIntractEdata" [telemetryInteractObject]="courseInteractObject"
-                            class="fluid blue right floated  ui button courseHeaderButton margin-top-0" [disabled]="showResumeCourse"
+                            class="ui blue basic button" [disabled]="showResumeCourse"
                             (click)="resumeCourse(true)">
                             {{resourceService?.frmelmnts?.btn?.resumecourse}}
                             <i class="caret right icon"></i>

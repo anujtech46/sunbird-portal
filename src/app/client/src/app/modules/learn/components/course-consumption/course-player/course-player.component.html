@@ -21,9 +21,9 @@
                                     </div>
                                 </div>
                                 <div class="ui header">
-                                    <b class="content courseStructureHeading">
+                                    <span class="content courseStructureHeading">
                                         {{resourceService.frmelmnts.lbl.coursestructure}}
-                                    </b>
+                                    </span>
                                 </div>
                                 <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
                                     [contentStatus]="contentStatus"></app-collection-tree>
