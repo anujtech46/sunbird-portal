@@ -15,6 +15,7 @@
     margin-bottom: 10px !important;
     border-bottom: 8px solid #88e3ec !important;
     position: relative;
+    margin-top: 0px;
 }
 .courseStructureHeaderText {
     position: absolute;

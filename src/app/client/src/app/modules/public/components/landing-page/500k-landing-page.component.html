@@ -1,3 +1,4 @@
+<div class="margin-top-15">
 <div class="ui stackable grid contianer">
     <div class="row banner-div">
         <!-- <div class="ui fluid image">
@@ -9,7 +10,7 @@
                 <div class="four wide column">
                     <h2>Learn the language of the future</h2>
                     <p>Julia is a fast, dynamic, technical, and composable language built for innovation. Be a part of the revolution with Julia Academy.</p>
-                    <button class="ui bannerblue basic button">GET STARTED FOR FREE</button>
+                    <button class="ui bannerblue basic button" routerLink="/signup">GET STARTED FOR FREE</button>
                 </div>
             </div>
         </div>
@@ -103,90 +104,55 @@
     <div class="one wide column"></div>
 </div>
 
-<div class="ui stackable grid contianer popular-course">
+<div class="ui stackable grid contianer popular-course" *ngIf="caraouselData && caraouselData.length > 0">
     <div class="one wide column"></div>
     <div class="ten wide column">
         <h3 class="title-center">POPULAR COURSES</h3>
-        <div class="ui stackable grid">
-            <div class="four wide column">
-                <div class="ui link cards course-card">
-                    <div class="ui card">
-                        <div class="ui image">
-                            <img src="assets/images/default.png">
-                            <div class="cardImageText center aligned">Introduction to Julia</div>
-                        </div>
-                        <div class="content">
-                            <div class="card-component-description">
-                                Course descriptor in one sentence, a maximum of two to three lines of text within this layout
-                            </div>
-                        </div>
-                        <div class="extra data">
-                            <div  class="right floated">
-                                <button class="ui blue basic button" tabindex="0">Enroll</button>
-                            </div>
-                            <span>
-                                <sui-rating class="courseHeader-rating star left floated ui rating read-only ng-untouched ng-pristine ng-valid">
-                                    <i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i>
-                                </sui-rating>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="four wide column">
-                <div class="ui link cards course-card">
-                    <div class="ui card">
-                        <div class="ui image">
-                            <img src="assets/images/default.png">
-                            <div class="cardImageText center aligned">Introduction to Machine Learning</div>
-                        </div>
-                        <div class="content">
-                            <div class="card-component-description">
-                                Course descriptor in one sentence, a maximum of two to three lines of text within this layout
-                            </div>
-                        </div>
-                        <div class="extra data">
-                            <div  class="right floated">
-                                <button class="ui blue basic button" tabindex="0">Enroll</button>
-                            </div>
-                            <span>
-                                <sui-rating class="courseHeader-rating star left floated ui rating read-only ng-untouched ng-pristine ng-valid">
-                                    <i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i>
-                                </sui-rating>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="four wide column">
-                <div class="ui link cards course-card">
-                    <div class="ui card">
-                        <div class="ui image">
-                            <img src="assets/images/default.png">
-                            <div class="cardImageText center aligned">Introduction to Julia</div>
-                        </div>
-                        <div class="content">
-                            <div class="card-component-description">
-                                Course descriptor in one sentence, a maximum of two to three lines of text within this layout
-                            </div>
-                        </div>
-                        <div class="extra data">
-                            <div  class="right floated">
-                                <button class="ui blue basic button" tabindex="0">Enroll</button>
-                            </div>
-                            <span>
-                                <sui-rating class="courseHeader-rating star left floated ui rating read-only ng-untouched ng-pristine ng-valid">
-                                    <i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i>
-                                </sui-rating>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="ten wide column" *ngFor="let section of caraouselData">
+            <app-page-section [section]="section" (playEvent)="playContent($event)"></app-page-section>
         </div>
     </div>
     <div class="one wide column"></div>
 </div>
+
+<!-- <div class="ui stackable grid contianer popular-course">
+    <div class="one wide column"></div>
+    <div class="ten wide column">
+        <h3 class="title-center">POPULAR COURSES</h3>
+        <div class="ui stackable grid">
+            <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig">
+                <div ngxSlickItem *ngFor="let content of section.contents;let i = index" class="slide"> 
+                    <div class="four wide column">
+                        <div class="ui link cards course-card">   
+                            <div class="ui card">
+                                <div class="ui image">
+                                    <img src="assets/images/default.png">
+                                    <div class="cardImageText center aligned">Introduction to Julia</div>
+                                </div>
+                                <div class="content">
+                                    <div class="card-component-description">
+                                        Course descriptor in one sentence, a maximum of two to three lines of text within this layout
+                                    </div>
+                                </div>
+                                <div class="extra data">
+                                    <div  class="right floated">
+                                        <button class="ui blue basic button" tabindex="0">Enroll</button>
+                                    </div>
+                                    <span>
+                                        <sui-rating class="courseHeader-rating star left floated ui rating read-only ng-untouched ng-pristine ng-valid">
+                                            <i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i>
+                                        </sui-rating>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ngx-slick>
+        </div>
+    </div>
+    <div class="one wide column"></div>
+</div> -->
 
 <div class="ui stackable grid">
     <div class="one wide column"></div>
@@ -311,3 +277,4 @@
   <div class="one wide column"></div> -->
 </div>
 <router-outlet></router-outlet>
+</div>

@@ -1,5 +1,5 @@
-<div class="ui link popular-section" *ngIf="section.contents && section.contents.length > 0">
-    <h4 class="ui header card-section-header sectionHeading">{{section.name}}
+<div class="ui link popular-section" *ngIf="section.contents && section.contents.length > 0 && !section.pageType">
+    <h4 class="ui header card-section-header sectionHeading">{{getPageDisplayName(section)}}
         <span class="ui red circular inline label">{{section.contents.length}}</span>
     </h4>
     <div>
@@ -8,6 +8,41 @@
                 <app-card appTelemetryInteract [telemetryInteractEdata]="cardIntractEdata" 
                 [telemetryInteractObject]="{id:content.metaData.identifier || content.metaData.courseId,type:content.metaData.contentType || 'Course',ver:'1.0'}"
                 (clickEvent)="playContent($event)"[data]="content" [customClass]="'margin-right-20'"></app-card>
+            </div>
+        </ngx-slick>
+    </div>
+</div>
+<div class="ui link popular-section" *ngIf="section.contents && section.contents.length > 0 && section.pageType ">
+    <div>
+        <ngx-slick in-view-container (inview)="inview($event)" [throttle]="[1000]" [trigger]="section.contents" (afterChange)="inviewChange(section.contents,$event)"class="carousel" #slickModal="slick-modal" [config]="slideConfig">
+            <div in-view-item [id]="i" [data]="content" ngxSlickItem *ngFor="let content of section.contents;let i = index" class="slide">    
+                <div class="ui link cards course-card">   
+                    <div class="ui card">
+                        <div class="ui image">
+                            <img src="assets/images/default.png">
+                            <div class="cardImageText center aligned">{{content.name | slice:0:40}}</div>
+                        </div>
+                        <div class="content">
+                            <div class="card-component-description">
+                                <div *ngIf="content.description && content.description.length > 0">
+                                    {{content.description | slice:0:80}}
+                                    <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 40" suiPopup popupText="{{content.description}}"></i>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="extra data">
+                            <div  class="right floated">
+                                <button class="ui blue basic button" tabindex="0">Enroll</button>
+                            </div>
+                            <span>
+                                <sui-rating class="courseHeader-rating star left floated ui rating read-only ng-untouched ng-pristine ng-valid">
+                                    <i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i>
+                                </sui-rating>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </ngx-slick>
     </div>

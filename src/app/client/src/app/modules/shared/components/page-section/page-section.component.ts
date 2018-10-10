@@ -96,4 +96,13 @@ export class PageSectionComponent implements OnInit {
       this.visits.emit(visits);
     }
   }
+
+  getPageDisplayName(data) {
+    if (!data.display) {
+      return data.name;
+    } else {
+      const parsedData = JSON.parse(data.display);
+      return parsedData.name.en;
+    }
+  }
 }
