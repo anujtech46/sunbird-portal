@@ -13,7 +13,7 @@
     </div>
     <div class="ui grid">
         <div class="one wide column"></div>
-        <div class="ten wide column">
+        <div class="ten wide column border-btm">
             <div class="ui grid">
                 <div class="nine wide column" style="padding: 0 1rem;">
                     <div class="ratingsdiv">
@@ -21,9 +21,10 @@
                             [ngModel]="courseHierarchy.me_averageRating || 0" [maximum]="5"></sui-rating>&nbsp;&nbsp;
                         <!-- <a (click)="onShareLink();sharelinkModal=true;">
                             <i class="cursor-pointer large blue share alternate icon"></i>
-                        </a> -->  &nbsp;|&nbsp;
+                        </a> -->  
+                        <!-- &nbsp;|&nbsp;
                         <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp;
-                        <span>COST: <span class="bluetext">INR 1500</span></span>
+                        <span>COST: <span class="bluetext">INR 1500</span></span> -->
 
                         <!-- <span *ngIf="permissionService.permissionAvailable && courseStatus !== 'Unlisted'" appPermission [permission]="['CONTENT_CREATOR', 'CONTENT_REVIEWER']"
                             (click)="copyContent(courseHierarchy)" class="ui mouse-pointer content-font margin-left-10 ng-isolate-scope"
@@ -54,10 +55,10 @@
         <div class="one wide column "></div>
     </div>
 </div>
-<div class="ui grid progress-bar-margin" *ngIf="enrolledCourse">
+<!-- <div class="ui grid progress-bar-margin" *ngIf="enrolledCourse">
     <div class="twelve wide column padding-none ">
         <sui-progress class="ui tiny progress orange" [value]="progress" [maximum]="100"></sui-progress>
     </div>
-</div>
+</div> -->
 <app-share-link [shareLink]="shareLink" [telemetryShareData]="telemetryShareData" *ngIf="sharelinkModal" (close)="sharelinkModal = false">
 </app-share-link>

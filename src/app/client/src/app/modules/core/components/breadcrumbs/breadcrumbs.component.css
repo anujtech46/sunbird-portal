@@ -2,17 +2,17 @@
     background-color: #fff;
   }
 .ui.breadcrumb a.breadcrumb-font {
-    color: #007AFF;
-    font-family: 'sunbirdboldfont';
-    font-size: 0.9375em;
-    line-height: 17px;
+  color: #3449d2;
+  font-family: 'sunbirdregularfont';
+  font-size: 0.9375em;
+  line-height: 17px;
   }
   .ui.breadcrumb .active.section {
-    color: #007AFF;
+    color: #3449d2;
     font-family: 'sunbirdboldfont';
     font-size: 0.9375em;
     line-height: 17px;
   }
   .ui.breadcrumb .divider {
-    color: #007AFF;
+    color: #3449d2;
   }

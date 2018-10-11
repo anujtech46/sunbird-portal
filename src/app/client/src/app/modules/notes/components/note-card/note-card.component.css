@@ -3,10 +3,14 @@
     font-size: 0.9em;
     color: #007AFF;
 }
-.notes-card-section {
+.notes-card-section.ui.card {
     width: 100%;
+    border-radius: 0 !important;
 }
 .notes-card-section .content .header a {
     color: #007AFF !important;
-    font-size: 0.9em !important;
+    font-size: 12px !important;
+}
+.notes-card-section span.notes-card-heading {
+    font-size: 13px !important;
 }

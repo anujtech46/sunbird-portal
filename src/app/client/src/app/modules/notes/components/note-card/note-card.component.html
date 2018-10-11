@@ -1,9 +1,11 @@
-<div class="notes-card-section ui card margin-bottom-15 width-100"  *ngIf="notesList.length > 0">
+<div class="notes-card-section ui card width-100"  *ngIf="notesList.length > 0">
     <div class="content">
         <div class="header">
-            <span>{{resourceService?.frmelmnts?.lbl?.mynotebook}}</span>
-            <a class="ui right floated font-dark-blue" (click)="viewAllNotes()">{{resourceService?.frmelmnts?.lnk?.viewall}}</a>
+            <span class="dblueetext">{{resourceService?.frmelmnts?.lbl?.mynotebook}}</span>
+            <a class="ui right floated" (click)="viewAllNotes()">{{resourceService?.frmelmnts?.lnk?.viewall}}</a>
         </div>
+    </div>
+    <div class="content">
         <div class="description">
             <div class="ui list" *ngFor="let note of notesList | orderBy:'updatedDate':true; let i=index">
                 <div class="item" *ngIf="i < 2">

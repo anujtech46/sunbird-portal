@@ -20,30 +20,29 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="ui header">
+                                <div class="ui header margin-top-30">
                                     <span class="content courseStructureHeading">
                                         {{resourceService.frmelmnts.lbl.coursestructure}}
                                     </span>
                                 </div>
                                 <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
                                     [contentStatus]="contentStatus"></app-collection-tree>
-                                <div class="ui fitted divider margin-bottom-20 margin-top-30"></div>
+                                <!-- <div class="ui fitted divider margin-bottom-20 margin-top-30"></div> -->
                                 <!-- <app-course-discussions></app-course-discussions> -->
                             </div>
                             <div class='three wide column'>
                                 <app-batch-details *ngIf="courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
-                                <div *ngIf="enrolledCourse" class="margin-bottom-15 margin-top-15">
-                                    <div>
-                                        <br>
-                                        <span (click)="showNoteEditor=!showNoteEditor" class="cursor-pointer">
-                                            <i class="circular icon margin-right-10 plus"></i>&nbsp;{{resourceService.frmelmnts.lbl.addnote}}
+                                <div *ngIf="enrolledCourse" class="rightSideSectionCards ui card margin-bottom-15 margin-top-15">
+                                    <div class="addnotes-panel content">
+                                        <span (click)="showNoteEditor=!showNoteEditor" class="cursor-pointer ui blue basic button">
+                                            <i class="icon plus"></i>&nbsp;{{resourceService.frmelmnts.lbl.addnote}}
                                             <app-popup-editor *ngIf="showNoteEditor" [mode]="'create'" [ids]="{contentId:contentId, courseId:courseId}" (exitModal)="showNoteEditor=false"
                                                 (createEventEmitter)="createEventEmitter($event)"></app-popup-editor>
                                         </span>
-                                        <br>
-                                        <br>
-                                        <app-note-card [ids]="{contentId:contentId, courseId:courseId}" [createNoteData]="createNoteData"></app-note-card>
+                                        <!-- <br>
+                                        <br> -->
                                     </div>
+                                    <app-note-card [ids]="{contentId:contentId, courseId:courseId}" [createNoteData]="createNoteData"></app-note-card>
                                 </div>
                                 <div>
                                     <app-carriculum-card *ngIf="curriculum && curriculum.length > 0" [curriculum]="curriculum"></app-carriculum-card>
@@ -55,12 +54,12 @@
                                 <div *ngIf="progress === 100">
                                     <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
                                 </div>
-                                <br>
-                                <div class="courseupdate">
+                                <!-- <br> -->
+                                <!-- <div class="courseupdate">
                                     <b>{{resourceService.frmelmnts.lbl.coursecreatedon}}: {{courseHierarchy.createdOn | dateFormat}}</b>
                                     <br>
                                     <b>{{resourceService.frmelmnts.lbl.updatedon}}: {{courseHierarchy.lastUpdatedOn | dateFormat}}</b>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

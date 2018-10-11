@@ -25,10 +25,20 @@
 .bluetext {
   color: #3449d2 !important;
 }
-.ratingsdiv {
-  padding: 1rem 0 0
+.dblueetext {
+  color: #283280 !important;
 }
-
+.ratingsdiv {
+  padding: 1rem 0;
+}
+.border-btm {
+  border-bottom: 1px solid #cccccc;
+}
+.ui.basic.blue.button {
+  box-shadow: 0 0 0 1px #3449d2 inset!important;
+  color: #3449d2 !important;
+  background: #ffffff !important;
+}
 /*cards fonts*/
 .cardsHeading {
   font-family: 'sunbirdboldfont';
@@ -522,9 +532,10 @@ a:hover {
 .padding-top-1rem {
   padding-top: 1rem;
 }
+
 .ui.secondary.pointing.menu .active.item {
-  border-color: #007AFF;
-  color: #333333;
+  border-color: #3449d2 !important;
+  color: #283280 !important;
   font-family: 'sunbirdmediumfont';
 }
 .ui.secondary.pointing.menu {
@@ -824,6 +835,8 @@ th {
 .rightSideSectionCards.ui.card {
   width: 100%;
   border-radius: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid #bdbec0;
 }
 .imageInCardsResponsive {
   overflow: hidden;
@@ -834,6 +847,17 @@ div:focus {
 }
 .ui.cards > .card > .content {
   padding-right: 3px;
+}
+.notes-card-section.ui.card {
+  width: 100%;
+  border-radius: 0 !important;
+}
+.notes-card-section .content .header a {
+  color: #3449d2!important;
+  font-size: 12px !important;
+}
+.notes-card-section span.notes-card-heading {
+  font-size: 13px !important;
 }
 /*three stackable cards width reduced to match design*/
 /*using ~ in calc because of Less issue with clac function */
@@ -858,21 +882,36 @@ div:focus {
   }
 }
 /*card font size for curriculum*/
+.rightSideSectionCards.ui.card {
+  margin-top: 0 !important;
+  margin-bottom: 15px !important;
+}
 .rightSideSectionCards.ui.card > .content > .header {
   font-size: 1.18em;
+}
+.ui.card>:first-child, .ui.cards>.card>:first-child {
+  border-radius: 0 !important;
 }
 .bluepanel-header {
   background: #3449d2 !important;
   padding: 1.4em 1em !important;
   color: #fff !important;
 }
-.rightSideSectionCards.ui.card  .content.bluepanel-header  .header{
+.rightSideSectionCards.ui.card .content.bluepanel-header .header{
   background: #3449d2 !important;
     color: #ffffff !important;
     border-radius: 0 !important;
     font-size: 1.2em !important;
     text-transform: uppercase;
     font-weight: 500;
+    display: inline-block;
+}
+.content.bluepanel-header a {
+  color: #dddddd !important;
+}
+.rightSideSectionCards.ui.card .addnotes-panel {
+  border-top: 4px solid #3449d2 !important;
+  background: #f1f2f2 !important;
 }
 
 /*text description height fixed in card*/
@@ -1444,7 +1483,7 @@ ul.fancytree-container {
 ul.fancytree-container li {
   background-image: none !important;
   background-position: 0 0;
-  padding: 0.5em 1.6em !important;
+  padding: 0.5em 1.6em 0.5em 2.4em !important;
   border-bottom: 1px solid #ccc !important;
 }
 .fancytree-lastsib ul li {
@@ -1554,7 +1593,7 @@ span.fancytree-title {
   text-transform: capitalize;
 }
 .popular-section {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
   /* box-shadow: 0 8px 6px -8px @tertiary-color;*/
   padding-top: 1em;
   padding-bottom: 1em;
@@ -1626,6 +1665,7 @@ span.fancytree-title {
 .fancytree-plain span.fancytree-node span.fancytree-title {
   padding-top: 4px;
   padding-bottom: 4px;
+  margin-left: 10px !important;
 }
 .fancytree-plain span.fancytree-node span.fancytree-title .padded i.icon {
   margin: 0px 0.3em 0.24em 0!important;
@@ -2487,6 +2527,28 @@ i.edit.icon.editIcon-fontSize {
   overflow-y: auto;
   border-top: none !important;
   margin-right: 5px !important;
+}
+.batchcardListContent .annannouncement-description {
+  margin-top: 0 !important;
+}
+.batchcardListContent .annannouncement-description .coursedates .header {
+  display: block;
+  margin: 0;
+  font-family: 'sunbirdregularfont' !important;
+  font-weight: 600;
+  color: #283280 !important;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+.batchcardListContent .annannouncement-description .coursedates .description {
+  font-size: 11px;
+}
+.rightSideSectionCards .blueheader-text {
+  font-size: 14px;
+  color: #283280 !important;
+  font-family: 'sunbirdregularfont' !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
 }
 #batchcardList::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
