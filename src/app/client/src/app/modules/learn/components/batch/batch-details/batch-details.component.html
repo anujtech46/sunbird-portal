@@ -1,4 +1,4 @@
-<div *ngIf="enrolledCourse" class="rightSideSectionCards ui card instructors-panel">
+<div class="rightSideSectionCards ui card instructors-panel">
     <div class="addnotes-panel content">
         <ul class="instructors-list">
             <li><div class="circleimg"><img src="../../../../../../assets/images/Alan.png" alt=""></div></li>
@@ -40,7 +40,7 @@
                     <button class="ui blue basic large button enrollBtn" appTelemetryInteract [telemetryInteractEdata]="enrollBatchIntractEdata"
                         [telemetryInteractObject]="{id:batch.identifier,type:'batch',ver:'1',rollup:{l1:courseId}}" (click)="enrollBatch(batch)"
                         *ngIf="!courseMentor">{{resourceService.frmelmnts.btn.enroll}}</button>
-                        <div class="ui big label button pull-right dblueetext">
+                        <div *ngIf="!courseMentor" class="ui big label button pull-right dblueetext">
                             <i class="rupee sign icon"></i> Free
                         </div>
                 </div>
