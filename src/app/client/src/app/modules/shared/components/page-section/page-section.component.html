@@ -20,20 +20,23 @@
                     <div class="ui card">
                         <div class="ui image">
                             <img src="assets/images/default.png">
-                            <div class="cardImageText center aligned">{{content.name | slice:0:40}}</div>
                         </div>
                         <div class="content">
+                            <div class="cardImageText center aligned" suiPopup popupText="{{content.name}}">
+                                <span>{{content.name | slice:0:20}}
+                                    <i class="ellipsis horizontal icon" *ngIf="content.name && content.name.length >= 20" ></i>
+                                </span>
+                            </div>
                             <div class="card-component-description">
                                 <div *ngIf="content.description && content.description.length > 0">
-                                    {{content.description | slice:0:80}}
-                                    <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 40" suiPopup popupText="{{content.description}}"></i>
+                                {{content.description | slice:0:40}}
+                                <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 40" suiPopup popupText="{{content.description}}"></i>
                                 </div>
                             </div>
-                            
                         </div>
                         <div class="extra data">
                             <div  class="right floated">
-                                <button class="ui blue basic button" tabindex="0">Enroll</button>
+                                <button class="ui blue basic button" tabindex="0" (click)="playContent(content)">Enroll</button>
                             </div>
                             <span>
                                 <sui-rating class="courseHeader-rating star left floated ui rating read-only ng-untouched ng-pristine ng-valid">

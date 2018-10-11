@@ -1,7 +1,9 @@
-.ui.image {
-    height: 150px;
+ .ui.image {
+    height: 250px;
     overflow:hidden;
 }
+
+/*
 .card-component-description {
     color: #7c7b7b;
     font-family: 'sunbirdregularfont';
@@ -28,5 +30,73 @@
     left: 10px;
     position: absolute;
     top: 9px;
+} */
+
+.card-component-description {
+    margin-top: 10px;
 }
 
+.cardsHeading {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 400 !important;
+    font-family: inherit !important;
+    text-transform: uppercase;
+    margin: 15px 0 28px;
+  }
+  .cards.course-card {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+  .course-card .card {
+    width: 340px;
+    height: 438px;
+  }
+  .course-card .card .image {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    padding: 1em 1.2em 0;
+    background: transparent;
+  }
+  .course-card .card .image  img{
+    border-radius: 0;
+  }
+  .course-card .cardImageText {
+    background-color: #ffffff;
+    color: #3449d2;
+    width: 100%;
+    margin: 0;
+    max-height: 70px;
+    padding: 0.8em 0 0;
+    text-align: left;
+    font-size: 1.6em;
+    position: relative !important;
+  }
+  .course-card .content {
+    flex-grow: 1;
+    border: none;
+    background: 0 0;
+    margin: 0;
+    padding: 1em 1.2em !important;
+    box-shadow: none;
+    font-size: 1em;
+    border-radius: 0;
+    line-height: 1.6em;
+    font-weight: 500;
+  }
+  .course-card .extra {
+    padding: .75em 1.2em !important;
+    box-shadow: none;
+  }
+  .course-card .button {
+    box-shadow: 0 0 0 1px #3449d2 inset !important;
+    color: #3449d2 !important;
+  }
+  .course-card .extra .ui.rating {
+    padding: 7px 0 0 !important;
+  }
+  .course-card i.icon {
+    font-size: 1.3em !important;
+  }

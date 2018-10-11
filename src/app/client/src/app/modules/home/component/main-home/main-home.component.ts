@@ -120,12 +120,12 @@ public configService: ConfigService;
               val = val.match(/([A-Z]?[^A-Z]*)/g).join(' ');
               missingField.push(_.capitalize(val));
             });
-            this.toDoList.unshift({
-              type: profile,
-              missingFields: missingField,
-              value: user.userProfile.completeness,
-              image: user.userProfile.avatar
-            });
+            // this.toDoList.unshift({
+            //   type: profile,
+            //   missingFields: missingField,
+            //   value: user.userProfile.completeness,
+            //   image: user.userProfile.avatar
+            // });
           }
         } else if (user && user.err) {
           this.showLoader = false;

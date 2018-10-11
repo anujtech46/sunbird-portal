@@ -165,8 +165,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   playContent(event) {
-    // this.router.navigate(['/learn/course', event.metaData.identifier]);
-    window.location.href = '/learn/course' + event.metaData.identifier;
+    window.location.href = '/learn/course/' + event.metaData.identifier + '?courseId=' + event.metaData.identifier;
   }
 
 }

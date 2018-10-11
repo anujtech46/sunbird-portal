@@ -1,3 +1,14 @@
+<div [appTelemetryImpression]="telemetryImpression" class=" ui grid my-course-section">
+  <div class="one wide column">
+  </div>
+  <div class="ten wide column">
+    <div *ngFor="let section of caraouselEnrollData">
+      <app-page-section (visits)="prepareVisits($event)" [section]="section" (playEvent)="playContent($event)"></app-page-section>
+    </div>
+  </div>
+  <div class="one wide column">
+  </div>
+</div>
 <div [appTelemetryImpression]="telemetryImpression" class=" ui grid">
   <div class="one wide column">
   </div>

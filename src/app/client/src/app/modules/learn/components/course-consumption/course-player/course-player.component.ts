@@ -19,6 +19,7 @@ import {
 // Julia related services
 import { JuliaNoteBookService, CoursePriceService } from './../../../services';
 import { PaymentService } from '@sunbird/core';
+import { UtilService } from '../../../../shared';
 
 @Component({
   selector: 'app-course-player',
@@ -155,6 +156,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   orderData: any;
   public showOpenNoteBookModal = false;
   juliaBoxPingIntervalTime: any;
+  courseDataSubscription: any;
+  enrolledCourses: any;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -177,6 +180,39 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     (<any>window).open_notebook = this.open_notebook.bind(this);
   }
   ngOnInit() {
+    this.activatedRoute.queryParams.subscribe(queryParams => {
+      const cid = queryParams.courseId;
+      if (cid) {
+        this.courseDataSubscription = this.coursesService.enrolledCourseData$.subscribe(
+          data => {
+            if (data && !data.err) {
+              if (data.enrolledCourses.length > 0) {
+                this.enrolledCourses = data.enrolledCourses;
+                const course = _.filter(this.enrolledCourses, (courseData) => {
+                  return courseData.courseId === cid;
+                });
+                this.batchId = course && course.length > 0 && course[0].batchId;
+                if (this.batchId) {
+                  window.location.href = '/learn/course/' + cid + '/' + this.batchId;
+                } else {
+                  this.populateCourseData();
+                }
+              } else {
+                this.populateCourseData();
+              }
+            } else if (data && data.err) {
+              this.populateCourseData();
+              this.toasterService.error(this.resourceService.messages.fmsg.m0001);
+            }
+          }
+        );
+      } else {
+        this.populateCourseData();
+      }
+    });
+  }
+
+  populateCourseData() {
     this.activatedRouteSubscription = this.activatedRoute.params.pipe(first(),
       mergeMap((params) => {
         this.courseId = params.courseId;

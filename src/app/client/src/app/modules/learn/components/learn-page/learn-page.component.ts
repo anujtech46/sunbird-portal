@@ -87,6 +87,7 @@ export class LearnPageComponent implements OnInit, OnDestroy {
   content: any;
   public unsubscribe = new Subject<void>();
   courseDataSubscription: Subscription;
+  caraouselEnrollData: any;
   /**
 	 * Constructor to create injected service(s) object
    * @param {ResourceService} resourceService Reference of ResourceService
@@ -124,11 +125,11 @@ export class LearnPageComponent implements OnInit, OnDestroy {
             };
             const courses = this.utilService.getDataForCard(data.enrolledCourses,
               constantData, dynamicFields, metaData);
-            this.caraouselData.unshift({
+            this.caraouselEnrollData = [{
               name: 'My Courses',
               length: courses.length,
               contents: courses
-            });
+            }];
           }
           this.populatePageData();
         } else if (data && data.err) {
@@ -161,7 +162,7 @@ export class LearnPageComponent implements OnInit, OnDestroy {
         if (apiResponse && apiResponse.sections) {
           this.showLoader = false;
           const sections = this.processActionObject(apiResponse.sections);
-          this.caraouselData = this.caraouselData.concat(sections);
+          this.caraouselData = sections;
           if (this.caraouselData.length > 0) {
             _.forIn(this.caraouselData, (value, key) => {
               if (this.caraouselData[key].contents === null || this.caraouselData[key].contents === undefined

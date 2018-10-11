@@ -62,3 +62,12 @@
 .course-card i.icon {
   font-size: 1.3em !important;
 }
+
+.ui.image {
+  height: 250px;
+  overflow:hidden;
+}
+
+.card-component-description {
+  margin-top: 10px;
+}
