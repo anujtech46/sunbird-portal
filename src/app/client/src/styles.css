@@ -910,8 +910,110 @@ div:focus {
   color: #dddddd !important;
 }
 .rightSideSectionCards.ui.card .addnotes-panel {
-  border-top: 4px solid #3449d2 !important;
+  border-top: 5px solid #3449d2 !important;
   background: #f1f2f2 !important;
+}
+
+.instructors-panel.ui.card {
+  margin: 44px 0 15px !important;
+}
+.instructors-panel.ui.card .content {
+  padding-top: 50px;
+}
+.instructors-panel.ui.card ul.instructors-list {
+  list-style: none;
+  display: inline;
+  padding-left: 0;
+  position: absolute;
+  top: -60px;
+  left: 39px;
+}
+.instructors-panel.ui.card ul.instructors-list li {
+  margin-bottom: 29px;
+  position: relative;
+  display: inline-block;
+  margin-left: -21px;
+}
+.instructors-panel.ui.card ul.instructors-list li .circleimg {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 1px solid #e0e1e2;
+  background: #fff;
+  padding: 6px;
+}
+.instructors-panel.ui.card ul.instructors-list li .circleimg img {
+  width: 100%;
+  display: block;
+  height: auto;
+  border-radius: 50%;
+}
+.instructors-panel.ui.card .content p.bluetext {
+  font-size: 1.3em;
+}
+
+@media (min-width:769px) and (max-width:1024px) {
+  .instructors-panel.ui.card {
+    margin: 24px 0 15px !important;
+  }
+  .instructors-panel.ui.card ul.instructors-list {
+    top: -44px;
+  }
+  .instructors-panel.ui.card ul.instructors-list li .circleimg {
+    width: 64px;
+    height: 64px;
+  }
+  .course-card .card .image {
+    height: 180px !important;
+  }
+  .course-card .cardImageText {
+    font-size: 1.3em !important;
+  }
+}
+@media (max-width:768px) {
+  .instructors-panel.ui.card {
+    margin: 24px 0 15px !important;
+  }
+  .instructors-panel.ui.card .content {
+    padding-top: 28px;
+  }
+  .instructors-panel.ui.card ul.instructors-list {
+    top: -44px;left: 28px;
+  }
+  .instructors-panel.ui.card .content p.bluetext {
+    font-size: 1em !important;
+  }
+  .instructors-panel.ui.card ul.instructors-list li .circleimg {
+    width: 54px;
+    height: 54px;
+  }
+  .course-card .card .image {
+    height: 118px !important;
+  } 
+  .course-card .cardImageText {
+    font-size: 1.3em !important;
+  }
+  .rightSideSectionCards.ui.card .content.bluepanel-header .header {
+    font-size: 1em !important;
+  }
+  .rightSideSectionCards.ui.card .addnotes-panel .ui.button {
+    padding: .75em 1em !important;
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width:1024px) {
+  .header-logo {
+      max-height: 36px !important;
+  }
+  .searchfilterinput input.searchinput {
+      width: 258px !important;
+  }
+
+  .ui.circular.image.logged-in-user {
+      width: 22px;
+      height: 22px;
+  }
 }
 
 /*text description height fixed in card*/
@@ -1199,7 +1301,8 @@ i.large.icon.limitedPublishingLinkIcon {
 .header-logo {
   display: block;
   max-width: 200px;
-  max-height: 80px;
+  /* max-height: 80px; */
+  max-height: 54px;
   width: auto;
   height: auto;
   position: absolute;
@@ -1208,6 +1311,7 @@ i.large.icon.limitedPublishingLinkIcon {
   display: block;
   width: auto;
   height: auto;
+  max-height: 54px;
 }
 
 .blue-text-color-sunbird {

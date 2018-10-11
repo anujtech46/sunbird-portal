@@ -13,17 +13,20 @@
 }
 .course-card .card {
   width: 340px;
-  height: 438px;
+  height: 414px;
 }
 .course-card .card .image {
   position: relative;
-  display: block;
+  display: flex;
   flex: 0 0 auto;
-  padding: 1em 1.2em 0;
-  background: transparent;
+  padding: 1em 1.2em;
+  background: transparent;    
+  border: 1px solid #eee;
+  align-items: center;
 }
 .course-card .card .image  img{
   border-radius: 0;
+  max-height: 224px;
 }
 .course-card .cardImageText {
   background-color: #ffffff;
@@ -31,7 +34,7 @@
   width: 100%;
   margin: 0;
   max-height: 70px;
-  padding: 0.8em 0 0;
+  padding: 0;
   text-align: left;
   font-size: 1.6em;
   position: relative !important;

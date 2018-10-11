@@ -29,8 +29,8 @@
                             </div>
                             <div class="card-component-description">
                                 <div *ngIf="content.description && content.description.length > 0">
-                                {{content.description | slice:0:40}}
-                                <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 40" suiPopup popupText="{{content.description}}"></i>
+                                {{content.description | slice:0:80}}
+                                <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 80" suiPopup popupText="{{content.description}}"></i>
                                 </div>
                             </div>
                         </div>

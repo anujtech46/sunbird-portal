@@ -1,3 +1,15 @@
+<div *ngIf="enrolledCourse" class="rightSideSectionCards ui card instructors-panel">
+    <div class="addnotes-panel content">
+        <ul class="instructors-list">
+            <li><div class="circleimg"><img src="../../../../../../assets/images/Alan.png" alt=""></div></li>
+            <li><div class="circleimg"><img src="../../../../../../assets/images/Jane.png" alt=""></div></li>
+            <li><div class="circleimg"><img src="../../../../../../assets/images/Matt.png" alt=""></div></li>
+        </ul>
+        <p>INSTRUCTORS</p>
+        <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
+    </div>
+</div>
+
 <div *ngIf="!enrolledCourse" class="rightSideSectionCards ui card">
     <div class="content bluepanel-header">
         <span class="header">{{resourceService?.frmelmnts?.lbl?.batches}}</span>

@@ -16,14 +16,14 @@
         <div class="six wide column padding-top-1rem" *ngIf="userService.userid">
             <app-search></app-search>
         </div>
-        <div class="one wide column">
-        </div>
-        <div class="one wide column" *ngIf="userService.userid; else showLoginBtn">
-            <i class="float-ContentLeft alarm-icon-header alarm icon large alaramIconColor"></i>
+        <!-- <div class="one wide column">
+        </div> -->
+        <div class="two wide column" *ngIf="userService.userid; else showLoginBtn">
+            <!-- <i class="float-ContentLeft alarm-icon-header alarm icon large alaramIconColor"></i> -->
             <div suiDropdown [(isOpen)]="isOpen" class="ui floating dropdown right top pointing
                 header-user-container padding-top-circular-human-icon" id="dropdown-menu-list-header">
                 <img src="{{ userProfile?.avatar || 'assets/images/user_logo.png' | cdnprefixurl}}" class="ui circular image logged-in-user"
-                />
+                />  <span class="padding-left-5">{{userProfile?.firstName}}&nbsp;{{userProfile?.lastName}} <i class="caret square down icon"></i></span>
                 <div class="menu" suiDropdownMenu>
                     <div *ngIf='userProfile' class="item headerDropdownProfile">{{userProfile?.firstName}}&nbsp;{{userProfile?.lastName}}</div>
                     <div *ngIf='userProfile' class="ui divider"></div>
