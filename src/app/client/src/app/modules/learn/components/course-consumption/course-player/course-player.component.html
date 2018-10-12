@@ -44,9 +44,9 @@
                                     </div>
                                     <app-note-card [ids]="{contentId:contentId, courseId:courseId}" [createNoteData]="createNoteData"></app-note-card>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <app-carriculum-card *ngIf="curriculum && curriculum.length > 0" [curriculum]="curriculum"></app-carriculum-card>
-                                </div>
+                                </div> -->
                                  <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
                                     <app-course-badge></app-course-badge>
                                     <br>
