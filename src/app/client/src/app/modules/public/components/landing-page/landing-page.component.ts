@@ -165,7 +165,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   playContent(event) {
-    window.location.href = '/learn/course/' + event.metaData.identifier + '?courseId=' + event.metaData.identifier;
+    window.location.href = '/learn/course/' + event.metaData.identifier + '?type=landingPage';
   }
 
 }

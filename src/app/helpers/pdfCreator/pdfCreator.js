@@ -168,7 +168,9 @@ function createPDF (data, filePath, callback) {
 
     doc.font('Helvetica-Bold').fontSize(15).text(title + ' ' + name, 200, 293, { align: 'center' })
     doc.font('Helvetica-Bold').fontSize(15).text(courseName, 200, 376, { align: 'center' })
-    doc.font('Helvetica').fontSize(15).text(platformName, 200, 416, { align: 'center' })
+    if(platformName) {
+      doc.font('Helvetica').fontSize(15).text(platformName, 200, 416, { align: 'center' })
+    }
     doc.text(courseCompletionDate, 340, 470, { align: 'left' })
     doc.text(instructor, 375, 470, { align: 'center' })
 

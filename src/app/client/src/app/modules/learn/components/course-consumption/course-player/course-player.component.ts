@@ -68,7 +68,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   enableContentPlayer = false;
 
-  courseHierarchy: any;
+  courseHierarchy: any = {};
 
   readMore = false;
 
@@ -180,54 +180,41 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     (<any>window).open_notebook = this.open_notebook.bind(this);
   }
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(queryParams => {
-      const cid = queryParams.courseId;
-      if (cid) {
-        this.courseDataSubscription = this.coursesService.enrolledCourseData$.subscribe(
-          data => {
-            if (data && !data.err) {
-              if (data.enrolledCourses.length > 0) {
-                this.enrolledCourses = data.enrolledCourses;
-                const course = _.filter(this.enrolledCourses, (courseData) => {
-                  return courseData.courseId === cid;
-                });
-                this.batchId = course && course.length > 0 && course[0].batchId;
-                if (this.batchId) {
-                  window.location.href = '/learn/course/' + cid + '/' + this.batchId;
-                } else {
-                  this.populateCourseData();
-                }
-              } else {
-                this.populateCourseData();
-              }
-            } else if (data && data.err) {
-              this.populateCourseData();
-              this.toasterService.error(this.resourceService.messages.fmsg.m0001);
-            }
-          }
-        );
-      } else {
-        this.populateCourseData();
-      }
-    });
-  }
-
-  populateCourseData() {
     this.activatedRouteSubscription = this.activatedRoute.params.pipe(first(),
       mergeMap((params) => {
         this.courseId = params.courseId;
         this.batchId = params.batchId;
         this.courseStatus = params.courseStatus;
-        this.setTelemetryCourseImpression();
-        if (this.batchId) {
-          return combineLatest(
-            this.courseConsumptionService.getCourseHierarchy(params.courseId),
-            this.courseBatchService.getEnrolledBatchDetails(this.batchId),
-          ).pipe(map(results => ({ courseHierarchy: results[0], enrolledBatchDetails: results[1] })));
+        if (this.activatedRoute.snapshot.queryParamMap.get('type')) {
+          this.coursesService.enrolledCourseData$.subscribe(
+            data => {
+              if (data && !data.err) {
+                if (data.enrolledCourses.length > 0) {
+                  this.enrolledCourses = data.enrolledCourses;
+                  const course = _.filter(this.enrolledCourses, (courseData) => {
+                    return courseData.courseId === this.courseId;
+                  });
+                  this.batchId = course && course.length > 0 && course[0].batchId;
+                  if (this.batchId) {
+                    this.router.navigate(['/learn/course', this.courseId, 'batch', this.batchId]);
+                    // window.location.href = '/learn/course/' + this.courseId + '/' + this.batchId;
+                  }
+                }
+              }
+            }
+          );
         } else {
-          return this.courseConsumptionService.getCourseHierarchy(params.courseId)
-            .pipe(map((courseHierarchy) => ({ courseHierarchy })));
-        }
+          this.setTelemetryCourseImpression();
+          if (this.batchId) {
+            return combineLatest(
+              this.courseConsumptionService.getCourseHierarchy(this.courseId),
+              this.courseBatchService.getEnrolledBatchDetails(this.batchId),
+            ).pipe(map(results => ({ courseHierarchy: results[0], enrolledBatchDetails: results[1] })));
+          } else {
+            return this.courseConsumptionService.getCourseHierarchy(params.courseId)
+              .pipe(map((courseHierarchy) => ({ courseHierarchy })));
+          }
+      }
       })).subscribe((response: any) => {
         this.courseHierarchy = response.courseHierarchy;
         this.courseInteractObject = {
@@ -259,7 +246,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loader = false;
       }, (error) => {
         this.loader = false;
-        this.toasterService.error(this.resourceService.messages.emsg.m0005); // need to change message
+        if (!this.courseHierarchy) {
+          this.courseHierarchy.toasterService.error(this.resourceService.messages.emsg.m0005); // need to thischange message
+        }
       });
   }
   ngAfterViewInit() {
