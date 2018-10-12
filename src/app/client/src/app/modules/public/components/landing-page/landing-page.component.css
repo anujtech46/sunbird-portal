@@ -53,15 +53,17 @@
     margin: 40px 0 80px;
     text-align: center;
 }
-.custom-best{
+.custom-best {
     border-top: 6px solid #3449d2;
     border-radius: 0 !important;
     width: 100% !important;
     position: relative;
+    height: 400px;
  }
 .custom-best .header {
     background: #e6e7e8;
     padding: 4em 3em 1em;
+    height: 150px;
 }
 .circleimg {
     width: 120px;
@@ -83,7 +85,7 @@
 .custom-best .header h3  {
     color: #3449d2;
     margin-bottom: 0px;
-    font-size: 1.7em !important;
+    font-size: 1.7em;
 }
 .custom-best .header h3 span {
     font-size: 12px;
@@ -91,7 +93,7 @@
 }
 .custom-best .content {
     background: #f1f2f2;
-    padding: 2em 3em;
+    padding: 1.4em 3em;
     line-height: 1.6em;
     font-size: 14px;
     height: 150px;
@@ -134,6 +136,7 @@
 .course-card .card {
     width: 340px;
     height: 414px;
+    border-radius: 0 !important;
 }
 .course-card .card .image {
     position: relative;
@@ -141,7 +144,7 @@
     flex: 0 0 auto;
     padding: 1em 1.2em;
     background: transparent;    
-    border: 1px solid #eee;
+    border-bottom: 1px solid #eee;
     align-items: center;
 }
 .course-card .card .image  img{
@@ -248,3 +251,79 @@
 .margin-top-15 {
     margin-top: 15px;
 }
+
+@media (min-width: 1321px) {
+    .ui.image {
+      height: 250px;
+      overflow:hidden;
+    }
+}
+
+@media (min-width: 1025px) and (max-width:1320px) {
+    .ui.image {
+        height: 200px;
+        overflow:hidden;
+    }
+}
+@media (min-width: 900px) and (max-width:1024px) {
+    .ui.image {
+        height: 170px;
+        overflow:hidden;
+    }
+    .course-card .extra .left.floated, .course-card .extra .right.floated {
+        float: none !important;
+    }
+    .course-card .extra  {
+        text-align: center !important;
+    }
+}
+  
+@media (min-width:900px) and (max-width:1210px) {
+    .custom-best .header h3 {
+        font-size: 1em !important;
+    }
+    .feature-article .ui.four.cards>.card {
+        width: calc(50% - 1.5em) !important;
+    }
+}
+
+@media (min-width:768px) and (max-width:899px) {
+    .custom-best .header h3 {
+        font-size: 1em !important;
+    }
+    .custom-best .header h3 span {
+        font-size: 12px !important;
+    }
+    .custom-best .header p {
+        font-size: 13px !important;
+    }
+
+    .feature-article .ui.four.cards>.card {
+        width: calc(50% - 1.5em) !important;
+    }
+
+    .ui.image {
+        height: 138px;
+        overflow:hidden;
+    }
+    .course-card .extra .left.floated, .course-card .extra .right.floated {
+        float: none !important;
+    }
+    .course-card .extra  {
+        text-align: center !important;
+    }
+}
+
+@media (max-width:767px) {
+    .custom-best {
+        margin-bottom: 38px !important;
+    }
+    .learnbestdiv {
+        padding-bottom: 0 !important;
+    }
+    .ui.image {
+        height: 108px;
+        overflow:hidden;
+    }
+}
+ 

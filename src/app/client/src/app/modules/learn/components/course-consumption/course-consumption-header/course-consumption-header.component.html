@@ -2,14 +2,11 @@
     <div class="ui active inverted dimmer" *ngIf="showCopyLoader">
         <div class="ui text centered inline loader margin-top-40">{{resourceService.frmelmnts.lbl.copycontent}}</div>
     </div>
-    <div class="ui stackable grid contianer courseStructureHeader" style="background: url('../../../../../../assets/images/landingPage.jpg') no-repeat transparent">
-        <div class="one wide column"></div>
-        <div class="ten wide column padding-top-none">
-            <div class="ui grid">
-                <div class="courseStructureHeaderText courseStructureSectionHeading">{{courseHierarchy.name}}</div>
-            </div>
+    <div class="ui stackable grid contianer courseStructureHeader">
+        <div class="twelve wide column P0">
+            <img src="../../../../../../assets/images/landingPage.jpg" alt="{{courseHierarchy.name}}" class="coursebg">
+            <div class="courseStructureHeaderText courseStructureSectionHeading">{{courseHierarchy.name}}</div>
         </div>
-        <div class="one wide column"></div>
     </div>
     <div class="ui grid">
         <div class="one wide column"></div>

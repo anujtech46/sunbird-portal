@@ -17,20 +17,20 @@
         <ngx-slick in-view-container (inview)="inview($event)" [throttle]="[1000]" [trigger]="section.contents" (afterChange)="inviewChange(section.contents,$event)"class="carousel" #slickModal="slick-modal" [config]="slideConfig">
             <div in-view-item [id]="i" [data]="content" ngxSlickItem *ngFor="let content of section.contents;let i = index" class="slide">    
                 <div class="ui link cards course-card">   
-                    <div class="ui card">
+                    <div class="ui card margin-right-20">
                         <div class="ui image">
                             <img src="{{ content.appIcon || 'assets/images/default.png' | cdnprefixurl}}">
                         </div>
                         <div class="content">
                             <div class="cardImageText center aligned" suiPopup popupText="{{content.name}}">
-                                <span>{{content.name | slice:0:20}}
-                                    <i class="ellipsis horizontal icon" *ngIf="content.name && content.name.length >= 20" ></i>
+                                <span>{{content.name | slice:0:16}}
+                                    <i class="ellipsis horizontal icon" *ngIf="content.name && content.name.length >= 16" ></i>
                                 </span>
                             </div>
                             <div class="card-component-description">
                                 <div *ngIf="content.description && content.description.length > 0">
-                                {{content.description | slice:0:80}}
-                                <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 80" suiPopup popupText="{{content.description}}"></i>
+                                {{content.description | slice:0:74}}
+                                <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 74" suiPopup popupText="{{content.description}}"></i>
                                 </div>
                             </div>
                         </div>

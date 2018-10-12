@@ -34,10 +34,20 @@
 .border-btm {
   border-bottom: 1px solid #cccccc;
 }
+.margin-right-5 {
+  margin-right: 5px !important;
+}
+.P0 {
+  padding: 0 !important;
+}
 .ui.basic.blue.button {
   box-shadow: 0 0 0 1px #3449d2 inset!important;
   color: #3449d2 !important;
   background: #ffffff !important;
+}
+.ui.blue.button {
+  background-color: #3449d2 !important;
+  font-weight: normal !important;
 }
 /*cards fonts*/
 .cardsHeading {
@@ -926,7 +936,7 @@ div:focus {
   padding-left: 0;
   position: absolute;
   top: -60px;
-  left: 39px;
+  left: 12%;
 }
 .instructors-panel.ui.card ul.instructors-list li {
   margin-bottom: 29px;
@@ -951,20 +961,47 @@ div:focus {
 .instructors-panel.ui.card .content p.bluetext {
   font-size: 1.3em;
 }
-
-@media (min-width:769px) and (max-width:1024px) {
+@media (min-width:900px) and (max-width:1220px) {
   .instructors-panel.ui.card {
     margin: 24px 0 15px !important;
   }
   .instructors-panel.ui.card ul.instructors-list {
-    top: -44px;
+    top: -44px; left: 14%;
   }
   .instructors-panel.ui.card ul.instructors-list li .circleimg {
     width: 64px;
     height: 64px;
   }
-  .course-card .card .image {
-    height: 180px !important;
+  .course-card .cardImageText {
+    font-size: 1.3em !important;
+  }
+}
+
+@media (min-width:768px) and (max-width: 1135px) {
+  .annannouncement-description .pull-right.dblueetext {
+    float: none !important;
+  }
+  .annannouncement-description .ui.basic.blue.button {
+    margin-bottom: 5px !important;
+  }
+  .note-card-time-stamp {
+    float: none !important;
+    margin: 0 !important;
+  }
+  .addnotes-panel .ui.basic.blue.button .icon {
+    margin: 0;
+  }
+}
+@media (min-width:769px) and (max-width:899px) {
+  .instructors-panel.ui.card {
+    margin: 24px 0 15px !important;
+  }
+  .instructors-panel.ui.card ul.instructors-list {
+    top: -44px; left: 20%;
+  }
+  .instructors-panel.ui.card ul.instructors-list li .circleimg {
+    width: 54px;
+    height: 54px;
   }
   .course-card .cardImageText {
     font-size: 1.3em !important;
@@ -987,7 +1024,7 @@ div:focus {
     width: 54px;
     height: 54px;
   }
-  .course-card .card .image {
+  .course-card .card .ui.image .image {
     height: 118px !important;
   } 
   .course-card .cardImageText {
@@ -999,6 +1036,12 @@ div:focus {
   .rightSideSectionCards.ui.card .addnotes-panel .ui.button {
     padding: .75em 1em !important;
     font-size: 10px !important;
+  }
+  .courseStructureHeader {
+    min-height: 260px !important;
+  }
+  .P0 {
+    padding: 0 !important;
   }
 }
 
@@ -2246,6 +2289,7 @@ ul.fancytree-container li {
   float: right;
   margin: 0 0 0 1em;
   cursor: pointer;
+  color: #3449d2 !important;
 }
 .profileitems.ui.relaxed.items:not(.horizontal) > .item:not(:last-child) {
   padding: 12px 0 12px 0;

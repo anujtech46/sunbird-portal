@@ -10,17 +10,24 @@
 }
 .courseStructureHeader {
     background-color: #ffffff !important;
-    background-size: cover !important;
-    min-height: 300px;
+    min-height: 276px;
     margin-bottom: 10px !important;
     border-bottom: 8px solid #88e3ec !important;
     position: relative;
-    margin-top: 0px;
+    margin-top: 5px;
+    max-height: 300px;
+    overflow: hidden;
 }
 .courseStructureHeaderText {
     position: absolute;
     font-size: 2.2em;
     color: #ffffff;
-    bottom: 18%;
+    bottom: 20%;
     font-family: 'sunbirdregularfont';
+    left: 9%;
+}
+.courseStructureHeader .coursebg {
+    display: block;
+    width: 100%;
+    height: auto;
 }

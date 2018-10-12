@@ -1,8 +1,3 @@
- .ui.image {
-    height: 250px;
-    overflow:hidden;
-}
-
 /*
 .card-component-description {
     color: #7c7b7b;
@@ -52,6 +47,7 @@
   .course-card .card {
     width: 340px;
     height: 414px;
+    border-radius: 0 !important
   }
   .course-card .card .image {
     position: relative;
@@ -59,7 +55,7 @@
     flex: 0 0 auto;
     padding: 1em 1.2em;
     background: transparent;    
-    border: 1px solid #eee;
+    border-bottom: 1px solid #eee;
     align-items: center;
   }
   .course-card .card .image  img{
@@ -102,4 +98,48 @@
   }
   .course-card i.icon {
     font-size: 1.3em !important;
+  }
+  @media (min-width: 1321px) {
+    .ui.image {
+      height: 250px;
+      overflow:hidden;
+    }
+  }
+
+  @media (min-width: 1025px) and (max-width:1320px) {
+    .ui.image {
+      height: 200px;
+      overflow:hidden;
+    }
+  }
+  @media (min-width: 900px) and (max-width:1024px) {
+    .ui.image {
+      height: 170px;
+      overflow:hidden;
+    }
+    .course-card .extra .left.floated, .course-card .extra .right.floated {
+      float: none !important;
+    }
+    .course-card .extra  {
+      text-align: center !important;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width:899px) {
+    .ui.image {
+      height: 138px;
+      overflow:hidden;
+    }
+    .course-card .extra .left.floated, .course-card .extra .right.floated {
+      float: none !important;
+    }
+    .course-card .extra  {
+      text-align: center !important;
+    }
+  }
+  @media (max-width: 767px) {
+    .ui.image {
+      height: 108px;
+      overflow:hidden;
+    }
   }
