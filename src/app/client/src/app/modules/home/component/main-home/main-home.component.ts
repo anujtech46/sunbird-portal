@@ -180,7 +180,7 @@ public configService: ConfigService;
       event.data.metaData.mimeType = 'application/vnd.ekstep.content-collection';
       event.data.metaData.contentType = 'Course';
     }
-    this.playerService.playContent(event.data.metaData);
+    this.playerService.playContent(event.data.metaData, event.action.displayType === 'button' ? true : undefined );
   }
   /**
   *This method calls the populateUserProfile and populateCourse to show

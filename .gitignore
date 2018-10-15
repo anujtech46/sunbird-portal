@@ -20,4 +20,5 @@ src/app/app_dist
 /src/app/client/coverage
 /src/app/client/documentation
 
-src/app/helpers/localVariables\.js
+src/app/helpers/localVariables.js
+src/app/helpers/jaldhara.localVariables.js

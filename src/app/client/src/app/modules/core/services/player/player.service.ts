@@ -133,14 +133,15 @@ export class PlayerService {
     }));
   }
 
-  playContent(content) {
+  playContent(content, isAutoPlay?: boolean) {
     this.navigationHelperService.storeResourceCloseUrl();
     setTimeout(() => { // setTimeOut is used to trigger telemetry interact event as changeDetectorRef.detectChanges() not working.
       if (content.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.collection) {
         if (content.contentType !== this.configService.appConfig.PLAYER_CONFIG.contentType.Course) {
           this.router.navigate(['/resources/play/collection', content.identifier]);
         } else if (content.batchId) {
-          this.router.navigate(['/learn/course', content.courseId, 'batch', content.batchId]);
+          const queryParams = { resume: isAutoPlay };
+          this.router.navigate(['/learn/course', content.courseId, 'batch', content.batchId], { queryParams: queryParams });
         } else {
           this.router.navigate(['/learn/course', content.identifier]);
         }

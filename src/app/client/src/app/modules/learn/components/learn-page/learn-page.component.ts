@@ -313,7 +313,7 @@ export class LearnPageComponent implements OnInit, OnDestroy {
       event.data.metaData.mimeType = 'application/vnd.ekstep.content-collection';
       event.data.metaData.contentType = 'Course';
     }
-    this.playerService.playContent(event.data.metaData);
+    this.playerService.playContent(event.data.metaData, event.action.displayType === 'button' ? true : undefined );
   }
   ngOnDestroy() {
     if (this.courseDataSubscription) {
