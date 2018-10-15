@@ -139,7 +139,7 @@ function getUserAuthToken(req, res) {
  */
 module.exports.logoutHelper = function() {
   console.log('Call logout to Julia notebook ::')
-  const url = envHelper.JULIA_BOX_BASE_URL + 'cleanup'
+  const url = envHelper.JULIA_BOX_BASE_URL + 'jbox/cleanup'
   var options = {
     url: url,
     method: 'GET',
