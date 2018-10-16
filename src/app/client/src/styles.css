@@ -22,6 +22,22 @@
   src: url('./assets/fonts/OpenSans-Bold.ttf') format('truetype');
 }
 
+/*roboto light font*/
+@font-face {
+  font-family: 'robotolightfont';
+  src: url('./assets/fonts/RobotoSlab-Light.ttf') format('truetype');
+}
+/*sunbird Regular font*/
+@font-face {
+  font-family: 'robotoregularfont';
+  src: url('./assets/fonts/RobotoSlab-Regular.ttf') format('truetype');
+}
+/*sunbird Bold font*/
+@font-face {
+  font-family: 'robotoboldfont';
+  src: url('./assets/fonts/RobotoSlab-Bold.ttf') format('truetype');
+}
+
 .bluetext {
   color: #3449d2 !important;
 }
@@ -51,16 +67,16 @@
 }
 /*cards fonts*/
 .cardsHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.25em;
 }
 .cardsSubHeading {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.125em;
   color: #007AFF;
 }
 .cardsDescription {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.0625em;
   font-weight: 400;
   line-height: 1.4;
@@ -69,104 +85,104 @@
 
 /* font used for view all and read more*/
 .cardsKnowMore {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1em;
   color: #007AFF;
 }
 /* cards used in slider fonts*/
 .sliderCardHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.1875em;
   float: left;
   padding-left: 10px;
 }
 .sliderCardDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1em;
   color: #7c7b7b;
 }
 .sliderCardSubDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.875em;
   color: grey;
 }
 /* segment card fonts*/
 .segmentCardHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.313em;
 }
 .segmentAvatarDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.0625em;
   color: rgba(0, 0, 0, 0.85);
 }
 .segmentAvatarSubDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.9375em;
   color: #7c7b7b;
 }
 .segmentCardSubDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.0625em;
 }
 /*course structure page fonts*/
 .courseStructureSectionHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.67em;
 }
 .courseStructureHeading {
-  /* font-family: 'sunbirdboldfont';
+  /* font-family: 'robotoboldfont';
   font-size: 0.85em; */
-  font-family: 'sunbirdregularfont' !important;
+  font-family: 'robotoregularfont' !important;
   font-size: 0.85em;
   color: #6d6e71 !important;
   text-transform: uppercase !important;
   font-weight: 500 !important;
 }
 .courseStructureDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.7em;
 }
 /*course structure accordian fonts*/
 .courseAccordianHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.1875em;
 }
 .courseAccordianDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.125em;
 }
 .courseAccordianSubDesc {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 0.9375em;
 }
 .segmentCardHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.438em;
 }
 /*home page fonts*/
 .ui.header.HomeAccordianHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.375em;
 }
 /*section heading fonts*/
 .sectionHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.375em;
 }
 /*show filter fonts*/
 .ShowFilterTitle {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 0.9375em;
 }
 .ShowFilterSubTitle {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.9375em;
   color: #7c7b7b;
 }
 /*note card font*/
 .note-card-time-stamp {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.625em;
 }
 .medium-font-text {
@@ -174,27 +190,27 @@
 }
 /* dashboard fonts*/
 .dashBoardSectionHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.4em;
 }
 .dashBoardMenuItem {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.9375em;
   color: #007AFF;
 }
 .ui.cards > .card .meta.dashBoardCardText {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.1em;
   color: #7c7b7b;
 }
 .ui.cards > .card > .content > .description.dashboardCardSubText {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.6em;
   color: #333333;
 }
 /*note card font*/
 .batch-card-desc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.8em;
 }
 /*terms and condition fonts*/
@@ -208,13 +224,13 @@
   color: #333333;
   font-family: "Open Sans";
   font-size: 14px;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
 }
 .termsConAccept {
   opacity: 0.67;
   color: #333333;
   font-size: 13px;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
 }
 .padding-none {
   padding: 0px !important;
@@ -487,7 +503,7 @@
   text-shadow: none !important;
 }
 h4.ui.header.sectionHeading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.375em;
 }
 a {
@@ -499,7 +515,7 @@ a:hover {
   outline: none !important;
 }
 .ui.menu {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   color: #333333;
 }
 .padding-top-circular-human-icon {
@@ -603,12 +619,13 @@ a:hover {
 */
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
-  font-family: sans-serif;
+  /* font-family: sans-serif; */
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
 body {
   margin: 0;
+  font-family: 'robotoregularfont', Arial, sans-serif !important;
 }
 article,
 aside,
@@ -623,6 +640,7 @@ nav,
 section,
 summary {
   display: block;
+  font-family: 'robotoregularfont', Arial, sans-serif !important;
 }
 audio,
 canvas,
@@ -659,6 +677,13 @@ dfn {
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
+  font-family: 'robotoregularfont', Arial, sans-serif !important;
+}
+h2, h3, h4, h5, h6  {
+  font-family: 'robotoregularfont', Arial, sans-serif !important;
+}
+.ui.button, .ui.header, .ui.card>.content>.header, .ui.cards>.card>.content>.header, .ui.dropdown {
+  font-family: 'robotoregularfont', Arial, sans-serif !important;
 }
 mark {
   background: #ff0;
@@ -1164,7 +1189,7 @@ i.large.icon.limitedPublishingLinkIcon {
 .ui.modal .ui.tiny.header.flag-description {
   color: #979797;
   font-size: 1em;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
 }
 .ui.form .field > label.flag-form,
 .ui.form .grouped.fields > label {
@@ -1295,13 +1320,13 @@ i.large.icon.limitedPublishingLinkIcon {
   width: 85%;
 }
 .profileUpdateCardSubDesc {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.875em;
   color: grey;
 }
 .profileUpdateCardHeading {
   margin-top: -10px;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.3em;
   line-height: 1.2;
 }
@@ -1319,7 +1344,7 @@ i.large.icon.limitedPublishingLinkIcon {
 @media screen and (max-width: 1100px) and (min-width: 1024px) {
   .profileUpdateCardHeading {
     margin-top: -10px;
-    font-family: 'sunbirdboldfont';
+    font-family: 'robotoboldfont';
     font-size: 1em;
     line-height: 1.2;
   }
@@ -1333,7 +1358,7 @@ i.large.icon.limitedPublishingLinkIcon {
 @media screen and (max-width: 1280px) and (min-width: 1200px) {
   .profileUpdateCardHeading {
     margin-top: -10px;
-    font-family: 'sunbirdboldfont';
+    font-family: 'robotoboldfont';
     font-size: 1.2em;
     line-height: 1.2;
   }
@@ -1369,45 +1394,45 @@ i.large.icon.limitedPublishingLinkIcon {
   border-left-width: 11px;
 }
 .announcement-description {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1em;
 }
 .announcement-meta-data {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1em;
   color: #7c7b7b;
 }
 .ann-link-or-attachment {
   color: #007AFF;
   cursor: pointer;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.9em;
 }
 .announcement-extra-data {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.8em;
 }
 .showing-all-sent-ann {
   color: #333333;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.13em;
   line-height: 19px;
 }
 .ann-table-heading {
   color: #7c7b7b;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.1em;
   line-height: 19px;
 }
 .table-list-name-ann {
   color: #333333;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.05em;
   line-height: 19px;
 }
 .ann-data-text {
   color: #333333;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1em;
   line-height: 19px;
 }
@@ -1417,7 +1442,7 @@ ui.primary.basic.button.announcement-button {
 }
 .announcement-button-text {
   color: #007AFF;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1em;
   line-height: 17px;
 }
@@ -1425,13 +1450,13 @@ ui.primary.basic.button.ann-upload-attachment {
   border: 1px solid #007AFF;
   border-radius: 4px;
   color: #007AFF;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1em;
   line-height: 17px;
 }
 .ann-upload-attachment-text {
   color: #007AFF;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1em;
   line-height: 17px; 
 }
@@ -1468,7 +1493,7 @@ i.file.pdf.ann-details-icon {
   margin-top: 10px;
 }
 .announcement-list-see-all {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.2em ;
   padding-top: 15px ;
 }
@@ -1481,12 +1506,12 @@ i.file.pdf.ann-details-icon {
 .ui.items > .item > .content p.ann-attachment-detail-meta {
   margin-left: 10px;
   margin-top: -5px;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1em ;
   color: #7c7b7b;
 }
 .ui.items > .item > .content p.ann-attachment-detail-heading {
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1.2em ;
   margin-bottom: 0px;
   margin-left: 10px;
@@ -1512,11 +1537,11 @@ i.file.pdf.ann-details-icon {
 .UpReviewSubHeader {
   font-size: 0.7em;
   opacity: 0.7;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
 }
 .UpReviewHeader {
   font-size: 1em;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
 }
 .ui.tiny.image.UpReviewTinyImage {
   height: 40px;
@@ -1530,12 +1555,12 @@ i.file.pdf.ann-details-icon {
 .UpForReviewStatusOrange {
   color: #ffb300;
   font-size: 1.1em;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
 }
 .UpForReviewStatusGreen {
   color: #47cf73;
   font-size: 1.1em;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
 }
 .ui.upForReviewTable.table {
   border: none;
@@ -1681,7 +1706,7 @@ ul.subList-padding {
 .courseStructureHeaderText {
   padding-top: 2% !important;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: normal;
 }
 .marginTop {
   margin: 0 !important;
@@ -1702,7 +1727,7 @@ ul.subList-padding {
   padding: 0;
   font-size: 1.2em;
   color: #3449d2;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-weight: normal;
 }
 .text-align-center {
@@ -1847,7 +1872,7 @@ ul.fancytree-container li {
   display: inline-block;
   text-align: center;
   width: 120px;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1em;
   text-decoration: underline;
 }
@@ -2393,14 +2418,14 @@ ul.fancytree-container li {
 .publicmenusection.ui.secondary.vertical.menu > .item {
   color: #7c7b7b;
   text-transform: uppercase;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
 }
 .publicmenusection.ui.secondary.menu .active.item {
   background: linear-gradient(270deg, rgba(218, 218, 218, 0) 0%, #ffffff 100%);
   border-radius: 0;
   color: rgba(0, 0, 0, 0.95);
   text-transform: uppercase;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
 }
 .publicmenusection.ui.secondary.menu a.item:hover {
   background: linear-gradient(270deg, rgba(218, 218, 218, 0) 0%, #ffffff 100%);
@@ -2462,7 +2487,7 @@ ul.fancytree-container li {
 }
 .my-text {
   font-size: 1.063em;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   color: #333333;
   vertical-align: middle;
 }
@@ -2481,7 +2506,7 @@ ul.fancytree-container li {
 }
 .workspace-navigate-heading {
   font-size: 1.3em;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   color: #333333;
   vertical-align: middle;
 }
@@ -2682,7 +2707,7 @@ i.edit.icon.editIcon-fontSize {
 .batchcardListContent .annannouncement-description .coursedates .header {
   display: block;
   margin: 0;
-  font-family: 'sunbirdregularfont' !important;
+  font-family: 'robotoregularfont' !important;
   font-weight: 600;
   color: #283280 !important;
   text-transform: uppercase;
@@ -2694,7 +2719,7 @@ i.edit.icon.editIcon-fontSize {
 .rightSideSectionCards .blueheader-text {
   font-size: 14px;
   color: #283280 !important;
-  font-family: 'sunbirdregularfont' !important;
+  font-family: 'robotoregularfont' !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
 }
@@ -2789,7 +2814,7 @@ i.edit.icon.editIcon-fontSize {
 }
 span.dashBoardMenuItem.active {
   color: #007AFF;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
 }
 .adminCanvasPadding {
   padding: 20px;
@@ -2809,10 +2834,10 @@ span.dashBoardMenuItem.active {
 }
 .table-headerDashboard {
   color: #007AFF;
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
 }
 .dashboard-label {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.4rem ;
 }
 .CloseButtonFont {
@@ -2902,7 +2927,7 @@ iframe.iziModal-iframe {
 
 /* font used for view all and read more*/
 .expand-or-minimize {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1em;
   color: #007AFF;
   cursor: pointer;
@@ -2925,14 +2950,14 @@ iframe.iziModal-iframe {
 }
 .ui.card .card-desc-fixed-height {
   color: #7c7b7b;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 1em;
   height: 2.8em;
   max-height: 2.8em;
   overflow-wrap: break-word;
 }
 .ui.segment .segment-heading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-weight: 700;
   font-size: 1.25em;
 }
@@ -2946,11 +2971,11 @@ iframe.iziModal-iframe {
   padding: 0;
 }
 .ui.styled.accordion>.header.accordian-heading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.375em;
 }
 .ann-section-heading {
-  font-family: 'sunbirdboldfont';
+  font-family: 'robotoboldfont';
   font-size: 1.4em;
 }
 .fancy-tree-grey {
@@ -3010,7 +3035,7 @@ iframe.iziModal-iframe {
   vertical-align: bottom !important;
 }
 .filter-title {
-    font-family: 'sunbirdboldfont';
+    font-family: 'robotoboldfont';
     font-size: 0.98em;
 }
 .ui.button .header {

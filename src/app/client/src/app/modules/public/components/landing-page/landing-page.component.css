@@ -94,8 +94,8 @@
 .custom-best .content {
     background: #f1f2f2;
     padding: 1.4em 3em;
-    line-height: 1.6em;
-    font-size: 14px;
+    line-height: 1.8em;
+    font-size: 13px;
     height: 150px;
     overflow-y: scroll;
 }
@@ -237,7 +237,7 @@
 }
 .ui.card .article-header-padding {
     padding: 0 0 1em 1em;
-    font-family: 'sunbirdboldfont';
+    font-family: 'robotoboldfont';
     font-size: 1.25em;
 }
 

@@ -22,12 +22,12 @@
 .batch-content-description {
     text-transform: capitalize;
     text-align: left;
-    font-family: 'sunbirdboldfont';
+    font-family: 'robotoboldfont';
     font-size: 1.1875em;
     padding-left: 10px;
 }
 .batch-content-meta {
-    font-family: 'sunbirdregularfont';
+    font-family: 'robotoregularfont';
     font-size: 0.875em;
     color: #7c7b7b;
 }

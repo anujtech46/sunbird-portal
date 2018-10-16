@@ -3,13 +3,13 @@
   }
 .ui.breadcrumb a.breadcrumb-font {
   color: #3449d2;
-  font-family: 'sunbirdregularfont';
+  font-family: 'robotoregularfont';
   font-size: 0.9375em;
   line-height: 17px;
   }
   .ui.breadcrumb .active.section {
     color: #3449d2;
-    font-family: 'sunbirdboldfont';
+    font-family: 'robotoboldfont';
     font-size: 0.9375em;
     line-height: 17px;
   }
