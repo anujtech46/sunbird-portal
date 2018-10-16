@@ -1374,6 +1374,7 @@ i.large.icon.limitedPublishingLinkIcon {
   width: auto;
   height: auto;
   position: absolute;
+  cursor: pointer;
 }
 .header-logo-before-login {
   display: block;
