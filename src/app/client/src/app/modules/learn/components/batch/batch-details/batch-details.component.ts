@@ -40,6 +40,7 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
     public router: Router, public activatedRoute: ActivatedRoute) {
     this.batchStatus = this.statusOptions[0].value;
   }
+  disableSubmitBtn: boolean;
 
   ngOnInit() {
     this.courseInteractObject = {
@@ -157,9 +158,28 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['create/batch'], { relativeTo: this.activatedRoute });
   }
   enrollBatch(batch) {
-    this.courseBatchService.setEnrollToBatchDetails(batch);
-    this.router.navigate(['enroll/batch', batch.identifier], { relativeTo: this.activatedRoute });
+    // this.courseBatchService.setEnrollToBatchDetails(batch);
+    // this.router.navigate(['enroll/batch', batch.identifier], { relativeTo: this.activatedRoute });
+    const request = {
+      request: {
+        courseId: batch.courseId,
+        userId: this.userService.userid,
+        batchId: batch.identifier
+      }
+    };
+    this.disableSubmitBtn = true;
+    this.courseBatchService.enrollToCourse(request).pipe(
+      takeUntil(this.unsubscribe))
+      .subscribe((data) => {
+        this.disableSubmitBtn = true;
+        this.toasterService.success(this.resourceService.messages.smsg.m0036);
+          this.router.navigate(['/learn/course', batch.courseId, 'batch', batch.identifier]);
+      }, (err) => {
+        this.disableSubmitBtn = false;
+        this.router.navigate(['/learn']);
+      });
   }
+
   ngOnDestroy() {
     this.unsubscribe.next();
     this.unsubscribe.complete();

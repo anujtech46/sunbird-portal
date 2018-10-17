@@ -1,4 +1,4 @@
-<div class="ui grid" *ngIf="!showExploreHeader">
+<div class="ui grid padding-bottom-10" *ngIf="!showExploreHeader">
     <div class="center aligned twelve column row" [class.header-height-before-login]="!userService.userid">
         <div class="one wide tablet computer only column"></div>
         <div class="two wide tablet computer only column" [class.padding-top-15]="userService.userid">
@@ -14,7 +14,7 @@
             </a>
         </div>
         <div class="six wide column padding-top-1rem" *ngIf="userService.userid">
-            <app-search></app-search>
+            <!-- <app-search></app-search> -->
         </div>
         <!-- <div class="one wide column">
         </div> -->
@@ -28,6 +28,7 @@
                     <div *ngIf='userProfile' class="item headerDropdownProfile">{{userProfile?.firstName}}&nbsp;{{userProfile?.lastName}}</div>
                     <div *ngIf='userProfile' class="ui divider"></div>
 
+                    <a class="item" routerLink="learn">Courses</a>
                     <a class="item" routerLink="profile">{{resourceService.frmelmnts?.lnk?.profile}}</a>
                     <a class="item" *ngIf='permissionService.permissionAvailable' appPermission [permission]='adminDashboard' routerLink="orgDashboard">{{resourceService.frmelmnts?.lnk?.dashboard}}</a>
                     <a class="item" *ngIf='permissionService.permissionAvailable' appPermission [permission]='announcementRole' routerLink="announcement/outbox/1">{{resourceService.frmelmnts?.lnk?.announcement}}</a>
@@ -45,7 +46,7 @@
                     <button *ngIf="router.isActive('', true) && exploreButtonVisibility==='true'" class="ui item text-upper-case padding-bottom-20"
                         routerLink="/explore">{{resourceService.frmelmnts?.lbl?.explore}} {{resourceService.instance}}
                     </button>
-                    <a href="/home" class="sunblogin">
+                    <a href="/learn" class="sunblogin">
                         <button class="ui blue basic button">{{resourceService.frmelmnts?.btn?.login}}</button>
                     </a>
                     <button appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject" [telemetryInteractEdata]="signUpInteractEdata"
@@ -61,7 +62,7 @@
                         <div class="item" appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject" [telemetryInteractEdata]="signUpInteractEdata"
                             *ngIf="router.isActive('', true) && enableSignup" routerLink="/signup">{{resourceService.frmelmnts?.btn?.signup}}</div>
                         <div class="item">
-                            <a href="/home" class="sunblogin">
+                            <a href="/learn" class="sunblogin">
                                 <div class="item">{{resourceService.frmelmnts?.btn?.login}}</div>
                             </a>
                         </div>
@@ -73,7 +74,7 @@
     </div>
 </div>
 <span *ngIf="!showExploreHeader">
-    <app-main-menu></app-main-menu>
+    <!-- <app-main-menu></app-main-menu> -->
 </span>
 
 <div *ngIf="showExploreHeader" class="ui fluid container">
@@ -99,7 +100,7 @@
                 </div>
                 <div class="one wide column">
                     <div class="beforelogin ui secondary pointing menu right-float">
-                        <a href="/home" class="sunblogin padding-top-5">
+                        <a href="/learn" class="sunblogin padding-top-5">
                             <button class="ui item padding-right-none">{{resourceService.frmelmnts?.btn?.login}}</button>
                         </a>
                     </div>
@@ -119,7 +120,7 @@
                 </div>
                 <div class="three wide column"></div>
                 <div class="six wide column">
-                    <a href="/home" class="sunblogin">
+                    <a href="/learn" class="sunblogin">
                         <p class="ui item right-float">{{resourceService.frmelmnts?.btn?.login}}</p>
                     </a>
                 </div>

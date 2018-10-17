@@ -61,7 +61,7 @@ export class NavigationHelperService {
   storeWorkSpaceCloseUrl() {
     this._workspaceCloseUrl = this.history[this._history.length - 1];
   }
-  public navigateToResource(defaultUrl: string = '/home') {
+  public navigateToResource(defaultUrl: string = '/learn') {
     if (this._resourceCloseUrl && this._resourceCloseUrl.url) {
       if (this._resourceCloseUrl.queryParams) {
         this.router.navigate([this._resourceCloseUrl.url], {queryParams: this._resourceCloseUrl.queryParams});
@@ -73,7 +73,7 @@ export class NavigationHelperService {
     }
   }
 
-  public navigateToWorkSpace(defaultUrl: string = '/home') {
+  public navigateToWorkSpace(defaultUrl: string = '/learn') {
     if (this._workspaceCloseUrl && this._workspaceCloseUrl.url) {
       if (this._workspaceCloseUrl.queryParams) {
         this.router.navigate([this._workspaceCloseUrl.url], {queryParams: this._workspaceCloseUrl.queryParams});

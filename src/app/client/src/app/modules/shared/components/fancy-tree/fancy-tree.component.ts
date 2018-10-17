@@ -39,6 +39,7 @@ export class FancyTreeComponent implements AfterViewInit {
       extensions: ['glyph'],
       clickFolderMode: 3,
       source: this.nodes,
+      expanded: true,
       glyph: {
         preset: 'awesome4',
         map: {
@@ -62,6 +63,13 @@ export class FancyTreeComponent implements AfterViewInit {
     if (this.options.showConnectors) {
       $('.fancytree-container').addClass('fancytree-connectors');
     }
+
+    // setTimeout(() => {
+      $(this.tree.nativeElement).fancytree('getTree').visit((node) => {
+        console.log('visit bode', node);
+        node.setExpanded(true);
+      });
+    // }, 1000);
   }
 
   /**

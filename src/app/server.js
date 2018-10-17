@@ -388,7 +388,7 @@ app.all('/v1/user/session/create', function (req, res) {
 })
 
 app.all('/private/*', function (req, res) {
-  res.redirect('/home')
+  res.redirect('/learn')
 })
 
 

@@ -7,4 +7,5 @@ export interface IFancytreeOptions extends Fancytree.FancytreeOptions {
     }
   };
   showConnectors?: Boolean;
+  expanded?: boolean;
 }

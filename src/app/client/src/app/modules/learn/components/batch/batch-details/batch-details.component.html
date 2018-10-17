@@ -40,9 +40,9 @@
                     <button class="ui blue basic large button enrollBtn" appTelemetryInteract [telemetryInteractEdata]="enrollBatchIntractEdata"
                         [telemetryInteractObject]="{id:batch.identifier,type:'batch',ver:'1',rollup:{l1:courseId}}" (click)="enrollBatch(batch)"
                         *ngIf="!courseMentor">{{resourceService.frmelmnts.btn.enroll}}</button>
-                        <div *ngIf="!courseMentor" class="ui big label button pull-right dblueetext">
+                        <!-- <div *ngIf="!courseMentor" class="ui big label button pull-right dblueetext">
                             <i class="dollar sign icon"></i> Free
-                        </div>
+                        </div> -->
                 </div>
                 <div *ngIf="batchList.length <= 0">
                     <div class="ui success message">
@@ -64,7 +64,7 @@
     </div>
 </div>
 <!-- <br> -->
-<div *ngIf="enrolledCourse && enrolledBatchInfo" class="rightSideSectionCards ui card">
+<!-- <div *ngIf="enrolledCourse && enrolledBatchInfo" class="rightSideSectionCards ui card">
     <div class="content bluepanel-header">
         <div class="header">{{resourceService.frmelmnts.lbl.batchdetails}}</div>
     </div>
@@ -83,4 +83,4 @@
             {{enrolledBatchInfo.mentors.length}} {{resourceService.frmelmnts.lbl.mentors}}
         </span>
     </div>
-</div>
+</div> -->

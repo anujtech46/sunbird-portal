@@ -16,7 +16,7 @@ const routes: Routes = [
   {
     path: '', component: LearnPageComponent,
     data: {
-      breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '' }],
+      breadcrumbs: [{ label: 'Courses', url: '' }],
       telemetry: { env: telemetryEnv, pageid: 'learn', type: 'view' }
     }
   },
@@ -36,7 +36,7 @@ const routes: Routes = [
           telemetry: {
             env: telemetryEnv, pageid: 'course-player', type: 'view', object: { ver: '1.0', type: 'batch' }
           },
-          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '/learn' }]
+          breadcrumbs: [{ label: 'Courses', url: '/learn' }]
         },
         children: [
           { path: 'flag', component: FlagContentComponent },
@@ -70,7 +70,7 @@ const routes: Routes = [
         path: ':courseId/batch/:batchId', component: CoursePlayerComponent,
         data: {
           telemetry: { env: telemetryEnv, pageid: 'course-read', type: 'workflow', object: { ver: '1.0', type: 'course' } },
-          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '/learn' }]
+          breadcrumbs: [{ label: 'Courses', url: '/learn' }]
         },
         children: [
           { path: 'flag', component: FlagContentComponent }
@@ -81,7 +81,7 @@ const routes: Routes = [
         data: {
           telemetry: {
             env: telemetryEnv, pageid: 'content-note-read', type: 'list', object: { type: objectType, ver: '1.0' }
-          }, breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '/learn' }]
+          }, breadcrumbs: [{ label: 'Courses', url: '/learn' }]
         },
         children: [{ path: 'flag', component: FlagContentComponent }]
       },
@@ -90,7 +90,7 @@ const routes: Routes = [
         data: {
           telemetry: {
             env: telemetryEnv, pageid: 'content-note-read', type: 'list', object: { type: objectType, ver: '1.0' }
-          }, breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '/learn' }]
+          }, breadcrumbs: [{ label: 'Courses', url: '/learn' }]
         },
         children: [{ path: 'flag', component: FlagContentComponent }]
       },
@@ -100,7 +100,7 @@ const routes: Routes = [
           telemetry: {
             env: telemetryEnv, pageid: 'course-player-unlisted', type: 'view', object: { ver: '1.0', type: 'batch' }
           },
-          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Courses', url: '/learn' }]
+          breadcrumbs: [{ label: 'Courses', url: '/learn' }]
         }
       }
     ]
