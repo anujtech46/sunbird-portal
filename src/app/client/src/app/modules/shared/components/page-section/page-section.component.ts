@@ -105,4 +105,8 @@ export class PageSectionComponent implements OnInit {
       return parsedData.name.en;
     }
   }
+
+  public onPlayEnroll(data, action) {
+    this.playEvent.emit({'action': action, 'data': data});
+  }
 }

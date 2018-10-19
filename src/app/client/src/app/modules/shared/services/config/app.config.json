@@ -24,7 +24,13 @@
     "otherCourse": {
       "constantData": {
         "action": {
-            "onImage": { "eventName": "onImage" }
+          "right": {
+            "class": "ui blue basic button",
+            "eventName": "Enroll",
+            "displayType": "button",
+            "text": "Enroll"
+          },
+          "onImage": { "eventName": "onImage" }
         }
       },
       "metaData": {"metaData": ["identifier", "mimeType", "framework", "contentType"]}

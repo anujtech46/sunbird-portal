@@ -20,6 +20,7 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
   @Input() enrolledCourse: boolean;
   @Input() batchId: string;
   @Input() courseHierarchy: any;
+  @Input() isCourseHeader: boolean;
   public courseInteractObject: IInteractEventObject;
   public updateBatchIntractEdata: IInteractEventEdata;
   public createBatchIntractEdata: IInteractEventEdata;
@@ -174,6 +175,7 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
         this.disableSubmitBtn = true;
         this.toasterService.success(this.resourceService.messages.smsg.m0036);
           this.router.navigate(['/learn/course', batch.courseId, 'batch', batch.identifier]);
+          window.location.reload();
       }, (err) => {
         this.disableSubmitBtn = false;
         this.router.navigate(['/learn']);

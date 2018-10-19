@@ -7,6 +7,7 @@ import { SuiModule } from 'ng2-semantic-ui/dist';
 import { SlickModule } from 'ngx-slick';
 import { NgInviewModule } from 'angular-inport';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import {
   LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
   CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
@@ -19,7 +20,7 @@ import { DashboardModule } from '@sunbird/dashboard';
 // Julia Related services
 import { CourseBadgeService, JuliaNoteBookService, CoursePriceService, CourseCertificateService } from './services';
 import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent, CourseBenefitComponent } from './components';
-
+import { EmbedVideo } from 'ngx-embed-video';
 @NgModule({
   imports: [
     CommonModule,
@@ -33,7 +34,9 @@ import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent,
     ReactiveFormsModule,
     NotesModule,
     TelemetryModule,
-    NgInviewModule
+    NgInviewModule,
+    HttpModule,
+    EmbedVideo.forRoot()
   ],
   providers: [CourseConsumptionService, CourseBatchService, CourseProgressService,
     CourseBadgeService,
@@ -47,7 +50,7 @@ import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent,
     CourseBadgeComponent,
     CoursePriceComponent,
     CourseCertificateComponent,
-    CourseBenefitComponent,
+    CourseBenefitComponent
   ]
 })
 export class LearnModule { }

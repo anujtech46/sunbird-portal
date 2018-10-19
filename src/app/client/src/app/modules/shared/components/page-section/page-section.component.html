@@ -19,7 +19,7 @@
                 <div class="ui link cards course-card">   
                     <div class="ui card margin-right-20">
                         <div class="ui image">
-                            <img src="{{ content.appIcon || 'assets/images/default.png' | cdnprefixurl}}">
+                            <img src="{{ content.appIcon || content.image || 'assets/images/default.png' | cdnprefixurl}}">
                         </div>
                         <div class="content">
                             <div class="cardImageText center aligned" suiPopup popupText="{{content.name}}">
@@ -36,7 +36,7 @@
                         </div>
                         <div class="extra data">
                             <div  class="right floated">
-                                <button class="ui blue basic button" tabindex="0" (click)="playContent(content)">Enroll</button>
+                                <button class="ui blue basic button" tabindex="0" (click)="onPlayEnroll(content,content.action.right)">Enroll</button>
                             </div>
                             <span *ngIf="content.rating">
                                 <sui-rating class="courseHeader-rating star left floated ui rating read-only" [ngModel]="content.rating | number:0" [maximum]="5" [isReadonly]="true">

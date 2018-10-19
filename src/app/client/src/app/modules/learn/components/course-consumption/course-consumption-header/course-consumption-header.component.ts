@@ -48,6 +48,7 @@ export class CourseConsumptionHeaderComponent implements OnInit, AfterViewInit, 
   progress = 0;
   courseStatus: string;
   autoResume: string;
+  readMore = false;
   public unsubscribe = new Subject<void>();
   constructor(private activatedRoute: ActivatedRoute, private courseConsumptionService: CourseConsumptionService,
     public resourceService: ResourceService, private router: Router, public permissionService: PermissionService,
@@ -89,16 +90,18 @@ export class CourseConsumptionHeaderComponent implements OnInit, AfterViewInit, 
     this.courseProgressService.courseProgressData.pipe(
       takeUntil(this.unsubscribe))
       .subscribe((courseProgressData) => {
-        this.enrolledCourse = true;
+        if (this.batchId) {
+          this.enrolledCourse = true;
+        }
         this.progress = courseProgressData.progress ? Math.round(courseProgressData.progress) : 0;
         this.lastPlayedContentId = courseProgressData.lastPlayedContentId;
         if (!this.flaggedCourse && this.onPageLoadResume &&
           !this.contentId && this.enrolledBatchInfo && this.enrolledBatchInfo.status > 0 && this.lastPlayedContentId) {
           this.onPageLoadResume = false;
           this.showResumeCourse = false;
-          if (this.autoResume) {
+          // if (this.autoResume) {
             this.resumeCourse();
-          }
+          // }
         } else if (!this.flaggedCourse && this.contentId && this.enrolledBatchInfo.status > 0 && this.lastPlayedContentId) {
           this.onPageLoadResume = false;
           this.showResumeCourse = false;

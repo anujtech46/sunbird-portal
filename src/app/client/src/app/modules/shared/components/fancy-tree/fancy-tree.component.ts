@@ -63,13 +63,6 @@ export class FancyTreeComponent implements AfterViewInit {
     if (this.options.showConnectors) {
       $('.fancytree-container').addClass('fancytree-connectors');
     }
-
-    // setTimeout(() => {
-      $(this.tree.nativeElement).fancytree('getTree').visit((node) => {
-        console.log('visit bode', node);
-        node.setExpanded(true);
-      });
-    // }, 1000);
   }
 
   /**
@@ -87,7 +80,7 @@ export class FancyTreeComponent implements AfterViewInit {
       }
       if (scoreData.result) {
         const feedbackLinkHtml = '<span> <a href=' + scoreData.result +
-        ' target="_blank" return false; onclick="event.stopPropagation();"> Feedback </a> </span>';
+          ' target="_blank" return false; onclick="event.stopPropagation();"> Feedback </a> </span>';
         title = title + feedbackLinkHtml;
       }
     }

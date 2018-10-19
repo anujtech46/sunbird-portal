@@ -20,6 +20,7 @@ import {
 import { JuliaNoteBookService, CoursePriceService } from './../../../services';
 import { PaymentService } from '@sunbird/core';
 import { UtilService } from '../../../../shared';
+import { EmbedVideoService } from 'ngx-embed-video';
 
 @Component({
   selector: 'app-course-player',
@@ -158,6 +159,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   juliaBoxPingIntervalTime: any;
   courseDataSubscription: any;
   enrolledCourses: any;
+  courseMentor: boolean;
+  iframe_html: any;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -168,24 +171,27 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private courseProgressService: CourseProgressService,
     public juliaNoteBookService: JuliaNoteBookService,
     public coursePriceService: CoursePriceService,
-    public paymentService: PaymentService ) {
+    public paymentService: PaymentService,
+    public embedService: EmbedVideoService) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
     this.router = router;
     this.router.onSameUrlNavigation = 'ignore';
     this.collectionTreeOptions = this.configService.appConfig.collectionTreeOptions;
-
-    // Julia notebook
-    (<any>window).open_notebook = this.open_notebook.bind(this);
   }
   ngOnInit() {
+    if (this.permissionService.checkRolesPermissions(['COURSE_MENTOR'])) {
+      this.courseMentor = true;
+    } else {
+      this.courseMentor = false;
+    }
     this.activatedRouteSubscription = this.activatedRoute.params.pipe(first(),
       mergeMap((params) => {
         this.courseId = params.courseId;
         this.batchId = params.batchId;
         this.courseStatus = params.courseStatus;
-        if (this.activatedRoute.snapshot.queryParamMap.get('type')) {
+        if (this.activatedRoute.snapshot.queryParamMap.get('enroll')) {
           this.coursesService.enrolledCourseData$.subscribe(
             data => {
               if (data && !data.err) {
@@ -346,28 +352,39 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.batchId) {
       options.batchHashTagId = this.enrolledBatchInfo.hashTagId;
     }
-    this.getConfigByContentSubscription = this.courseConsumptionService.getConfigByContent(data.id, options)
-      .subscribe((config) => {
-        this.setContentInteractData(config);
-        this.loader = false;
-        this.playerConfig = config;
-        this.setDataForExternalContent();
-        if ((config.metadata.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && !(this.istrustedClickXurl))
-          || (config.metadata.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && showExtContentMsg)) {
-          setTimeout(() => {
-            this.showExtContentMsg = true;
-          }, 5000);
-        } else {
-          this.showExtContentMsg = false;
-        }
-        this.enableContentPlayer = true;
-        this.contentTitle = data.title;
-        this.breadcrumbsService.setBreadcrumbs([{ label: this.contentTitle, url: '' }]);
-        this.windowScrollService.smoothScroll('app-player-collection-renderer', 500);
+    const config = this.findContentById(data.id).model;
+    if (config) {
+      this.setConfig(config, data);
+    } else {
+      this.getConfigByContentSubscription = this.courseConsumptionService.getConfigByContent(data.id, options)
+      .subscribe((contentConfig) => {
+        this.setConfig(contentConfig, data);
       }, (err) => {
         this.loader = false;
         this.toasterService.error(this.resourceService.messages.stmsg.m0009);
     });
+    }
+  }
+
+  public setConfig(config, data) {
+    this.setContentInteractData(config);
+    this.loader = false;
+    this.playerConfig = config;
+    this.setDataForExternalContent();
+    if ((config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && !(this.istrustedClickXurl))
+      || (config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl)) {
+        this.showExtContentMsg = true;
+        this.open_notebook(config.artifactUrl);
+    } else {
+      this.showExtContentMsg = false;
+      this.iframe_html = this.embedService.embed(config.artifactUrl,
+        { query: { portrait: 0, color: '333' }, attr: { width: '100%', height: 400 } });
+    }
+    this.contentProgressEvent({});
+    this.enableContentPlayer = true;
+    this.contentTitle = data.title;
+    this.breadcrumbsService.setBreadcrumbs([{ label: this.contentTitle, url: '' }]);
+    // this.windowScrollService.smoothScroll('app-player-collection-renderer', 500);
   }
 
   public navigateToContent(content: { title: string, id: string }): void {
@@ -379,11 +396,14 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (playContentDetail.model.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl) {
       this.showExtContentMsg = false;
       this.istrustedClickXurl = true;
-      this.externalUrlPreviewService.generateRedirectUrl(playContentDetail.model, this.userService.userid, this.courseId, this.batchId);
+      // this.open_notebook(playContentDetail.model.artifactUrl);
+      // this.externalUrlPreviewService.generateRedirectUrl(playContentDetail.model, this.userService.userid, this.courseId, this.batchId);
     }
+    this.enableContentPlayer = false;
     if ((this.batchId && !this.flaggedCourse && this.enrolledBatchInfo.status > 0)
       || this.courseStatus === 'Unlisted' || this.permissionService.checkRolesPermissions(['COURSE_MENTOR', 'CONTENT_REVIEWER'])
       || this.courseHierarchy.createdBy === this.userService.userid) {
+        this.enableContentPlayer = true;
       this.router.navigate([], navigationExtras);
     } else {
       this.toasterService.info('Please enrol to the course …');
@@ -392,15 +412,15 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public contentProgressEvent(event) {
     if (this.batchId && this.enrolledBatchInfo && this.enrolledBatchInfo.status === 1) {
-      const eid = event.detail.telemetryData.eid;
+      // const eid = event.detail.telemetryData.eid;
       const request: any = {
         userId: this.userService.userid,
         contentId: this.contentId,
         courseId: this.courseId,
         batchId: this.batchId,
-        status: eid === 'END' ? 2 : 1
+        status: 2
       };
-      if (this.playerConfig.metadata.mimeType !== 'application/vnd.ekstep.html-archive') {
+      if (this.checkExerciseLink()) {
         console.log('Update course progress for content', request);
         this.updateContentsStateSubscription = this.courseConsumptionService.updateContentsState(request)
         .subscribe((updatedRes) => {
@@ -411,6 +431,22 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
+
+  private checkExerciseLink() {
+    if (this.playerConfig.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl &&
+      this.playerConfig.resourceType === 'Lesson plan'
+      ) {
+      // Start pulling status for sometime
+      console.log('Check pooling is started or not :: ', this.statePullingClearTimeInterval);
+      if (!this.statePullingClearTimeInterval) {
+        this.startPullingContentStatus();
+      }
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   public closeContentPlayer() {
     this.cdr.detectChanges();
     if (this.enableContentPlayer === true) {
@@ -524,9 +560,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   private setContentInteractData(config) {
     this.contentInteractObject = {
-      id: config.metadata.identifier,
-      type: config.metadata.contentType || config.metadata.resourceType || 'content',
-      ver: config.metadata.pkgVersion ? config.metadata.pkgVersion.toString() : '1.0',
+      id: config.identifier,
+      type: config.contentType || config.resourceType || 'content',
+      ver: config.appId,
       rollup: { l1: this.courseId }
     };
     this.closeContentIntractEdata = {
