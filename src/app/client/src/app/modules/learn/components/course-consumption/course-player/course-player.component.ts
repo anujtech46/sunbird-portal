@@ -20,7 +20,6 @@ import {
 import { JuliaNoteBookService, CoursePriceService } from './../../../services';
 import { PaymentService } from '@sunbird/core';
 import { UtilService } from '../../../../shared';
-import { EmbedVideoService } from 'ngx-embed-video';
 
 @Component({
   selector: 'app-course-player',
@@ -160,7 +159,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   courseDataSubscription: any;
   enrolledCourses: any;
   courseMentor: boolean;
-  iframe_html: any;
+  isVideoContent: any;
+  videoContentId: any;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -171,8 +171,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private courseProgressService: CourseProgressService,
     public juliaNoteBookService: JuliaNoteBookService,
     public coursePriceService: CoursePriceService,
-    public paymentService: PaymentService,
-    public embedService: EmbedVideoService) {
+    public paymentService: PaymentService) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -370,6 +369,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.setContentInteractData(config);
     this.loader = false;
     this.playerConfig = config;
+    this.isVideoContent = false;
     this.setDataForExternalContent();
     if ((config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && !(this.istrustedClickXurl))
       || (config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl)) {
@@ -377,14 +377,30 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.open_notebook(config.artifactUrl);
     } else {
       this.showExtContentMsg = false;
-      this.iframe_html = this.embedService.embed(config.artifactUrl,
-        { query: { portrait: 0, color: '333' }, attr: { width: '100%', height: 400 } });
+      setTimeout(() => {
+        this.isVideoContent = true;
+        this.videoContentId = this.getYoutubeVideoId(config.artifactUrl);
+      }, 100);
     }
     this.contentProgressEvent({});
     this.enableContentPlayer = true;
     this.contentTitle = data.title;
     this.breadcrumbsService.setBreadcrumbs([{ label: this.contentTitle, url: '' }]);
-    // this.windowScrollService.smoothScroll('app-player-collection-renderer', 500);
+    this.windowScrollService.smoothScroll('app-player-collection-renderer', 100);
+  }
+
+  getYoutubeVideoId(url) {
+    let id = '';
+    if (url.indexOf('youtu.be') !== -1) {
+      id = url.split('youtu.be/')[1];
+    } else {
+      id = url.split('v=')[1];
+      const ampersandPosition = id.indexOf('&');
+      if (ampersandPosition !== -1) {
+        id = id.substring(0, ampersandPosition);
+      }
+    }
+    return id;
   }
 
   public navigateToContent(content: { title: string, id: string }): void {

@@ -16,11 +16,12 @@ import { CourseConsumptionService, CourseBatchService, CourseProgressService } f
 import { CoreModule } from '@sunbird/core';
 import { NotesModule } from '@sunbird/notes';
 import { DashboardModule } from '@sunbird/dashboard';
+import { YoutubePlayerModule } from 'ngx-youtube-player';
 
 // Julia Related services
 import { CourseBadgeService, JuliaNoteBookService, CoursePriceService, CourseCertificateService } from './services';
 import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent, CourseBenefitComponent } from './components';
-import { EmbedVideo } from 'ngx-embed-video';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -35,8 +36,7 @@ import { EmbedVideo } from 'ngx-embed-video';
     NotesModule,
     TelemetryModule,
     NgInviewModule,
-    HttpModule,
-    EmbedVideo.forRoot()
+    YoutubePlayerModule
   ],
   providers: [CourseConsumptionService, CourseBatchService, CourseProgressService,
     CourseBadgeService,

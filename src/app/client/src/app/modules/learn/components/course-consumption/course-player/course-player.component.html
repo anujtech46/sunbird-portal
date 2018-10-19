@@ -46,13 +46,12 @@
                         Request notebook is opening in new tab...
                       </div>
                     </div>
-                    <div class="ui grid" *ngIf="!showExtContentMsg">
+                    <div class="ui grid" *ngIf="!showExtContentMsg && isVideoContent">
                       <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
                         <!-- <app-player (contentProgressEvent)="contentProgressEvent($event)" class="content-player" [playerConfig]="playerConfig"
                                                                 ></app-player> -->
-                        <!-- <app-youtube-video-player></app-youtube-video-player> -->
-                        <div [innerHtml]="iframe_html"></div>
-                        <!-- <iframe src="{{playerConfig.artifactUrl}}" frameborder="0" allowfullscreen width="100%" height="400px"></iframe> -->
+                        <!-- <div [innerHtml]="iframe_html"></div> -->
+                        <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
 
                       </div>
                       <!-- <div *ngIf="showExtContentMsg">
@@ -109,23 +108,23 @@
                 </div> -->
             </div>
             <div class='three wide column' *ngIf="!enrolledCourse">
-                <div class="rightSideSectionCards ui card instructors-panel">
-                    <div class="addnotes-panel content">
-                      <ul class="instructors-list">
-                        <li>
-                          <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
-                        </li>
-                        <li>
-                          <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
-                        </li>
-                        <li>
-                          <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
-                        </li>
-                      </ul>
-                      <p>INSTRUCTORS</p>
-                      <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
-                    </div>
-                  </div>
+              <div class="rightSideSectionCards ui card instructors-panel">
+                <div class="addnotes-panel content">
+                  <ul class="instructors-list">
+                    <li>
+                      <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
+                    </li>
+                    <li>
+                      <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
+                    </li>
+                    <li>
+                      <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
+                    </li>
+                  </ul>
+                  <p>INSTRUCTORS</p>
+                  <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
+                </div>
+              </div>
               <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
                 [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
               <!-- <div *ngIf="enrolledCourse" class="rightSideSectionCards ui card margin-bottom-15 margin-top-15">
