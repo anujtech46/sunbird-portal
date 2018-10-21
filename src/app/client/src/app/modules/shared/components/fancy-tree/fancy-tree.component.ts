@@ -83,6 +83,7 @@ export class FancyTreeComponent implements AfterViewInit {
           ' target="_blank" return false; onclick="event.stopPropagation();"> Feedback </a> </span>';
         title = title + feedbackLinkHtml;
       }
+      title = '<div style="padding-left: 3rem;">' + title + '</div>';
     }
     const $nodeSpan = $(data.node.span);
     if (!$nodeSpan.data('rendered')) {

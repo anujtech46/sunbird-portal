@@ -299,6 +299,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         if (diff.length > 0 || !this.contentStatus) {
           this.contentStatus = res.content;
         }
+        if ( this.progress === 100 ) {
+          this.stopPullingContentStatus();
+        }
       }, (err) => {
         console.log(err, 'content read api failed');
       });

@@ -61,7 +61,7 @@
 							<i class="caret right icon"></i>
 						</button>
 					</div>
-					<div *ngIf="!permissionService.permissionAvailable && !enrolledCourse" class="text-align-center">
+					<div *ngIf="!enrolledCourse" class="text-align-center">
 						<app-batch-details *ngIf="courseStatus !== 'Unlisted'" [courseId]="courseHierarchy.identifier" [isCourseHeader]="true"
 						 [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
 					</div>
