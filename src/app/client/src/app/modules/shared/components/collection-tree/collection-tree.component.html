@@ -1,12 +1,49 @@
-<sui-accordion *ngFor="let child of rootChildrens"  class="ui styled accordion margin-top-10  width-100">
+<!-- <sui-accordion *ngFor="let child of rootChildrens"  class="ui styled accordion margin-top-10  width-100">
   <sui-accordion-panel (click)="!child.folder && onNodeClick(child)" [(isOpen)]="child.togglePanelIcon" [isDisabled]="!child.folder">
-    <div title class="accordian-left-text">
+    <div title class="accordian-left-text"> -->
+
       <!-- <i *ngIf="child.folder" class="fa vertical-align-middle" [class.fa-folder-open-o]="child.togglePanelIcon" [class.fa-folder-o]="!child.togglePanelIcon"></i> -->
-      <i *ngIf="!child.folder" [ngClass]="child.icon"></i>&nbsp;&nbsp;&nbsp;<span>{{child.title}}</span>
+
+      <!-- <i *ngIf="!child.folder" [ngClass]="child.icon"></i>&nbsp;&nbsp;&nbsp;<span>{{child.title}}</span>
       <i *ngIf="child.folder" class="icon pull-left" [class.plus]="!child.togglePanelIcon" [class.minus]="child.togglePanelIcon"></i>
     </div>
     <div *ngIf="child.folder" content>
       <app-fancy-tree (itemSelect)="onItemSelect($event)" [nodes]="child.children" [options]="{ showConnectors: true }" [contentState]="contentStatus"></app-fancy-tree>
     </div>
   </sui-accordion-panel>
-</sui-accordion>
+</sui-accordion> -->
+
+<div class="context example">
+    <div class="ui top attached demo menu">
+        <a class="item">
+          <i class="sidebar icon"></i>
+          Menu
+        </a>
+      </div>
+      <div class="ui bottom attached segment pushable">
+        <div class="ui inverted labeled icon left inline vertical sidebar menu" style="">
+          <a class="item">
+            <i class="home icon"></i>
+            Home
+          </a>
+          <a class="item">
+            <i class="block layout icon"></i>
+            Topics
+          </a>
+          <a class="item">
+            <i class="smile icon"></i>
+            Friends
+          </a>
+          <a class="item">
+            <i class="calendar icon"></i>
+            History
+          </a>
+        </div>
+        <div class="pusher">
+          <div class="ui basic segment">
+            <h3 class="ui header">Application Content</h3>
+          </div>
+        </div>
+      </div>
+</div>
+

@@ -1,4 +1,4 @@
-<div class="ui stackable grid margin-top-20" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
+<!-- <div class="ui stackable grid margin-top-20" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
   <div class="one wide column"></div>
   <div class="ten wide column">
     <div *ngIf="!loader">
@@ -11,11 +11,10 @@
                   {{resourceService.frmelmnts.lbl.coursestructure}}
                 </span>
               </div>
-              <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
-                [contentStatus]="contentStatus"></app-collection-tree>
+              <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"  [contentStatus]="contentStatus"></app-collection-tree> -->
               <!-- <div class="ui fitted divider margin-bottom-20 margin-top-30"></div> -->
               <!-- <app-course-discussions></app-course-discussions> -->
-            </div>
+            <!-- </div>
             <div class="four wide column" *ngIf="enrolledCourse">
               <div class="ui header">
                 <span class="content courseStructureHeading">
@@ -23,15 +22,15 @@
                 </span>
               </div>
               <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
-                [contentStatus]="contentStatus"></app-collection-tree>
+                [contentStatus]="contentStatus"></app-collection-tree> -->
               <!-- <div class="ui fitted divider margin-bottom-20 margin-top-30"></div> -->
               <!-- <app-course-discussions></app-course-discussions> -->
-            </div>
+            <!-- </div>
             <div class="eight wide column" *ngIf="enrolledCourse">
               <div class="ui grid">
                 <div class="row">
                   <div class="twelve wide column">
-                    <div id="app-player-collection-renderer">
+                    <div id="app-player-collection-renderer"> -->
                       <!-- <div class="twelve wide column">
                                                             <span class="ui HomeAccordianHeading left floated header">{{contentTitle}}</span>
                                                             <h5 appTelemetryInteract [telemetryInteractEdata]="closeContentIntractEdata"
@@ -40,26 +39,26 @@
                                                                 <i class="ui remove icon"></i>
                                                             </h5>
                                                         </div> -->
-                    </div>
+                    <!-- </div>
                     <div class="ui card video-view" *ngIf="showExtContentMsg">
                       <div class="ui header">
                         Requested notebook is opening in new tab...
                       </div>
                     </div>
                     <div class="ui grid" *ngIf="!showExtContentMsg && isVideoContent">
-                      <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
+                      <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression"> -->
                         <!-- <app-player (contentProgressEvent)="contentProgressEvent($event)" class="content-player" [playerConfig]="playerConfig"
                                                                 ></app-player> -->
                         <!-- <div [innerHtml]="iframe_html"></div> -->
-                        <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
+                        <!-- <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
 
-                      </div>
+                      </div> -->
                       <!-- <div *ngIf="showExtContentMsg">
                               <div class="ui stackable grid">
                                 Notebook opened in new tab.
                               </div>
                             </div> -->
-                    </div>
+                    <!-- </div>
                   </div>
                 </div>
                 <div class="ui row" *ngIf="prevPlaylistItem?.title || nextPlaylistItem?.title">
@@ -71,7 +70,7 @@
                       <span class="font-white description text-ellipsis" title="{{prevPlaylistItem?.title || noContentToPlay}}">{{prevPlaylistItem?.title
                         || noContentToPlay}}</span>
                     </button>
-                  </div>
+                  </div> -->
                   <!-- <div class="two wide column center aligned" ng-if="toc.showNoteInLecture"> -->
                   <!-- <h2 class="ui center aligned icon tiny header toc-note">
                                                         <a class="ui take-note-card cursor-pointer" (click)="showNoteEditor=!showNoteEditor">
@@ -84,7 +83,7 @@
                                                     </h2> -->
                   <!-- </div> -->
                   <!-- <div class="two wide column "></div> -->
-                  <div class="six wide column ">
+                  <!-- <div class="six wide column ">
                     <button class="ui blue button right floated fluid toc-right-nav-btn-content" (click)="navigateToContent(nextPlaylistItem)"
                       [disabled]="nextPlaylistItem === undefined">
                       <span class="header">{{resourceService.frmelmnts.btn.next}}</span><br />
@@ -93,7 +92,7 @@
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> -->
               <!-- <div class="ui section divider"></div>
                 <div class="two wide column"></div>
                 <div class="ui grid">
@@ -106,9 +105,9 @@
                     </div>
                   </div>
                 </div> -->
-            </div>
-            <div class='three wide column' *ngIf="!enrolledCourse">
-              <div class="rightSideSectionCards ui card instructors-panel">
+            <!-- </div>
+            <div class='three wide column' *ngIf="!enrolledCourse"> -->
+              <!-- <div class="rightSideSectionCards ui card instructors-panel">
                 <div class="addnotes-panel content">
                   <ul class="instructors-list">
                     <li>
@@ -124,9 +123,9 @@
                   <p>INSTRUCTORS</p>
                   <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
                 </div>
-              </div>
-              <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
-                [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+              </div> -->
+              <!-- <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
+                [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details> -->
               <!-- <div *ngIf="enrolledCourse" class="rightSideSectionCards ui card margin-bottom-15 margin-top-15">
                                     <div class="addnotes-panel content">
                                         <span (click)="showNoteEditor=!showNoteEditor" class="cursor-pointer ui blue basic button">
@@ -142,20 +141,20 @@
               <!-- <div>
                                     <app-carriculum-card *ngIf="curriculum && curriculum.length > 0" [curriculum]="curriculum"></app-carriculum-card>
                                 </div> -->
-              <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
+              <!-- <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
                 <app-course-badge></app-course-badge>
                 <br>
               </div>
               <div *ngIf="progress === 100">
                 <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
-              </div>
+              </div> -->
               <!-- <br> -->
               <!-- <div class="courseupdate">
                                     <b>{{resourceService.frmelmnts.lbl.coursecreatedon}}: {{courseHierarchy.createdOn | dateFormat}}</b>
                                     <br>
                                     <b>{{resourceService.frmelmnts.lbl.updatedon}}: {{courseHierarchy.lastUpdatedOn | dateFormat}}</b>
                                 </div> -->
-            </div>
+            <!-- </div>
           </div>
         </div>
       </div>
@@ -163,13 +162,13 @@
     <div *ngIf="loader">
       <app-loader [data]="loaderMessage"></app-loader>
     </div>
-    <div *ngIf="showError">
+    <div *ngIf="showError"> -->
       <!-- <error-message data="{{toc.error}}" visibility="toc.error.showError"></error-message> -->
-    </div>
+    <!-- </div>
     <div class="one wide column"></div>
   </div>
-</div>
-<sui-modal [hidden]="true" [isClosable]="false" id="openNoteBookModal" #modal>
+</div> -->
+<!-- <sui-modal [hidden]="true" [isClosable]="false" id="openNoteBookModal" #modal>
   <div class="content">
     <div class="ui tweleve wide column margin-bottom-20">
       <h2 class="ui center aligned icon header">
@@ -179,4 +178,4 @@
     </div>
   </div>
 </sui-modal>
-<router-outlet></router-outlet>
+<router-outlet></router-outlet> -->

@@ -11,7 +11,7 @@ import {
   ExternalUrlPreviewService
 } from '@sunbird/shared';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
-
+declare var $: any;
 @Component({
   selector: 'app-course-consumption-header',
   templateUrl: './course-consumption-header.component.html',
@@ -85,6 +85,7 @@ export class CourseConsumptionHeaderComponent implements OnInit, AfterViewInit, 
           this.enrolledCourse = true;
         }
       });
+
   }
   ngAfterViewInit() {
     this.courseProgressService.courseProgressData.pipe(
@@ -113,6 +114,17 @@ export class CourseConsumptionHeaderComponent implements OnInit, AfterViewInit, 
       });
   }
 
+  openNav() {
+    console.log('open nav');
+    $('#mySidebar').css({'width': '250px'});
+    $('.main').css({'widmarginLeftth': '250px'});
+  }
+
+  closeNav() {
+    console.log('close nav');
+    $('#mySidebar').css({'width': '0'});
+    $('.smain').css({'marginLeft': '0'});
+  }
   showDashboard() {
     this.router.navigate(['learn/course', this.courseId, 'dashboard']);
   }

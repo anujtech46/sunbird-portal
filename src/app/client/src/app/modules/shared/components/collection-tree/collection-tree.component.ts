@@ -9,8 +9,9 @@ import {
   ViewChild, AfterViewInit, OnChanges, Output, EventEmitter
 } from '@angular/core';
 import * as _ from 'lodash';
+import { SuiModule } from 'ng2-semantic-ui';
 import { ICollectionTreeNodes, ICollectionTreeOptions, MimeTypeTofileType } from '../../interfaces';
-
+declare var $: any;
 @Component({
   selector: 'app-collection-tree',
   templateUrl: './collection-tree.component.html',

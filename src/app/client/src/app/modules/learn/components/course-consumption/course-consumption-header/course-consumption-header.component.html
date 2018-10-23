@@ -1,4 +1,4 @@
-<div class="ui">
+<!-- <div class="ui">
 	<div class="ui active inverted dimmer" *ngIf="showCopyLoader">
 		<div class="ui text centered inline loader margin-top-40">{{resourceService.frmelmnts.lbl.copycontent}}</div>
 	</div>
@@ -34,7 +34,7 @@
 				<div class="nine wide column" style="padding: 0 1rem;">
 					<div class="ratingsdiv">
 						<sui-rating *ngIf="courseStatus !== 'Unlisted'" class="courseHeader-rating ui star rating course-header-divider"
-						 [isReadonly]="true" [ngModel]="courseHierarchy.me_averageRating || 0" [maximum]="5"></sui-rating>&nbsp;&nbsp;
+						 [isReadonly]="true" [ngModel]="courseHierarchy.me_averageRating || 0" [maximum]="5"></sui-rating>&nbsp;&nbsp; -->
 						<!-- <a (click)="onShareLink();sharelinkModal=true;">
                             <i class="cursor-pointer large blue share alternate icon"></i>
                         </a> -->
@@ -48,7 +48,7 @@
                             <i class="ui large blue clone outline icon"></i>
                         </span>
                         <h6 class="ui small negative message" *ngIf="courseHierarchy.status === 'Flagged'">{{resourceService?.messages?.imsg?.m0001}}</h6> -->
-					</div>
+					<!-- </div>
 				</div>
 				<div class="three wide column" style="padding: 0 1rem 1rem;">
 					<div class="text-align-center" *ngIf="enrolledCourse">
@@ -73,7 +73,9 @@
 		</div>
 		<div class="one wide column "></div>
 	</div>
-</div>
+</div> -->
+
+
 <!-- <div class="ui grid progress-bar-margin" *ngIf="enrolledCourse">
     <div class="twelve wide column padding-none ">
         <sui-progress class="ui tiny progress orange" [value]="progress" [maximum]="100"></sui-progress>
@@ -81,3 +83,39 @@
 </div> -->
 <!-- <app-share-link [shareLink]="shareLink" [telemetryShareData]="telemetryShareData" *ngIf="sharelinkModal" (close)="sharelinkModal = false">
 </app-share-link> -->
+
+
+<div class="ui stackable grid contianer courseheader">
+	<div class="one wide column"></div>
+	<div class="ten wide column P0"> 
+		<div class="pull-left"><a class="ui grey large label">BEGINNER</a> <span class="lgtext MR10">Introduction to Machine Learning |</span> <span class="smtext">PROGRAMMING</span></div> 
+		<div class="pull-right smtext"><i class="chevron left icon"></i> MODULE 01 <i class="chevron right icon"></i></div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+
+<div class="ui stackable grid contianer">
+	<div class="one wide column"></div>
+	<div class="ten wide column P0"> 
+			<div class="row">
+		<div class="two wide column">
+			<button class="openbtn" (click)="openNav()">☰ Modules</button> 
+			<div id="mySidebar" class="sidebar" style="width: 300px;">
+				<a href="javascript:void(0)" class="closebtn" (click)="closeNav()">×</a>
+				<a href="#">About</a>
+				<a href="#">Services</a>
+				<a href="#">Clients</a>
+				<a href="#">Contact</a>
+			</div>
+		</div>
+		<div class="ten wide column"> 
+			<div id="main">
+				<h2>Collapsed Sidebar</h2>
+				<p>Click on the hamburger menu/bar icon to open the sidebar, and push this content to the right.</p>
+			</div>
+		</div>
+		</div>
+
+	</div>
+	<div class="one wide column"></div>
+</div>
