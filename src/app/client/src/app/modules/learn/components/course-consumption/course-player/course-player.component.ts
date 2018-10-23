@@ -162,6 +162,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   isVideoContent: any;
   videoContentId: any;
 
+  sideBarToggle: true;
+
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
     router: Router, public navigationHelperService: NavigationHelperService, private userService: UserService,
@@ -751,4 +753,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
   }
-}
+
+  navigateToCollection(data) {
+    const child = data.children;
+    const youtubeContent: any = _.find(data.children, {mimeType: 'video/x-youtube'}) || {};
+    this.navigateToContent({id: youtubeContent.identifier, title: youtubeContent.name});
+  }
+ }

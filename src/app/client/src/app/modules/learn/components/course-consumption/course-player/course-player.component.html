@@ -1,3 +1,12 @@
+<div class="ui stackable grid courseheader">
+  <div class="one wide column"></div>
+  <div class="ten wide column P0">
+    <div class="pull-left"><a class="ui grey large label">BEGINNER</a> <span class="lgtext MR10">{{courseHierarchy.name}}
+        |</span> <span class="smtext">PROGRAMMING</span></div>
+    <div class="pull-right smtext"><i class="chevron left icon"></i> MODULE 01 <i class="chevron right icon"></i></div>
+  </div>
+  <div class="one wide column"></div>
+</div>
 <div class="ui stackable grid margin-top-20" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
   <div class="one wide column"></div>
   <div class="ten wide column">
@@ -13,10 +22,66 @@
               </div>
               <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
                 [contentStatus]="contentStatus"></app-collection-tree>
-              <!-- <div class="ui fitted divider margin-bottom-20 margin-top-30"></div> -->
-              <!-- <app-course-discussions></app-course-discussions> -->
             </div>
-            <div class="four wide column" *ngIf="enrolledCourse">
+            <div class="twelve wide column" style="height: 700px !important;" *ngIf="enrolledCourse">
+              <div class="ui button" *ngIf="!sideBarToggle">
+                <a class="item right float" (click)="sidebar.toggle()">
+                  <i class="sidebar icon"></i>
+                </a>
+              </div>
+              <div class="ui header" *ngIf="sideBarToggle">MODULES</div>
+              <sui-sidebar-container>
+                <sui-sidebar class="vertical" #sidebar [transition]="push" [isVisible]="true" (isVisibleChange)="sideBarToggle = !sideBarToggle">
+                  <a class="item" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+                    {{child.name}}
+                  </a>
+                  <div class="ui bottom attached demo menu">
+                    <a class="item right float" (click)="sidebar.toggle()">
+                      <i class="sidebar icon"></i>
+                    </a>
+                  </div>
+                </sui-sidebar>
+                <sui-sidebar-sibling [isDimmedWhenVisible]="false">
+                  <div class="ui basic segment">
+                    <div class="eight wide column" *ngIf="enrolledCourse">
+                      <div class="ui grid">
+                        <div class="row">
+                          <div class="twelve wide column" id="app-player-collection-renderer">
+                            <div class="ui card video-view" *ngIf="showExtContentMsg">
+                              <div class="ui header">
+                                Requested notebook is opening in new tab...
+                              </div>
+                            </div>
+                            <div class="ui grid" *ngIf="!showExtContentMsg && isVideoContent">
+                              <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
+                                <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ui row">
+
+                        </div>
+                      </div>
+                      <!-- <div class="ui section divider"></div>
+                            <div class="two wide column"></div>
+                            <div class="ui grid">
+                              <div class="row">
+                                <div class="eight wide column">
+                                  <course-discussions></course-discussions>
+                                </div>
+                                <div class="four wide column toc-note-content">
+                                  <app-note-card [ids]="{contentId:contentId, courseId:courseId}" [createNoteData]="createNoteData"></app-note-card>
+                                </div>
+                              </div>
+                            </div> -->
+                    </div>
+                  </div>
+                </sui-sidebar-sibling>
+              </sui-sidebar-container>
+            </div>
+
+            <!-- <div class="four wide column" *ngIf="enrolledCourse">
               <div class="ui header">
                 <span class="content courseStructureHeading">
                   {{resourceService.frmelmnts.lbl.coursestructure}}
@@ -24,89 +89,7 @@
               </div>
               <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
                 [contentStatus]="contentStatus"></app-collection-tree>
-              <!-- <div class="ui fitted divider margin-bottom-20 margin-top-30"></div> -->
-              <!-- <app-course-discussions></app-course-discussions> -->
-            </div>
-            <div class="eight wide column" *ngIf="enrolledCourse">
-              <div class="ui grid">
-                <div class="row">
-                  <div class="twelve wide column">
-                    <div id="app-player-collection-renderer">
-                      <!-- <div class="twelve wide column">
-                                                            <span class="ui HomeAccordianHeading left floated header">{{contentTitle}}</span>
-                                                            <h5 appTelemetryInteract [telemetryInteractEdata]="closeContentIntractEdata"
-                                                                [telemetryInteractObject]="contentInteractObject" class="ui right floated basic icon circular button margin-auto mouse-pointer"
-                                                                (click)="closeContentPlayer()">
-                                                                <i class="ui remove icon"></i>
-                                                            </h5>
-                                                        </div> -->
-                    </div>
-                    <div class="ui card video-view" *ngIf="showExtContentMsg">
-                      <div class="ui header">
-                        Requested notebook is opening in new tab...
-                      </div>
-                    </div>
-                    <div class="ui grid" *ngIf="!showExtContentMsg && isVideoContent">
-                      <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
-                        <!-- <app-player (contentProgressEvent)="contentProgressEvent($event)" class="content-player" [playerConfig]="playerConfig"
-                                                                ></app-player> -->
-                        <!-- <div [innerHtml]="iframe_html"></div> -->
-                        <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
-
-                      </div>
-                      <!-- <div *ngIf="showExtContentMsg">
-                              <div class="ui stackable grid">
-                                Notebook opened in new tab.
-                              </div>
-                            </div> -->
-                    </div>
-                  </div>
-                </div>
-                <div class="ui row" *ngIf="prevPlaylistItem?.title || nextPlaylistItem?.title">
-                  <div class="six wide column ">
-                    <button class="ui blue button left floated fluid tocbutton toc-left-nav-btn-content" (click)="navigateToContent(prevPlaylistItem)"
-                      [disabled]="prevPlaylistItem === undefined">
-                      <span class="header">{{resourceService.frmelmnts.btn.previous}}</span>
-                      <br />
-                      <span class="font-white description text-ellipsis" title="{{prevPlaylistItem?.title || noContentToPlay}}">{{prevPlaylistItem?.title
-                        || noContentToPlay}}</span>
-                    </button>
-                  </div>
-                  <!-- <div class="two wide column center aligned" ng-if="toc.showNoteInLecture"> -->
-                  <!-- <h2 class="ui center aligned icon tiny header toc-note">
-                                                        <a class="ui take-note-card cursor-pointer" (click)="showNoteEditor=!showNoteEditor">
-                                                            <app-popup-editor *ngIf="showNoteEditor" [mode]="'create'"
-                                                                [ids]="{contentId:contentId, courseId:courseId}"
-                                                                (exitModal)="showNoteEditor=false" (createEventEmitter)="createEventEmitter($event)"></app-popup-editor>
-                                                            <img src="{{'assets/images/takenote.png' |  cdnprefixurl}}">
-                                                            <span>{{resourceService?.frmelmnts?.lbl?.takenote}}</span>
-                                                        </a>
-                                                    </h2> -->
-                  <!-- </div> -->
-                  <!-- <div class="two wide column "></div> -->
-                  <div class="six wide column ">
-                    <button class="ui blue button right floated fluid toc-right-nav-btn-content" (click)="navigateToContent(nextPlaylistItem)"
-                      [disabled]="nextPlaylistItem === undefined">
-                      <span class="header">{{resourceService.frmelmnts.btn.next}}</span><br />
-                      <span class="font-white description text-ellipsis" title="{{nextPlaylistItem?.title || noContentToPlay}}">{{nextPlaylistItem?.title
-                        || noContentToPlay}}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- <div class="ui section divider"></div>
-                <div class="two wide column"></div>
-                <div class="ui grid">
-                  <div class="row">
-                    <div class="eight wide column">
-                      <course-discussions></course-discussions>
-                    </div>
-                    <div class="four wide column toc-note-content">
-                      <app-note-card [ids]="{contentId:contentId, courseId:courseId}" [createNoteData]="createNoteData"></app-note-card>
-                    </div>
-                  </div>
-                </div> -->
-            </div>
+            </div> -->
             <div class='three wide column' *ngIf="!enrolledCourse">
               <div class="rightSideSectionCards ui card instructors-panel">
                 <div class="addnotes-panel content">

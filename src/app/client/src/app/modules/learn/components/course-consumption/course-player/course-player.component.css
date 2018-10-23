@@ -12,3 +12,30 @@
     width: 100%;
     height: 314px;
 }
+
+/* new css */ 
+.MR10 { 
+    margin-right: 10px !important; 
+} 
+.courseheader { 
+    background: #3449d2 !important; 
+    padding: 30px 0; 
+    margin: 10px 0; 
+    color: #ffffff; 
+    font-family: 'sunbirdregularfont'; 
+} 
+ 
+.courseheader .label, .courseheader .label:hover { 
+    background: rgba(255,255,255,0.5) !important; 
+    font-weight: normal; 
+    border-color: rgba(255,255,255,0.5) !important; 
+    margin-right: 20px; 
+    vertical-align: bottom; 
+    cursor: context-menu; 
+} 
+.courseheader .lgtext { 
+    font-size: 22px; 
+} 
+.courseheader .smtext { 
+    font-size: 13px; 
+} 
