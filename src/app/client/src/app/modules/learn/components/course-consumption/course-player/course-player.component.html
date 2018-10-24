@@ -61,7 +61,7 @@
           <sui-sidebar-sibling>
             <div class="ui basic segment" *ngIf="enrolledCourse">
               <div class="ui grid" *ngIf="isVideoContent">
-                <div [ngClass]="{'eight wide column': sideBarToggle, 'twelve wide column': !sideBarToggle}">
+                <div [ngClass]="{'nine wide column': sideBarToggle, 'twelve wide column': !sideBarToggle}">
                   <div class="row" [appTelemetryImpression]="telemetryContentImpression">
                     <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'500'"></youtube-player>
                   </div>
