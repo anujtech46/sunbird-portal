@@ -162,7 +162,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   isVideoContent: any;
   videoContentId: any;
 
-  sideBarToggle: true;
+  sideBarToggle: boolean;
+  selectedModule: any;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -272,13 +273,15 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     const mimeTypeCount = {};
     this.treeModel = model.parse(this.courseHierarchy);
     this.treeModel.walk((node) => {
-      if (node.model.mimeType !== 'application/vnd.ekstep.content-collection') {
+      if (node.model.mimeType === 'application/vnd.ekstep.content-collection') {
         if (mimeTypeCount[node.model.mimeType]) {
           mimeTypeCount[node.model.mimeType] += 1;
         } else {
           mimeTypeCount[node.model.mimeType] = 1;
         }
-        this.contentDetails.push({ id: node.model.identifier, title: node.model.name });
+        this.contentDetails.push({ id: node.model.identifier, title: node.model.name, children: node.model.children,
+          identifier: node.model.identifier});
+      } else {
         this.contentIds.push(node.model.identifier);
       }
     });
@@ -311,6 +314,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscribeToQueryParam() {
     this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((queryParams) => {
       if (queryParams.contentId) {
+        this.lastPlayedModule(queryParams.contentId);
         const content = this.findContentById(queryParams.contentId);
         const isExtContentMsg = this.coursesService.showExtContentMsg ? this.coursesService.showExtContentMsg : false;
         if (content) {
@@ -345,10 +349,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setContentNavigators() {
-    const index = _.findIndex(this.contentDetails, ['id', this.contentId]);
-    this.prevPlaylistItem = this.contentDetails[index - 1];
-    this.nextPlaylistItem = this.contentDetails[index + 1];
+    const index = _.findIndex(this.courseHierarchy.children, {'identifier': this.selectedModule.identifier});
+    this.prevPlaylistItem = this.courseHierarchy.children[index - 1];
+    this.nextPlaylistItem = this.courseHierarchy.children[index + 1];
   }
+
   private playContent(data: any, showExtContentMsg?: boolean): void {
     this.enableContentPlayer = false;
     this.loader = true;
@@ -391,7 +396,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.enableContentPlayer = true;
     this.contentTitle = data.title;
     this.breadcrumbsService.setBreadcrumbs([{ label: this.contentTitle, url: '' }]);
-    this.windowScrollService.smoothScroll('app-player-collection-renderer', 100);
+    setTimeout(() => {
+      this.windowScrollService.smoothScroll('app-player-collection-renderer', 100);
+    }, 0);
   }
 
   getYoutubeVideoId(url) {
@@ -445,7 +452,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log('Update course progress for content', request);
         this.updateContentsStateSubscription = this.courseConsumptionService.updateContentsState(request)
         .subscribe((updatedRes) => {
-          this.contentStatus = updatedRes.content;
+          this.contentStatus = updatedRes && updatedRes.content;
         }, (err) => {
           console.log('updating content status failed', err);
         });
@@ -755,8 +762,28 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   navigateToCollection(data) {
-    const child = data.children;
+    this.selectedModule = data;
     const youtubeContent: any = _.find(data.children, {mimeType: 'video/x-youtube'}) || {};
+    this.selectedModule.tutorial = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
+                                      resourceType: 'Learn'});
+    this.selectedModule.exercise = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
+                                        resourceType: 'Lesson plan'});
     this.navigateToContent({id: youtubeContent.identifier, title: youtubeContent.name});
+  }
+
+  lastPlayedModule(contentId) {
+    this.courseHierarchy.children.forEach(element => {
+      const isModule = _.find(element.children, {identifier: contentId});
+      if (isModule) {
+        this.selectedModule = element;
+        this.navigateToCollection(element);
+      }
+    });
+  }
+
+  toggleSidebar() {
+    setTimeout(() => {
+      this.sideBarToggle = !this.sideBarToggle;
+    }, 0);
   }
  }

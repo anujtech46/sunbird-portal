@@ -1,9 +1,22 @@
-<div class="ui stackable grid courseheader">
+<div class="ui stackable grid courseheader" *ngIf="courseHierarchy && selectedModule">
   <div class="one wide column"></div>
   <div class="ten wide column P0">
-    <div class="pull-left"><a class="ui grey large label">BEGINNER</a> <span class="lgtext MR10">{{courseHierarchy.name}}
-        |</span> <span class="smtext">PROGRAMMING</span></div>
-    <div class="pull-right smtext"><i class="chevron left icon"></i> MODULE 01 <i class="chevron right icon"></i></div>
+    <div class="pull-left">
+      <a class="ui grey large label">{{courseHierarchy.gradeLevel &&
+        courseHierarchy.gradeLevel[0]}}
+      </a>
+      <span class="lgtext MR10">{{courseHierarchy.name}}</span>
+      <span class="smtext">{{courseHierarchy.subject}}</span>
+    </div>
+    <div class="pull-right smtext">
+      <button class="ui icon button" [disabled]="prevPlaylistItem === undefined">
+        <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
+      </button>
+      <span>{{selectedModule.name}}</span>
+      <button class="ui icon button" [disabled]="nextPlaylistItem === undefined">
+        <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
+      </button>
+    </div>
   </div>
   <div class="one wide column"></div>
 </div>
@@ -24,18 +37,18 @@
                 [contentStatus]="contentStatus"></app-collection-tree>
             </div>
             <div class="twelve wide column" style="height: 700px !important;" *ngIf="enrolledCourse">
-              <div class="ui button" *ngIf="!sideBarToggle">
-                <a class="item right float" (click)="sidebar.toggle()">
+              <div class="ui button" *ngIf="!sideBarToggle" (click)="sidebar.toggle()">
+                <a class="item right float">
                   <i class="sidebar icon"></i>
                 </a>
               </div>
               <div class="ui header" *ngIf="sideBarToggle">MODULES</div>
               <sui-sidebar-container>
-                <sui-sidebar class="vertical" #sidebar [transition]="push" [isVisible]="true" (isVisibleChange)="sideBarToggle = !sideBarToggle">
-                  <a class="item" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+                <sui-sidebar class="vertical big" #sidebar [transition]="push" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
+                  <a class="item" [ngClass]="{ 'bluetext': selectedModule.identifier === child.identifier }" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
                     {{child.name}}
                   </a>
-                  <div class="ui bottom attached demo menu">
+                  <div class="ui bottom attached demo big menu">
                     <a class="item right float" (click)="sidebar.toggle()">
                       <i class="sidebar icon"></i>
                     </a>
@@ -44,52 +57,48 @@
                 <sui-sidebar-sibling [isDimmedWhenVisible]="false">
                   <div class="ui basic segment">
                     <div class="eight wide column" *ngIf="enrolledCourse">
-                      <div class="ui grid">
+                      <div class="ui grid" *ngIf="isVideoContent">
                         <div class="row">
-                          <div class="twelve wide column" id="app-player-collection-renderer">
-                            <div class="ui card video-view" *ngIf="showExtContentMsg">
+                          <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
+                            <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="seven wide column">
+                            <div class="row">
+                              <div class="ui large header">{{playerConfig.name}}</div>
                               <div class="ui header">
-                                Requested notebook is opening in new tab...
+                                <div *ngIf="playerConfig.description" class="margin-top-10">
+                                  <p *ngIf="!readMore" class="courseStructureDesc"> {{ playerConfig.description |
+                                    slice:0:200 }}&nbsp;
+                                    <span class="ui cardsKnowMore mouse-pointer" *ngIf="playerConfig.description && playerConfig.description.length > 200 && readMore === false"
+                                      (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
+                                  </p>
+                                  <p *ngIf="readMore" class="courseStructureDesc"> {{
+                                    playerConfig.description}}&nbsp;
+                                    <span class="ui cardsKnowMore mouse-pointer" (click)="readMore = false;">{{resourceService.frmelmnts.lbl.readless}}</span>
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                            <div class="ui grid" *ngIf="!showExtContentMsg && isVideoContent">
-                              <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
-                                <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
-                              </div>
+                            <div class="row">
+                              <button class="ui blue basic button" *ngIf="selectedModule.tutorial" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">
+                                <i class="icon user"></i>
+                                Tutorial
+                              </button>
+                              <button class="ui blue basic button" *ngIf="selectedModule.exercise" (click)="open_notebook(selectedModule.exercise.artifactUrl)">
+                                <i class="icon user"></i>
+                                Exercise
+                              </button>
                             </div>
                           </div>
                         </div>
-                        <div class="ui row">
-
-                        </div>
                       </div>
-                      <!-- <div class="ui section divider"></div>
-                            <div class="two wide column"></div>
-                            <div class="ui grid">
-                              <div class="row">
-                                <div class="eight wide column">
-                                  <course-discussions></course-discussions>
-                                </div>
-                                <div class="four wide column toc-note-content">
-                                  <app-note-card [ids]="{contentId:contentId, courseId:courseId}" [createNoteData]="createNoteData"></app-note-card>
-                                </div>
-                              </div>
-                            </div> -->
                     </div>
                   </div>
                 </sui-sidebar-sibling>
               </sui-sidebar-container>
             </div>
-
-            <!-- <div class="four wide column" *ngIf="enrolledCourse">
-              <div class="ui header">
-                <span class="content courseStructureHeading">
-                  {{resourceService.frmelmnts.lbl.coursestructure}}
-                </span>
-              </div>
-              <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
-                [contentStatus]="contentStatus"></app-collection-tree>
-            </div> -->
             <div class='three wide column' *ngIf="!enrolledCourse">
               <div class="rightSideSectionCards ui card instructors-panel">
                 <div class="addnotes-panel content">
@@ -110,21 +119,6 @@
               </div>
               <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
                 [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
-              <!-- <div *ngIf="enrolledCourse" class="rightSideSectionCards ui card margin-bottom-15 margin-top-15">
-                                    <div class="addnotes-panel content">
-                                        <span (click)="showNoteEditor=!showNoteEditor" class="cursor-pointer ui blue basic button">
-                                            <i class="icon plus"></i>&nbsp;{{resourceService.frmelmnts.lbl.addnote}}
-                                            <app-popup-editor *ngIf="showNoteEditor" [mode]="'create'" [ids]="{contentId:contentId, courseId:courseId}" (exitModal)="showNoteEditor=false"
-                                                (createEventEmitter)="createEventEmitter($event)"></app-popup-editor>
-                                        </span>
-                                        <br>
-                                        <br> -->
-              <!-- </div>
-                                    <app-note-card [ids]="{contentId:contentId, courseId:courseId}" [createNoteData]="createNoteData"></app-note-card>
-                                </div> -->
-              <!-- <div>
-                                    <app-carriculum-card *ngIf="curriculum && curriculum.length > 0" [curriculum]="curriculum"></app-carriculum-card>
-                                </div> -->
               <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
                 <app-course-badge></app-course-badge>
                 <br>
@@ -132,12 +126,6 @@
               <div *ngIf="progress === 100">
                 <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
               </div>
-              <!-- <br> -->
-              <!-- <div class="courseupdate">
-                                    <b>{{resourceService.frmelmnts.lbl.coursecreatedon}}: {{courseHierarchy.createdOn | dateFormat}}</b>
-                                    <br>
-                                    <b>{{resourceService.frmelmnts.lbl.updatedon}}: {{courseHierarchy.lastUpdatedOn | dateFormat}}</b>
-                                </div> -->
             </div>
           </div>
         </div>
@@ -147,7 +135,6 @@
       <app-loader [data]="loaderMessage"></app-loader>
     </div>
     <div *ngIf="showError">
-      <!-- <error-message data="{{toc.error}}" visibility="toc.error.showError"></error-message> -->
     </div>
     <div class="one wide column"></div>
   </div>
