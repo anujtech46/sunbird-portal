@@ -20,6 +20,7 @@ import {
 import { JuliaNoteBookService, CoursePriceService } from './../../../services';
 import { PaymentService } from '@sunbird/core';
 import { UtilService } from '../../../../shared';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-course-player',
@@ -164,6 +165,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   sideBarToggle: boolean;
   selectedModule: any;
+  dashboardPermission = ['COURSE_MENTOR'];
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -174,7 +176,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private courseProgressService: CourseProgressService,
     public juliaNoteBookService: JuliaNoteBookService,
     public coursePriceService: CoursePriceService,
-    public paymentService: PaymentService) {
+    public paymentService: PaymentService,
+    public sanitizer: DomSanitizer) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -384,7 +387,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     if ((config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && !(this.istrustedClickXurl))
       || (config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl)) {
         this.showExtContentMsg = true;
-        this.open_notebook(config.artifactUrl);
+        // this.open_notebook(config.artifactUrl);
     } else {
       this.showExtContentMsg = false;
       setTimeout(() => {
@@ -396,9 +399,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.enableContentPlayer = true;
     this.contentTitle = data.title;
     this.breadcrumbsService.setBreadcrumbs([{ label: this.contentTitle, url: '' }]);
-    setTimeout(() => {
-      this.windowScrollService.smoothScroll('app-player-collection-renderer', 100);
-    }, 0);
+    // setTimeout(() => {
+    //   this.windowScrollService.smoothScroll('app-player-collection-renderer', 100);
+    // }, 0);
   }
 
   getYoutubeVideoId(url) {
@@ -420,13 +423,13 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       queryParams: { 'contentId': content.id },
       relativeTo: this.activatedRoute
     };
-    const playContentDetail = this.findContentById(content.id);
-    if (playContentDetail.model.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl) {
-      this.showExtContentMsg = false;
-      this.istrustedClickXurl = true;
+    // const playContentDetail = this.findContentById(content.id);
+    // if (playContentDetail.model.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl) {
+    //   this.showExtContentMsg = false;
+    //   this.istrustedClickXurl = true;
       // this.open_notebook(playContentDetail.model.artifactUrl);
       // this.externalUrlPreviewService.generateRedirectUrl(playContentDetail.model, this.userService.userid, this.courseId, this.batchId);
-    }
+    // }
     this.enableContentPlayer = false;
     if ((this.batchId && !this.flaggedCourse && this.enrolledBatchInfo.status > 0)
       || this.courseStatus === 'Unlisted' || this.permissionService.checkRolesPermissions(['COURSE_MENTOR', 'CONTENT_REVIEWER'])
@@ -762,13 +765,17 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   navigateToCollection(data) {
-    this.selectedModule = data;
-    const youtubeContent: any = _.find(data.children, {mimeType: 'video/x-youtube'}) || {};
-    this.selectedModule.tutorial = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
-                                      resourceType: 'Learn'});
-    this.selectedModule.exercise = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
-                                        resourceType: 'Lesson plan'});
-    this.navigateToContent({id: youtubeContent.identifier, title: youtubeContent.name});
+    if (this.enrolledCourse) {
+      this.selectedModule = data;
+      const youtubeContent: any = _.find(data.children, {mimeType: 'video/x-youtube'}) || {};
+      this.selectedModule.tutorial = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
+                                        resourceType: 'Learn'});
+      this.selectedModule.exercise = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
+                                          resourceType: 'Lesson plan'});
+      this.navigateToContent({id: youtubeContent.identifier, title: youtubeContent.name});
+    } else {
+      this.toasterService.info('Please enrol to the course …');
+    }
   }
 
   lastPlayedModule(contentId) {
@@ -785,5 +792,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => {
       this.sideBarToggle = !this.sideBarToggle;
     }, 0);
+  }
+
+  showDashboard() {
+    this.router.navigate(['learn/course', this.courseId, 'dashboard']);
   }
  }

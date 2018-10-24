@@ -1,21 +1,32 @@
-<div class="ui stackable grid courseheader" *ngIf="courseHierarchy && selectedModule">
+<div class="ui stackable grid courseheader" *ngIf="courseHierarchy">
   <div class="one wide column"></div>
-  <div class="ten wide column P0">
-    <div class="pull-left">
+  <div class="seven wide column P0">
+    <div class="ui white tiny header">
       <a class="ui grey large label">{{courseHierarchy.gradeLevel &&
         courseHierarchy.gradeLevel[0]}}
       </a>
       <span class="lgtext MR10">{{courseHierarchy.name}}</span>
       <span class="smtext">{{courseHierarchy.subject}}</span>
     </div>
-    <div class="pull-right smtext">
-      <button class="ui icon nextprevcourse" [disabled]="prevPlaylistItem === undefined">
+  </div>
+  <div class="three wide column P0" *ngIf="selectedModule && enrolledCourse">
+    <div class="ui white tiny right floated header">
+      <button class="ui mini blue button" [disabled]="prevPlaylistItem === undefined">
         <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
       </button>
-      <span>{{selectedModule.name}}</span>
-      <button class="ui icon nextprevcourse" [disabled]="nextPlaylistItem === undefined">
+      <span>{{selectedModule.name | slice:0:20 }}</span>
+      <button class="ui mini blue button" [disabled]="nextPlaylistItem === undefined">
         <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
       </button>
+    </div>
+  </div>
+  <div *ngIf="!enrolledCourse" class="three wide column P0 margin-top--10px">
+    <div class="ui white right floated tiny header margin-top--10px" >
+      <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier"
+        [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+      <div *ngIf="courseMentor" appPermission [permission]="dashboardPermission">
+        <button class="blue right floated ui button courseHeaderButton margin-top-10" (click)="showDashboard()">{{resourceService?.frmelmnts?.btn?.viewcoursestats}}</button>
+      </div>
     </div>
   </div>
   <div class="one wide column"></div>
@@ -23,120 +34,118 @@
 <div class="ui stackable grid margin-top-20" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
   <div class="one wide column"></div>
   <div class="ten wide column">
-    <div *ngIf="!loader">
-      <div class="content" [appTelemetryImpression]="telemetryCourseImpression">
-        <div class="ui stackable grid">
-          <div class="row">
-            <div class="nine wide column" *ngIf="!enrolledCourse">
-              <div class="ui header">
-                <span class="content courseStructureHeading">
-                  {{resourceService.frmelmnts.lbl.coursestructure}}
-                </span>
+    <div class="ui stackable grid">
+      <div *ngIf="enrolledCourse" [ngClass]="{'nine wide column': !enrolledCourse, 'twelve wide column': enrolledCourse}"
+        style="height: 700px !important;">
+        <div class="ui button customiconbtn" *ngIf="!sideBarToggle" (click)="sidebar.toggle()">
+          <a class="item right float customicon">
+            <i class="sidebar bluetext icon"></i>
+          </a>
+        </div>
+        <div class="ui header" *ngIf="sideBarToggle">MODULES</div>
+        <sui-sidebar-container>
+          <sui-sidebar class="vertical massive" #sidebar [transition]="'push'" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
+            <div class="item" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+              <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
+                <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
+                {{child.name}}
               </div>
-              <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"
-                [contentStatus]="contentStatus"></app-collection-tree>
             </div>
-            <div class="twelve wide column" style="height: 700px !important;" *ngIf="enrolledCourse">
-              <div class="ui button customiconbtn" *ngIf="!sideBarToggle" (click)="sidebar.toggle()">
-                <a class="item right float customicon">
-                  <i class="sidebar bluetext icon"></i>
-                </a>
-              </div>
-              <div class="ui header" *ngIf="sideBarToggle">MODULES</div>
-              <sui-sidebar-container>
-                <sui-sidebar class="vertical massive" #sidebar [transition]="push" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
-                  <div style="position:relative">
-                      <a class="item" [ngClass]="{ 'bluetext': selectedModule.identifier === child.identifier }" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
-                          <i class="caret right icon bluetext" *ngIf="selectedModule.identifier === child.identifier"></i>  {{child.name}}
-                          </a>
-                          <div class="ui bottom attached demo big menu">
-                            <a class="item right float customicon" (click)="sidebar.toggle()">
-                              <i class="chevron left icon"></i>
-                            </a>
-                          </div>
+            <div class="ui bottom attached demo big menu">
+              <a class="item right float customicon" (click)="sidebar.toggle()">
+                <i class="chevron left icon"></i>
+              </a>
+            </div>
+
+          </sui-sidebar>
+          <sui-sidebar-sibling>
+            <div class="ui basic segment" *ngIf="enrolledCourse">
+              <div class="ui grid" *ngIf="isVideoContent">
+                <div [ngClass]="{'eight wide column': sideBarToggle, 'twelve wide column': !sideBarToggle}">
+                  <div class="row" [appTelemetryImpression]="telemetryContentImpression">
+                    <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'500'"></youtube-player>
                   </div>
-                 
-                </sui-sidebar>
-                <sui-sidebar-sibling [isDimmedWhenVisible]="false" style="width:72%;">
-                  <div class="ui basic segment">
-                    <div class="twelve wide column" *ngIf="enrolledCourse">
-                      <div *ngIf="isVideoContent">
-                        <div class="ui grid">
-                          <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
-                            <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
-                          </div>
-                        </div>
-                        <div class="ui grid">
-                          <div class="seven wide column">
-                            <div class="row">
-                              <div class="ui large header">{{playerConfig.name}}</div>
-                              <div class="ui header">
-                                <div *ngIf="playerConfig.description" class="margin-top-10">
-                                  <p *ngIf="!readMore" class="courseStructureDesc"> {{ playerConfig.description |
-                                    slice:0:200 }}&nbsp;
-                                    <span class="ui cardsKnowMore mouse-pointer" *ngIf="playerConfig.description && playerConfig.description.length > 200 && readMore === false"
-                                      (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
-                                  </p>
-                                  <p *ngIf="readMore" class="courseStructureDesc"> {{
-                                    playerConfig.description}}&nbsp;
-                                    <span class="ui cardsKnowMore mouse-pointer" (click)="readMore = false;">{{resourceService.frmelmnts.lbl.readless}}</span>
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <button class="ui blue basic button MR10" *ngIf="selectedModule.tutorial" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">
-                                <!-- <i class="icon user"></i> -->
-                                <img src="../../../../../../assets/images/tuto.png" class="iconimg" alt="">
-                                Tutorial
-                              </button>
-                              <button class="ui blue basic button" *ngIf="selectedModule.exercise" (click)="open_notebook(selectedModule.exercise.artifactUrl)">
-                                  <img src="../../../../../../assets/images/assets.png" class="iconimg" alt="">
-                                <!-- <i class="icon user"></i> -->
-                                Exercise
-                              </button>
+                  <div class="row">
+                    <div class="ui grid margin-top-0">
+                      <div class="six wide column">
+                        <div class="row">
+                          <div class="ui large header">{{playerConfig.name}}</div>
+                          <div class="ui header">
+                            <div *ngIf="playerConfig.description" class="margin-top-10">
+                              <p *ngIf="!readMore" class="courseStructureDesc"> {{ playerConfig.description |
+                                slice:0:200 }}&nbsp;
+                                <span class="ui cardsKnowMore mouse-pointer" *ngIf="playerConfig.description && playerConfig.description.length > 200 && readMore === false"
+                                  (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
+                              </p>
+                              <p *ngIf="readMore" class="courseStructureDesc"> {{
+                                playerConfig.description}}&nbsp;
+                                <span class="ui cardsKnowMore mouse-pointer" (click)="readMore = false;">{{resourceService.frmelmnts.lbl.readless}}</span>
+                              </p>
                             </div>
                           </div>
-                          <div class="five wide column infobox">
-                            <p>LET'S BEGIN</p>
-                            <p>Follow along with the <span class="bluetext">interactive tutorial</span> and then complete the <span class="bluetext">exercise</span> to demonstrate your knowledge</p>
-                          </div>
                         </div>
+                        <div class="row">
+                          <button class="ui blue basic button MR10" *ngIf="selectedModule.tutorial" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">
+                            <!-- <i class="icon user"></i> -->
+                            <img src="../../../../../../assets/images/tuto.png" class="iconimg" alt="">
+                            Tutorial
+                          </button>
+                          <button class="ui blue basic button" *ngIf="selectedModule.exercise" (click)="open_notebook(selectedModule.exercise.artifactUrl)">
+                            <img src="../../../../../../assets/images/assets.png" class="iconimg" alt="">
+                            <!-- <i class="icon user"></i> -->
+                            Exercise
+                          </button>
+                        </div>
+                      </div>
+                      <div class="three wide column infobox">
+                        <p>LET'S BEGIN</p>
+                        <p>Follow along with the <span class="bluetext">interactive tutorial</span> and then
+                          complete the <span class="bluetext">exercise</span> to demonstrate your knowledge</p>
                       </div>
                     </div>
                   </div>
-                </sui-sidebar-sibling>
-              </sui-sidebar-container>
-            </div>
-            <div class='three wide column' *ngIf="!enrolledCourse">
-              <div class="rightSideSectionCards ui card instructors-panel">
-                <div class="addnotes-panel content">
-                  <ul class="instructors-list">
-                    <li>
-                      <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
-                    </li>
-                    <li>
-                      <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
-                    </li>
-                    <li>
-                      <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
-                    </li>
-                  </ul>
-                  <p>INSTRUCTORS</p>
-                  <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
                 </div>
               </div>
-              <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
-                [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
-              <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
-                <app-course-badge></app-course-badge>
-                <br>
-              </div>
-              <div *ngIf="progress === 100">
-                <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
-              </div>
+            </div>
+          </sui-sidebar-sibling>
+        </sui-sidebar-container>
+      </div>
+      <div class='nine wide column' *ngIf="!enrolledCourse">
+        <div class="ui vertical massive menu" #sidebar>
+          <div class="item" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+            <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
+              <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
+              {{child.name}}
             </div>
           </div>
+        </div>
+      </div>
+      <div class='three wide column' *ngIf="!enrolledCourse">
+        <div class="rightSideSectionCards ui card instructors-panel">
+          <div class="addnotes-panel content">
+            <ul class="instructors-list">
+              <li>
+                <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
+              </li>
+              <li>
+                <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
+              </li>
+              <li>
+                <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
+              </li>
+            </ul>
+            <p>INSTRUCTORS</p>
+            <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
+          </div>
+        </div>
+        <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
+          [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+        <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
+          <app-course-badge></app-course-badge>
+          <br>
+        </div>
+        <div *ngIf="progress === 100">
+          <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
         </div>
       </div>
     </div>
