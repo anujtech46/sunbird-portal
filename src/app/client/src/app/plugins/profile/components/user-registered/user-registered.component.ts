@@ -1,11 +1,13 @@
 import { Component, OnInit} from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import {  ConfigService, ResourceService , ServerResponse } from '@sunbird/shared';
+import {  ConfigService, ResourceService, ServerResponse, ToasterService } from '@sunbird/shared';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
+import { SignupService } from '../../../../modules/public/services/signup.service';
 import { SearchService, ContentService, SearchParam, PermissionService, RolesAndPermissions } from '@sunbird/core';
-
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-user-registered',
@@ -13,20 +15,22 @@ import { SearchService, ContentService, SearchParam, PermissionService, RolesAnd
   styleUrls: ['./user-registered.component.css']
 })
 export class UserRegisteredComponent implements OnInit {
-
-
   allRoles: any[];
-userReg : FormGroup;
-showModal: boolean = false;
-languages: Array<string>;
-orgs: any;
+  userReg: FormGroup;
+  showModal = false;
+  languages: Array<string>;
+  orgs: any;
+  showLoader = false;
+  public unsubscribe$ = new Subject<void>();
 
-constructor(public activatedRoute: ActivatedRoute, public config: ConfigService,public content : ContentService, public resourceService: ResourceService,public permissionService: PermissionService) {
-  this.languages = this.config.dropDownConfig.COMMON.languages;
-  console.log("lang",this.languages);
-  this.getOrgList();
-  this.getRoles();
- }
+  constructor(public activatedRoute: ActivatedRoute, public config: ConfigService, public signupService: SignupService,
+    public content: ContentService, public resourceService: ResourceService, public permissionService: PermissionService, 
+    public toasterService: ToasterService, public router: Router) {
+    this.languages = this.config.dropDownConfig.COMMON.languages;
+    console.log('lang', this.languages);
+    this.getOrgList();
+    this.getRoles();
+  }
 
   ngOnInit() {
    this.userReg = new FormGroup({
@@ -37,7 +41,7 @@ constructor(public activatedRoute: ActivatedRoute, public config: ConfigService,
     phone: new FormControl(null, [Validators.required, Validators.pattern('^\\d{10}$')]),
     email: new FormControl(null, [Validators.required,
     Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)]),
-    language: new FormControl(null, [Validators.required]),
+    roles: new FormControl(null, [Validators.required]),
     organization: new FormControl(null,[Validators.required])
   });
   
@@ -87,10 +91,27 @@ constructor(public activatedRoute: ActivatedRoute, public config: ConfigService,
         // return role.role !== 'ORG_ADMIN' && role.role !== 'SYSTEM_ADMINISTRATION' && role.role !== 'ADMIN';
       });
 
-      this.allRoles = _.map(this.allRoles, (obj) => {
-        return { 'id': obj.id, 'name': obj.name };
-    });
+    //   this.allRoles = _.map(this.allRoles, (obj) => {
+    //     return { 'id': obj.id, 'name': obj.name };
+    // });
       console.log(this.allRoles);
     });
+  }
+
+  onSubmitForm() {
+    this.showLoader = true;
+    this.showModal = false;
+    this.signupService.signup(this.userReg.value).pipe(
+    takeUntil(this.unsubscribe$))
+    .subscribe(res => {
+      // this.modal.approve();
+      this.showLoader = false;
+      this.toasterService.success(this.resourceService.messages.smsg.m0046);
+      this.router.navigate(['/profile']);
+    },
+      err => {
+        this.showLoader = false;
+        this.toasterService.error(err.error.params.errmsg);
+      });
   }
 }

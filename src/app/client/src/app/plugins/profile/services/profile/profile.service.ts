@@ -93,4 +93,13 @@ export class ProfileService {
     };
     return this.learnerService.get(options);
   }
+
+  createOrg (req) {
+    const data = this.formatRequest(req);
+    const options = {
+      url: this.configService.urlConFig.URLS.USER.ADD_ORG,
+      data: data
+    };
+    return this.learnerService.post(options);
+  }
 }

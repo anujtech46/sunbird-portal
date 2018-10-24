@@ -31,83 +31,22 @@
   <div class="content">
     <form *ngIf="!showLoader" [formGroup]="orgReg" autocomplete="off" id="orgReg" class="ui form">
       <div class="field">
-        <div class=" two fields">
-          <div class="required field" [ngClass]="orgReg.controls.userName.invalid && orgReg.controls['userName'].errors.required && !orgReg.controls['userName'].pristine || (orgReg.controls['userName'].errors && orgReg.controls['userName'].errors.pattern) ? 'error' : ''">
-            <label>User Name</label>
-            <input type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required">
-            <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.userName.invalid && orgReg.controls['userName'].errors.required && !orgReg.controls['userName'].pristine || (orgReg.controls['userName'].errors && orgReg.controls['userName'].errors.pattern)">
-              
-            </div>
-          </div>
-          <div class="required field" [ngClass]="orgReg.controls.password.invalid && orgReg.controls['password'].errors.required && !orgReg.controls['password'].pristine || (orgReg.controls['password'].errors && orgReg.controls['password'].errors.pattern) ? 'error' : ''">
-            <label>Password</label>
-            <input type="password" formControlName="password" placeholder="Password" />
-            <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.password.invalid && orgReg.controls['password'].errors.required && !orgReg.controls['password'].pristine || (orgReg.controls['password'].errors && orgReg.controls['password'].errors.pattern)">
-              {{resourceService?.messages?.stmsg?.m0088}}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="field">
         <div class="two fields">
-          <div class="required field" [ngClass]="orgReg.controls.firstName.invalid && orgReg.controls['firstName'].errors.required && !orgReg.controls['firstName'].pristine || (orgReg.controls['firstName'].errors && orgReg.controls['firstName'].errors.pattern) ? 'error' : ''">
-            <label>Name</label>
-            <input type="text" formControlName="firstName" placeholder="First Name">
+          <div class="required field" [ngClass]="orgReg.controls.orgName.invalid && orgReg.controls['orgName'].errors.required && !orgReg.controls['orgName'].pristine || (orgReg.controls['orgName'].errors && orgReg.controls['orgName'].errors.pattern) ? 'error' : ''">
+            <label>Organization Name</label>
+            <input type="text" formControlName="orgName" placeholder="Organization name, min 5 character required">
+            <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.orgName.invalid && orgReg.controls['orgName'].errors.required && !orgReg.controls['orgName'].pristine || (orgReg.controls['orgName'].errors && orgReg.controls['orgName'].errors.pattern)">
+                {{resourceService?.messages?.stmsg?.m0073}}
+            </div>
           </div>
-          <div class="field">
-            <label>&nbsp; </label>
-            <input type="text" formControlName="lastName" placeholder="Last Name">
-          </div>
-        </div>
-      </div>
-      <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.firstName.invalid && orgReg.controls['firstName'].errors.required && !orgReg.controls['firstName'].pristine || (orgReg.controls['firstName'].errors && orgReg.controls['firstName'].errors.pattern)">
-        {{resourceService?.messages?.stmsg?.m0092}}
-      </div>
-      <div class="two fields">
-        <div class="required field" [ngClass]="orgReg.controls.phone.invalid && orgReg.controls['phone'].errors.required && !orgReg.controls['phone'].pristine || (orgReg.controls['phone'].errors && orgReg.controls['phone'].errors.pattern) ? 'error' : ''">
-          <label>Phone Number</label>
-          <input type="text" formControlName="phone" placeholder="eg:XXXXXXXXXX">
-          <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.phone.invalid && orgReg.controls['phone'].errors.required && !orgReg.controls['phone'].pristine || (orgReg.controls['phone'].errors && orgReg.controls['phone'].errors.pattern)">
-            {{resourceService?.messages?.stmsg?.m0091}}
+          <div class="required field" [ngClass]="orgReg.controls.orgDesc.invalid && orgReg.controls['orgDesc'].errors.required && !orgReg.controls['orgDesc'].pristine || (orgReg.controls['orgDesc'].errors && orgReg.controls['orgDesc'].errors.pattern) ? 'error' : ''">
+              <label>Description</label>
+              <input type="text" formControlName="orgDesc" placeholder="Description">
+              <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.orgDesc.invalid && orgReg.controls['orgDesc'].errors.required && !orgReg.controls['orgDesc'].pristine || (orgReg.controls['orgDesc'].errors && orgReg.controls['orgDesc'].errors.pattern)">
+                {{resourceService?.messages?.stmsg?.m0117}}
+              </div>
           </div>
         </div>
-        <div class="required field" [ngClass]="orgReg.controls.email.invalid && orgReg.controls['email'].errors.required && !orgReg.controls['email'].pristine || (orgReg.controls['email'].errors && orgReg.controls['email'].errors.pattern) ? 'error' : ''">
-          <label>Email ID</label>
-          <input type="text" formControlName="email" placeholder="User@example.com">
-          <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.email.invalid && orgReg.controls['email'].errors.required && !orgReg.controls['email'].pristine || (orgReg.controls['email'].errors && orgReg.controls['email'].errors.pattern)">
-            {{resourceService?.messages?.stmsg?.m0089}}
-          </div>
-        </div>
-      </div>
-      <div class="two fields">
-        <div class="required field" [ngClass]="orgReg.controls.language.invalid && orgReg.controls['language'].errors.required && !orgReg.controls['language'].pristine ? 'error' : ''">
-          <label>Language</label>
-          <div class="field">
-            <sui-multi-select class="selection" formControlName="language" [options]="languages" #multiSelect>
-              <sui-select-option *ngFor="let option of languages" [value]="option"> </sui-select-option>
-            </sui-multi-select>
-          </div>
-       
-        <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.language.invalid && orgReg.controls['language'].errors.required && !orgReg.controls['language'].pristine">
-          Error: Language is invalid
-        </div>
-      </div>
-      <div class="required field" [ngClass]="orgReg.controls.organization.invalid && orgReg.controls['organization'].errors.required && !orgReg.controls['organization'].pristine ? 'error' : ''">
-        <label>Organization</label>
-        <div class="field">
-          <sui-multi-select class="selection" formControlName="organization" labelField="orgName" valueField="id" #multiSelectOrg>
-            <sui-select-option *ngFor="let option of orgs" [value]="option"> </sui-select-option>
-          </sui-multi-select>
-        </div>
-     
-      <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="orgReg.controls.organization.invalid && orgReg.controls['organization'].errors.required && !orgReg.controls['organization'].pristine">
-        Error: Organization is invalid
-      </div>
-    </div>
-
-      </div>
-      
-      <div class="ui error message">
       </div>
     </form>
     <div>

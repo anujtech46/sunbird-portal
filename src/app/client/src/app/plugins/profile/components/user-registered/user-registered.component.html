@@ -38,7 +38,7 @@
             <label>User Name</label>
             <input type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required">
             <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.userName.invalid && userReg.controls['userName'].errors.required && !userReg.controls['userName'].pristine || (userReg.controls['userName'].errors && userReg.controls['userName'].errors.pattern)">
-              
+                {{resourceService?.messages?.stmsg?.m0087}}
             </div>
           </div>
           <div class="required field" [ngClass]="userReg.controls.password.invalid && userReg.controls['password'].errors.required && !userReg.controls['password'].pristine || (userReg.controls['password'].errors && userReg.controls['password'].errors.pattern) ? 'error' : ''">
@@ -82,16 +82,16 @@
         </div>
       </div>
       <div class="two fields">
-        <div class="required field" [ngClass]="userReg.controls.language.invalid && userReg.controls['language'].errors.required && !userReg.controls['language'].pristine ? 'error' : ''">
+        <div class="required field" [ngClass]="userReg.controls.roles.invalid && userReg.controls['roles'].errors.required && !userReg.controls['roles'].pristine ? 'error' : ''">
           <label>Roles</label>
           <div class="field">
-            <sui-multi-select class="selection" formControlName="language" labelField="name" valueField="id" #multiSelect>
+            <sui-multi-select class="selection" formControlName="roles" labelField="option.roleName" valueField="option.role" #multiSelect>
               <sui-select-option *ngFor="let option of allRoles" [value]="option"> </sui-select-option>
             </sui-multi-select>
           </div>
        
-        <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.language.invalid && userReg.controls['language'].errors.required && !userReg.controls['language'].pristine">
-          Error: Language is invalid
+        <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.roles.invalid && userReg.controls['roles'].errors.required && !userReg.controls['roles'].pristine">
+          Error: Role is invalid
         </div>
       </div>
       <div class="required field" [ngClass]="userReg.controls.organization.invalid && userReg.controls['organization'].errors.required && !userReg.controls['organization'].pristine ? 'error' : ''">
