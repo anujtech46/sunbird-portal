@@ -9,11 +9,11 @@
       <span class="smtext">{{courseHierarchy.subject}}</span>
     </div>
     <div class="pull-right smtext">
-      <button class="ui icon button" [disabled]="prevPlaylistItem === undefined">
+      <button class="ui icon nextprevcourse" [disabled]="prevPlaylistItem === undefined">
         <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
       </button>
       <span>{{selectedModule.name}}</span>
-      <button class="ui icon button" [disabled]="nextPlaylistItem === undefined">
+      <button class="ui icon nextprevcourse" [disabled]="nextPlaylistItem === undefined">
         <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
       </button>
     </div>
@@ -37,33 +37,36 @@
                 [contentStatus]="contentStatus"></app-collection-tree>
             </div>
             <div class="twelve wide column" style="height: 700px !important;" *ngIf="enrolledCourse">
-              <div class="ui button" *ngIf="!sideBarToggle" (click)="sidebar.toggle()">
-                <a class="item right float">
-                  <i class="sidebar icon"></i>
+              <div class="ui button customiconbtn" *ngIf="!sideBarToggle" (click)="sidebar.toggle()">
+                <a class="item right float customicon">
+                  <i class="sidebar bluetext icon"></i>
                 </a>
               </div>
               <div class="ui header" *ngIf="sideBarToggle">MODULES</div>
               <sui-sidebar-container>
-                <sui-sidebar class="vertical big" #sidebar [transition]="push" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
-                  <a class="item" [ngClass]="{ 'bluetext': selectedModule.identifier === child.identifier }" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
-                    {{child.name}}
-                  </a>
-                  <div class="ui bottom attached demo big menu">
-                    <a class="item right float" (click)="sidebar.toggle()">
-                      <i class="sidebar icon"></i>
-                    </a>
+                <sui-sidebar class="vertical massive" #sidebar [transition]="push" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
+                  <div style="position:relative">
+                      <a class="item" [ngClass]="{ 'bluetext': selectedModule.identifier === child.identifier }" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+                          <i class="caret right icon bluetext" *ngIf="selectedModule.identifier === child.identifier"></i>  {{child.name}}
+                          </a>
+                          <div class="ui bottom attached demo big menu">
+                            <a class="item right float customicon" (click)="sidebar.toggle()">
+                              <i class="chevron left icon"></i>
+                            </a>
+                          </div>
                   </div>
+                 
                 </sui-sidebar>
-                <sui-sidebar-sibling [isDimmedWhenVisible]="false">
+                <sui-sidebar-sibling [isDimmedWhenVisible]="false" style="width:72%;">
                   <div class="ui basic segment">
-                    <div class="eight wide column" *ngIf="enrolledCourse">
-                      <div class="ui grid" *ngIf="isVideoContent">
-                        <div class="row">
+                    <div class="twelve wide column" *ngIf="enrolledCourse">
+                      <div *ngIf="isVideoContent">
+                        <div class="ui grid">
                           <div class="twelve wide column" [appTelemetryImpression]="telemetryContentImpression">
                             <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'400'"></youtube-player>
                           </div>
                         </div>
-                        <div class="row">
+                        <div class="ui grid">
                           <div class="seven wide column">
                             <div class="row">
                               <div class="ui large header">{{playerConfig.name}}</div>
@@ -82,15 +85,21 @@
                               </div>
                             </div>
                             <div class="row">
-                              <button class="ui blue basic button" *ngIf="selectedModule.tutorial" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">
-                                <i class="icon user"></i>
+                              <button class="ui blue basic button MR10" *ngIf="selectedModule.tutorial" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">
+                                <!-- <i class="icon user"></i> -->
+                                <img src="../../../../../../assets/images/tuto.png" class="iconimg" alt="">
                                 Tutorial
                               </button>
                               <button class="ui blue basic button" *ngIf="selectedModule.exercise" (click)="open_notebook(selectedModule.exercise.artifactUrl)">
-                                <i class="icon user"></i>
+                                  <img src="../../../../../../assets/images/assets.png" class="iconimg" alt="">
+                                <!-- <i class="icon user"></i> -->
                                 Exercise
                               </button>
                             </div>
+                          </div>
+                          <div class="five wide column infobox">
+                            <p>LET'S BEGIN</p>
+                            <p>Follow along with the <span class="bluetext">interactive tutorial</span> and then complete the <span class="bluetext">exercise</span> to demonstrate your knowledge</p>
                           </div>
                         </div>
                       </div>
