@@ -45,7 +45,7 @@
         <div class="ui header" *ngIf="sideBarToggle">MODULES</div>
         <sui-sidebar-container>
           <sui-sidebar class="vertical massive" #sidebar [transition]="'push'" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
-            <div class="item" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+            <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
               <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
                 <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
                 {{child.name}}
@@ -110,9 +110,10 @@
           </sui-sidebar-sibling>
         </sui-sidebar-container>
       </div>
-      <div class='nine wide column' *ngIf="!enrolledCourse">
-        <div class="ui vertical massive menu" #sidebar>
-          <div class="item" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+      <div class='three wide column' *ngIf="!enrolledCourse">
+        <div class="ui header">MODULES</div>
+        <div class="ui vertical massive menu">
+          <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
             <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
               <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
               {{child.name}}
