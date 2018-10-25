@@ -20,6 +20,9 @@ export class OrgRegisteredComponent implements OnInit {
   orgs: any;
   showLoader = false;
   public unsubscribe$ = new Subject<void>();
+  showNewOrg = false;
+  newOorganisationId: any;
+  newOrgName: any;
   constructor(public activatedRoute: ActivatedRoute, public config: ConfigService, public content: ContentService,
      public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
      public profileService: ProfileService) {
@@ -29,8 +32,8 @@ export class OrgRegisteredComponent implements OnInit {
    }
     ngOnInit() {
       this.orgReg = new FormGroup({
-      orgName: new FormControl(null, [Validators.required, Validators.pattern('^[-\\w\.\\$@\*\\!]{5,256}$')]),
-      orgDesc: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s]*(?<! )$')])
+      orgName: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')]),
+      orgDesc: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')])
       });
     }
 
@@ -61,24 +64,33 @@ export class OrgRegisteredComponent implements OnInit {
     }
     closeModal() {
       this.showModal = false;
+      this.newOrgName = '';
+      this.newOorganisationId = '';
+      this.orgReg.reset();
+      this.showNewOrg = false;
     }
     onSubmitForm () {
       this.showLoader = true;
-      this.showModal = false;
+      // this.showModal = false;
       console.log (this.orgReg.value);
       const reqdata =  {
-        "orgName": this.orgReg.value.orgName,
-        "description": this.orgReg.value.orgDesc,
-        "isRootOrg": false,
-        "channel":"jaldhara"
+        orgName: this.orgReg.value.orgName,
+        description: this.orgReg.value.orgDesc,
+        isRootOrg: false,
+        channel: (<HTMLInputElement>document.getElementById('defaultTenant')).value
       };
       console.log(reqdata);
       this.profileService.createOrg(this.orgReg.value).pipe(
         takeUntil(this.unsubscribe$))
         .subscribe(res => {
+        this.showNewOrg = true;
+        this.newOorganisationId = res.result.organisationId;
+        this.newOrgName  = this.orgReg.value.orgName;
+        console.log(res);
+        console.log(this.newOrg);
         this.showLoader = false;
         this.toasterService.success(this.resourceService.messages.smsg.m0045);
-        this.router.navigate(['/profile']);
+        // this.router.navigate(['/profile']);
       },
       err => {
         this.showLoader = false;

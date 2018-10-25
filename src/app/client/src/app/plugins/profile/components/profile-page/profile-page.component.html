@@ -62,11 +62,11 @@
                             </a>
                         </div>
 
-                        <div class="twelve wide column">
+                        <div class="twelve wide column" *ngIf='permissionService.permissionAvailable' appPermission [permission]='admin'>
                         <app-user-registered></app-user-registered>
                         </div>
 
-                        <div class="twelve wide column">
+                        <div class="twelve wide column" *ngIf='permissionService.permissionAvailable' appPermission [permission]='admin'>
                         <app-org-registered></app-org-registered>
                         </div>
 

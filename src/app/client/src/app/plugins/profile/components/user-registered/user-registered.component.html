@@ -66,17 +66,17 @@
         {{resourceService?.messages?.stmsg?.m0092}}
       </div>
       <div class="two fields">
-        <div class="required field" [ngClass]="userReg.controls.phone.invalid && userReg.controls['phone'].errors.required && !userReg.controls['phone'].pristine || (userReg.controls['phone'].errors && userReg.controls['phone'].errors.pattern) ? 'error' : ''">
+        <div class="field" [ngClass]="userReg.controls.phone.invalid && !userReg.controls['phone'].pristine || (userReg.controls['phone'].errors && userReg.controls['phone'].errors.pattern) ? 'error' : ''">
           <label>Phone Number</label>
-          <input type="text" formControlName="phone" placeholder="eg:XXXXXXXXXX">
-          <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.phone.invalid && userReg.controls['phone'].errors.required && !userReg.controls['phone'].pristine || (userReg.controls['phone'].errors && userReg.controls['phone'].errors.pattern)">
+          <input type="text" formControlName="phone" placeholder="eg:XXXXXXXXXX" maxlength="10">
+          <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.phone.invalid && !userReg.controls['phone'].pristine || (userReg.controls['phone'].errors && userReg.controls['phone'].errors.pattern)">
             {{resourceService?.messages?.stmsg?.m0091}}
           </div>
         </div>
-        <div class="required field" [ngClass]="userReg.controls.email.invalid && userReg.controls['email'].errors.required && !userReg.controls['email'].pristine || (userReg.controls['email'].errors && userReg.controls['email'].errors.pattern) ? 'error' : ''">
+        <div class="field" [ngClass]="userReg.controls.email.invalid && !userReg.controls['email'].pristine || (userReg.controls['email'].errors && userReg.controls['email'].errors.pattern) ? 'error' : ''">
           <label>Email ID</label>
           <input type="text" formControlName="email" placeholder="User@example.com">
-          <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.email.invalid && userReg.controls['email'].errors.required && !userReg.controls['email'].pristine || (userReg.controls['email'].errors && userReg.controls['email'].errors.pattern)">
+          <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.email.invalid && !userReg.controls['email'].pristine || (userReg.controls['email'].errors && userReg.controls['email'].errors.pattern)">
             {{resourceService?.messages?.stmsg?.m0089}}
           </div>
         </div>
@@ -116,6 +116,7 @@
     </div>
   </div>
   <div class="actions">
+    <div *ngIf="showcommonerror && !(this.userReg.value.phone || this.userReg.value.email)" class="pull-left ui basic red label">Please provide either phone number or emmail id</div>
     <button [disabled]="userReg.invalid" class="ui primary button" (click)="onSubmitForm()">Add User</button>
   </div>
 </sui-modal>

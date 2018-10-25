@@ -28,7 +28,7 @@
         </div>
     </div>
   </div>
-  <div class="content">
+  <div class="content" *ngIf="!showNewOrg">
     <form *ngIf="!showLoader" [formGroup]="orgReg" autocomplete="off" id="orgReg" class="ui form">
       <div class="field">
         <div class="two fields">
@@ -52,7 +52,13 @@
     <div>
     </div>
   </div>
-  <div class="actions">
+  <div class="content" *ngIf="showNewOrg">
+    <p><b>Organization Name:</b> {{newOrgName}} </p>
+    <p><b>Organization Id:</b> {{newOorganisationId}}</p>
+    <br>
+    <br>
+  </div>
+  <div class="actions" *ngIf="!showNewOrg">
     <button [disabled]="orgReg.invalid" class="ui primary button" (click)="onSubmitForm()">Add Org</button>
   </div>
 </sui-modal>

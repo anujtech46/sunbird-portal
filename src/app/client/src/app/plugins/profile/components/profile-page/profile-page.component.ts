@@ -44,6 +44,7 @@ export class ProfilePageComponent implements OnInit {
   workspaceInteractEdata: IInteractEventEdata;
   myContributionsInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
+  admin: Array<string>;
   constructor(public resourceService: ResourceService,
     public permissionService: PermissionService, public toasterService: ToasterService,
     public userService: UserService, public configService: ConfigService, public router: Router,
@@ -60,6 +61,7 @@ export class ProfilePageComponent implements OnInit {
         }
       });
     this.workSpaceRole = this.configService.rolesConfig.headerDropdownRoles.workSpaceRole;
+    this.admin = this.configService.rolesConfig.headerDropdownRoles.adminDashboard;
     let pageId = '';
     if (this.activatedRoute.snapshot.params.section && this.activatedRoute.snapshot.params.action) {
       pageId = `profile-${this.activatedRoute.snapshot.params.section}-${this.activatedRoute.snapshot.params.action}`;

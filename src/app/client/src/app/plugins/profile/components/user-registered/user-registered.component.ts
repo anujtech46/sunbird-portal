@@ -22,6 +22,7 @@ export class UserRegisteredComponent implements OnInit {
   orgs: any;
   showLoader = false;
   public unsubscribe$ = new Subject<void>();
+  showcommonerror = false;
 
   constructor(public activatedRoute: ActivatedRoute, public config: ConfigService, public signupService: SignupService,
     public content: ContentService, public resourceService: ResourceService, public permissionService: PermissionService, 
@@ -33,18 +34,16 @@ export class UserRegisteredComponent implements OnInit {
   }
 
   ngOnInit() {
-   this.userReg = new FormGroup({
-    userName: new FormControl(null, [Validators.required, Validators.pattern('^[-\\w\.\\$@\*\\!]{5,256}$')]),
-    password: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s@#!$?*^&0-9]*(?<! )$')]),
-    firstName: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s]*(?<! )$')]),
-    lastName: new FormControl(null),
-    phone: new FormControl(null, [Validators.required, Validators.pattern('^\\d{10}$')]),
-    email: new FormControl(null, [Validators.required,
-    Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)]),
-    roles: new FormControl(null, [Validators.required]),
-    organization: new FormControl(null,[Validators.required])
-  });
-  
+    this.userReg = new FormGroup({
+      userName: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')]),
+      password: new FormControl(null, [Validators.required, Validators.pattern('^[^(?! )][0-9]*[A-Za-z\\s@#!$?*^&0-9]*(?<! )$')]),
+      firstName: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')]),
+      lastName: new FormControl(null),
+      phone: new FormControl(null, [Validators.pattern('^\\d{10}$')]),
+      email: new FormControl(null, [Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)]),
+      roles: new FormControl(null, [Validators.required]),
+      organization: new FormControl(null, [Validators.required])
+    });
   }
 
   getOrgList() {
@@ -71,17 +70,16 @@ export class UserRegisteredComponent implements OnInit {
     return this.content.post(option);
   }
 
-  openModal()
-  {
-  this.showModal=true;
+  openModal() {
+  this.showModal = true;
   }
-  closeModal()
-  {
-    this.showModal =false;  
+  closeModal() {
+    this.showModal = false;
+    this.userReg.reset();
+    this.showcommonerror = false;
   }
 
-  getRoles()
-  {
+  getRoles() {
     this.permissionService.permissionAvailable$.subscribe(params => {
       if (params === 'success') {
         this.allRoles = this.permissionService.allRoles;
@@ -99,19 +97,24 @@ export class UserRegisteredComponent implements OnInit {
   }
 
   onSubmitForm() {
-    this.showLoader = true;
-    this.showModal = false;
-    this.signupService.signup(this.userReg.value).pipe(
-    takeUntil(this.unsubscribe$))
-    .subscribe(res => {
-      // this.modal.approve();
-      this.showLoader = false;
-      this.toasterService.success(this.resourceService.messages.smsg.m0046);
-      this.router.navigate(['/profile']);
-    },
+    if (!this.userReg.value.phone && !this.userReg.value.email) {
+      this.showcommonerror = true;
+    } else {
+      this.showcommonerror = false;
+      this.showLoader = true;
+      this.showModal = false;
+      this.signupService.signup(this.userReg.value).pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(res => {
+        this.showLoader = false;
+        this.userReg.reset();
+        this.toasterService.success(this.resourceService.messages.smsg.m0046);
+        this.router.navigate(['/profile']);
+      },
       err => {
         this.showLoader = false;
         this.toasterService.error(err.error.params.errmsg);
       });
+    }
   }
 }
