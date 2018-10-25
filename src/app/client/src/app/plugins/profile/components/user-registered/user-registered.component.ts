@@ -5,7 +5,8 @@ import {  ConfigService, ResourceService, ServerResponse, ToasterService } from 
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import { SignupService } from '../../../../modules/public/services/signup.service';
-import { SearchService, ContentService, SearchParam, PermissionService, RolesAndPermissions } from '@sunbird/core';
+import { SearchService, ContentService, SearchParam, PermissionService, RolesAndPermissions, UserService } from '@sunbird/core';
+import { ProfileService } from '../../services/profile/profile.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 
@@ -26,7 +27,7 @@ export class UserRegisteredComponent implements OnInit {
 
   constructor(public activatedRoute: ActivatedRoute, public config: ConfigService, public signupService: SignupService,
     public content: ContentService, public resourceService: ResourceService, public permissionService: PermissionService, 
-    public toasterService: ToasterService, public router: Router) {
+    public toasterService: ToasterService, public router: Router,  public userService: UserService, public profileService: ProfileService) {
     this.languages = this.config.dropDownConfig.COMMON.languages;
     console.log('lang', this.languages);
     this.getOrgList();
@@ -42,19 +43,32 @@ export class UserRegisteredComponent implements OnInit {
       phone: new FormControl(null, [Validators.pattern('^\\d{10}$')]),
       email: new FormControl(null, [Validators.pattern(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4}$/)]),
       roles: new FormControl(null, [Validators.required]),
-      organization: new FormControl(null, [Validators.required])
+      organisations: new FormControl(null, [Validators.required])
     });
   }
 
   getOrgList() {
     this.orgSearch().subscribe((resp) => {
+      const roles = this.userService.userProfile && this.userService.userProfile.userRoles || [];
       this.orgs = resp.result && resp.result.response && resp.result.response.content || [];
-      this.orgs = _.map(this.orgs, (obj) => {
-          return { 'id': obj.id, 'orgName': obj.orgName };
-      });
-      console.log(this.orgs);
+      // this.orgs = _.map(this.orgs, (obj) => {
+      //     return { 'id': obj.id, 'orgName': obj.orgName };
+      // });
+      const res = [];
+      for (let i = 0; i < this.orgs.length; i++) {
+        if (_.indexOf(roles, 'ORG_ADMIN') > -1 || _.indexOf(roles, 'SYSTEM_ADMINISTRATION') > -1) {
+          const orgAdminRoleOrgIds = this.userService.RoleOrgMap['ORG_ADMIN'] || [];
+          const sysAdminRoleOrgIds = this.userService.RoleOrgMap['SYSTEM_ADMINISTRATION'] || [];
+          const rootOrgId = this.userService.userProfile.rootOrgId;
+          if (_.indexOf(orgAdminRoleOrgIds, this.orgs[i].id) > -1 || _.indexOf(sysAdminRoleOrgIds, rootOrgId) > -1 ) {
+            const data = { 'id': this.orgs[i].id, 'orgName': this.orgs[i].orgName };
+            res.push(data);
+          }
+        }
+      }
+      this.orgs = res;
+      // console.log(this.orgs);
     });
-
   }
 
   orgSearch(): Observable<ServerResponse> {
@@ -92,7 +106,7 @@ export class UserRegisteredComponent implements OnInit {
     //   this.allRoles = _.map(this.allRoles, (obj) => {
     //     return { 'id': obj.id, 'name': obj.name };
     // });
-      console.log(this.allRoles);
+      // console.log(this.allRoles);
     });
   }
 
@@ -103,18 +117,36 @@ export class UserRegisteredComponent implements OnInit {
       this.showcommonerror = false;
       this.showLoader = true;
       this.showModal = false;
+
       this.signupService.signup(this.userReg.value).pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(res => {
         this.showLoader = false;
+        this.maptoOrg(res, this.userReg.value.organisations, this.userReg.value.roles);
         this.userReg.reset();
-        this.toasterService.success(this.resourceService.messages.smsg.m0046);
-        this.router.navigate(['/profile']);
       },
       err => {
         this.showLoader = false;
         this.toasterService.error(err.error.params.errmsg);
       });
     }
+  }
+
+  maptoOrg (result, org, roles) {
+    const reqdata =  {
+      userId: result.result.userId,
+      organisationId: org[0],
+      roles: roles
+    };
+    this.profileService.mapMemberOrg(reqdata).pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(res => {
+        this.toasterService.success(this.resourceService.messages.smsg.m0046);
+        // this.router.navigate(['/profile']);
+    },
+    err => {
+      this.showLoader = false;
+      this.toasterService.error(err.error.params.errmsg);
+    });
   }
 }

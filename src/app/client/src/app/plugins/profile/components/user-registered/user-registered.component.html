@@ -94,16 +94,20 @@
           Error: Role is invalid
         </div>
       </div>
-      <div class="required field" [ngClass]="userReg.controls.organization.invalid && userReg.controls['organization'].errors.required && !userReg.controls['organization'].pristine ? 'error' : ''">
-        <label>Organization</label>
+      <div class="required field" [ngClass]="userReg.controls.organisations.invalid && userReg.controls['organisations'].errors.required && !userReg.controls['organisations'].pristine ? 'error' : ''">
+        <label>Organizations</label>
         <div class="field">
-          <sui-multi-select class="selection" formControlName="organization" labelField="orgName" valueField="id" #multiSelectOrg>
+          <!-- <sui-multi-select class="selection" formControlName="organisations" labelField="orgName" valueField="id" #multiSelectOrg>
             <sui-select-option *ngFor="let option of orgs" [value]="option"> </sui-select-option>
-          </sui-multi-select>
+          </sui-multi-select> -->
+
+          <sui-select class="selection" formControlName="organisations" labelField="orgName" valueField="id" #multiSelectOrg>
+            <sui-select-option *ngFor="let option of orgs" [value]="option"></sui-select-option>
+          </sui-select>
         </div>
      
-      <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.organization.invalid && userReg.controls['organization'].errors.required && !userReg.controls['organization'].pristine">
-        Error: Organization is invalid
+      <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.organisations.invalid && userReg.controls['organisations'].errors.required && !userReg.controls['organisations'].pristine">
+        Error: organisations is invalid
       </div>
     </div>
 

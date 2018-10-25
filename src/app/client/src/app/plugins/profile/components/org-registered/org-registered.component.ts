@@ -24,77 +24,73 @@ export class OrgRegisteredComponent implements OnInit {
   newOorganisationId: any;
   newOrgName: any;
   constructor(public activatedRoute: ActivatedRoute, public config: ConfigService, public content: ContentService,
-     public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
-     public profileService: ProfileService) {
+    public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
+    public profileService: ProfileService) {
     this.languages = this.config.dropDownConfig.COMMON.languages;
-    console.log('lang', this.languages);
+    // console.log('lang', this.languages);
     this.getOrgList();
-   }
-    ngOnInit() {
-      this.orgReg = new FormGroup({
-      orgName: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')]),
-      orgDesc: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')])
-      });
-    }
+  }
+  ngOnInit() {
+    this.orgReg = new FormGroup({
+    orgName: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')]),
+    orgDesc: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')])
+    });
+  }
 
-    getOrgList() {
-      this.orgSearch().subscribe((resp) => {
-        this.orgs = resp.result && resp.result.response && resp.result.response.content || [];
-        this.orgs = _.map(this.orgs, (obj) => {
-            return { 'id': obj.id, 'orgName': obj.orgName };
-        });
-        console.log(this.orgs);
+  getOrgList() {
+    this.orgSearch().subscribe((resp) => {
+      this.orgs = resp.result && resp.result.response && resp.result.response.content || [];
+      this.orgs = _.map(this.orgs, (obj) => {
+          return { 'id': obj.id, 'orgName': obj.orgName };
       });
-    }
+      console.log(this.orgs);
+    });
+  }
 
-    orgSearch(): Observable<ServerResponse> {
-      const option = {
-        url: this.config.urlConFig.URLS.ADMIN.ORG_SEARCH,
-        data: {
-          request: {
-            filters: {},
-            sort_by: {orgName: 'asc'}
-          }
+  orgSearch(): Observable<ServerResponse> {
+    const option = {
+      url: this.config.urlConFig.URLS.ADMIN.ORG_SEARCH,
+      data: {
+        request: {
+          filters: {},
+          sort_by: {orgName: 'asc'}
         }
-      };
-      return this.content.post(option);
-    }
-    openModal() {
-    this.showModal = true;
-    }
-    closeModal() {
-      this.showModal = false;
-      this.newOrgName = '';
-      this.newOorganisationId = '';
-      this.orgReg.reset();
-      this.showNewOrg = false;
-    }
-    onSubmitForm () {
-      this.showLoader = true;
-      // this.showModal = false;
-      console.log (this.orgReg.value);
-      const reqdata =  {
-        orgName: this.orgReg.value.orgName,
-        description: this.orgReg.value.orgDesc,
-        isRootOrg: false,
-        channel: (<HTMLInputElement>document.getElementById('defaultTenant')).value
-      };
-      console.log(reqdata);
-      this.profileService.createOrg(this.orgReg.value).pipe(
-        takeUntil(this.unsubscribe$))
-        .subscribe(res => {
-        this.showNewOrg = true;
-        this.newOorganisationId = res.result.organisationId;
-        this.newOrgName  = this.orgReg.value.orgName;
-        console.log(res);
-        console.log(this.newOrg);
-        this.showLoader = false;
-        this.toasterService.success(this.resourceService.messages.smsg.m0045);
-        // this.router.navigate(['/profile']);
-      },
-      err => {
-        this.showLoader = false;
-        this.toasterService.error(err.error.params.errmsg);
-      });
-    }
+      }
+    };
+    return this.content.post(option);
+  }
+  openModal() {
+  this.showModal = true;
+  }
+  closeModal() {
+    this.showModal = false;
+    this.newOrgName = '';
+    this.newOorganisationId = '';
+    this.orgReg.reset();
+    this.showNewOrg = false;
+  }
+  onSubmitForm () {
+    this.showLoader = true;
+    // this.showModal = false;
+    const reqdata =  {
+      orgName: this.orgReg.value.orgName,
+      description: this.orgReg.value.orgDesc,
+      isRootOrg: false,
+      channel: (<HTMLInputElement>document.getElementById('defaultTenant')).value
+    };
+    this.profileService.createOrg(reqdata).pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(res => {
+      this.showNewOrg = true;
+      this.newOorganisationId = res.result.organisationId;
+      this.newOrgName  = this.orgReg.value.orgName;
+      this.showLoader = false;
+      this.toasterService.success(this.resourceService.messages.smsg.m0045);
+      // this.router.navigate(['/profile']);
+    },
+    err => {
+      this.showLoader = false;
+      this.toasterService.error(err.error.params.errmsg);
+    });
+  }
 }
