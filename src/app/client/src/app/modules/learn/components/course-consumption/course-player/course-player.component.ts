@@ -793,9 +793,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
         resourceType: 'Learn'
       });
-      this.selectedModule.exercise = _.find(data.children, {
-        mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
-        resourceType: 'Lesson plan'
+
+      this.selectedModule.exercise = _.find(data.children, (child) => {
+        return (child.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl) &&
+        (child.resourceType.toLowerCase() === 'lesson plan');
       });
       this.fetchScoreData();
       this.navigateToContent({ id: youtubeContent.identifier, title: youtubeContent.name });
