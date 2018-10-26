@@ -20,7 +20,7 @@ import {
 import { JuliaNoteBookService, CoursePriceService } from './../../../services';
 import { PaymentService } from '@sunbird/core';
 import { UtilService } from '../../../../shared';
-import { DomSanitizer } from '@angular/platform-browser';
+import { NgxY2PlayerComponent, NgxY2PlayerOptions } from 'ngx-y2-player';
 
 @Component({
   selector: 'app-course-player',
@@ -141,14 +141,14 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     contentId: string,
     userId: string
   };
-    /**
-   * Time interval of pulling status
-   */
+  /**
+ * Time interval of pulling status
+ */
   statePullingClearTimeInterval: any;
   statePullingTimeInterval = 4000;
-    /**
-   * This variable is use for note book ping
-   */
+  /**
+ * This variable is use for note book ping
+ */
   private warnShown = false;
 
   progress: number;
@@ -166,6 +166,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   sideBarToggle: boolean;
   selectedModule: any;
   dashboardPermission = ['COURSE_MENTOR'];
+  scoreData: any;
+  youtubePlayerOptions: any;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -176,8 +178,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private courseProgressService: CourseProgressService,
     public juliaNoteBookService: JuliaNoteBookService,
     public coursePriceService: CoursePriceService,
-    public paymentService: PaymentService,
-    public sanitizer: DomSanitizer) {
+    public paymentService: PaymentService) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -225,7 +226,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
             return this.courseConsumptionService.getCourseHierarchy(params.courseId)
               .pipe(map((courseHierarchy) => ({ courseHierarchy })));
           }
-      }
+        }
       })).subscribe((response: any) => {
         this.courseHierarchy = response.courseHierarchy;
         this.courseInteractObject = {
@@ -264,12 +265,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   ngAfterViewInit() {
     this.courseProgressService.courseProgressData.pipe(
-    takeUntil(this.unsubscribe))
-    .subscribe((courseProgressData) => {
-      this.courseProgressData = courseProgressData;
-      this.progress = courseProgressData.progress ? Math.round(courseProgressData.progress) :
-        this.progress;
-    });
+      takeUntil(this.unsubscribe))
+      .subscribe((courseProgressData) => {
+        this.courseProgressData = courseProgressData;
+        this.progress = courseProgressData.progress ? Math.round(courseProgressData.progress) :
+          this.progress;
+      });
   }
   private parseChildContent() {
     const model = new TreeModel();
@@ -282,8 +283,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
           mimeTypeCount[node.model.mimeType] = 1;
         }
-        this.contentDetails.push({ id: node.model.identifier, title: node.model.name, children: node.model.children,
-          identifier: node.model.identifier});
+        this.contentDetails.push({
+          id: node.model.identifier, title: node.model.name, children: node.model.children,
+          identifier: node.model.identifier
+        });
       } else {
         this.contentIds.push(node.model.identifier);
       }
@@ -306,8 +309,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log('Content state diff check :: ', diff, new Date());
         if (diff.length > 0 || !this.contentStatus) {
           this.contentStatus = res.content;
+          this.fetchScoreData();
         }
-        if ( this.progress === 100 ) {
+        if (this.progress === 100) {
           this.stopPullingContentStatus();
         }
       }, (err) => {
@@ -352,7 +356,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setContentNavigators() {
-    const index = _.findIndex(this.courseHierarchy.children, {'identifier': this.selectedModule.identifier});
+    const index = _.findIndex(this.courseHierarchy.children, { 'identifier': this.selectedModule.identifier });
     this.prevPlaylistItem = this.courseHierarchy.children[index - 1];
     this.nextPlaylistItem = this.courseHierarchy.children[index + 1];
   }
@@ -369,38 +373,55 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.setConfig(config, data);
     } else {
       this.getConfigByContentSubscription = this.courseConsumptionService.getConfigByContent(data.id, options)
-      .subscribe((contentConfig) => {
-        this.setConfig(contentConfig, data);
-      }, (err) => {
-        this.loader = false;
-        this.toasterService.error(this.resourceService.messages.stmsg.m0009);
-    });
+        .subscribe((contentConfig) => {
+          this.setConfig(contentConfig, data);
+        }, (err) => {
+          this.loader = false;
+          this.toasterService.error(this.resourceService.messages.stmsg.m0009);
+        });
     }
+  }
+
+  playYoutubeContent = (videoId) => {
+    this.isVideoContent = false;
+    setTimeout(() => {
+      this.youtubePlayerOptions = {
+        videoId: videoId,
+        height: '100%', // you can set 'auto', it will use container width to set size
+        width: '100%',
+        // when container resize, it will call resize function, you can custom this by set resizeDebounceTime, default is 200
+        resizeDebounceTime: 0,
+        playerVars: {
+          autoplay: 0,
+          rel: 0
+        },
+        aspectRatio: (3 / 4), // you can set ratio of aspect ratio to auto resize with
+      };
+      this.isVideoContent = true;
+    }, 0);
   }
 
   public setConfig(config, data) {
     this.setContentInteractData(config);
     this.loader = false;
     this.playerConfig = config;
-    this.isVideoContent = false;
+    // this.isVideoContent = false;
     this.setDataForExternalContent();
     if ((config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl && !(this.istrustedClickXurl))
       || (config.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl)) {
-        this.showExtContentMsg = true;
-        // this.open_notebook(config.artifactUrl);
+      this.showExtContentMsg = true;
+      // this.open_notebook(config.artifactUrl);
     } else {
+      this.playYoutubeContent(this.getYoutubeVideoId(config.artifactUrl));
+      console.log('this.getYoutubeVideoId(config.artifactUrl)', this.getYoutubeVideoId(config.artifactUrl));
       this.showExtContentMsg = false;
-      setTimeout(() => {
-        this.isVideoContent = true;
-        this.videoContentId = this.getYoutubeVideoId(config.artifactUrl);
-      }, 100);
     }
     this.contentProgressEvent({});
     this.enableContentPlayer = true;
     this.contentTitle = data.title;
     this.breadcrumbsService.setBreadcrumbs([{ label: this.contentTitle, url: '' }]);
     // setTimeout(() => {
-    //   this.windowScrollService.smoothScroll('app-player-collection-renderer', 100);
+      this.windowScrollService.smoothScroll('app-player-collection-renderer', 100);
     // }, 0);
   }
 
@@ -427,14 +448,14 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     // if (playContentDetail.model.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl) {
     //   this.showExtContentMsg = false;
     //   this.istrustedClickXurl = true;
-      // this.open_notebook(playContentDetail.model.artifactUrl);
-      // this.externalUrlPreviewService.generateRedirectUrl(playContentDetail.model, this.userService.userid, this.courseId, this.batchId);
+    // this.open_notebook(playContentDetail.model.artifactUrl);
+    // this.externalUrlPreviewService.generateRedirectUrl(playContentDetail.model, this.userService.userid, this.courseId, this.batchId);
     // }
     this.enableContentPlayer = false;
     if ((this.batchId && !this.flaggedCourse && this.enrolledBatchInfo.status > 0)
       || this.courseStatus === 'Unlisted' || this.permissionService.checkRolesPermissions(['COURSE_MENTOR', 'CONTENT_REVIEWER'])
       || this.courseHierarchy.createdBy === this.userService.userid) {
-        this.enableContentPlayer = true;
+      this.enableContentPlayer = true;
       this.router.navigate([], navigationExtras);
     } else {
       this.toasterService.info('Please enrol to the course …');
@@ -454,11 +475,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.checkExerciseLink()) {
         console.log('Update course progress for content', request);
         this.updateContentsStateSubscription = this.courseConsumptionService.updateContentsState(request)
-        .subscribe((updatedRes) => {
-          this.contentStatus = updatedRes && updatedRes.content;
-        }, (err) => {
-          console.log('updating content status failed', err);
-        });
+          .subscribe((updatedRes) => {
+            this.contentStatus = updatedRes && updatedRes.content;
+          }, (err) => {
+            console.log('updating content status failed', err);
+          });
       }
     }
   }
@@ -466,7 +487,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   private checkExerciseLink() {
     if (this.playerConfig.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl &&
       this.playerConfig.resourceType === 'Lesson plan'
-      ) {
+    ) {
       // Start pulling status for sometime
       console.log('Check pooling is started or not :: ', this.statePullingClearTimeInterval);
       if (!this.statePullingClearTimeInterval) {
@@ -612,9 +633,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     };
   }
 
-    /**
-   * This function is use to start pulling content status
-   */
+  /**
+ * This function is use to start pulling content status
+ */
   startPullingContentStatus = () => {
     console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
     if (this.progress !== 100 && !this.statePullingClearTimeInterval) {
@@ -646,7 +667,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         } else if (activeTime > timeout - 900 && !this.warnShown) {
           this.toasterService.error('You have 15 minutes left on your notebook session. Please save your ' +
             'open notebooks to avoid losing data.');
-            this.warnShown = true;
+          this.warnShown = true;
         }
       }, (err) => {
         console.log('Ping failed', JSON.stringify(err));
@@ -657,18 +678,18 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * This function help to get the detail to load content
    */
-  loadCourseDetails () {
+  loadCourseDetails() {
     const uid = this.externalContentData.userId;
     const contentId = this.externalContentData.contentId;
     const courseId = this.externalContentData.courseId;
     const batchId = this.externalContentData.batchId;
     const courseDetailsStr = '?courseId=' + courseId + '&contentId=' + contentId +
-                             '&batchId=' + batchId + '&uid=' + uid;
+      '&batchId=' + batchId + '&uid=' + uid;
     return courseDetailsStr;
   }
-   /**
-   * This function is use to open note book in new tab
-   */
+  /**
+  * This function is use to open note book in new tab
+  */
   open_notebook = (url) => {
     // TODO: ssoPing should be renamed to doSSO or ssoJuliaBox or something like that
     // TODO: this method is required to be invoked only the very first time. It is not required all the time
@@ -700,7 +721,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.coursePriceService.searchPrice(request).subscribe((response) => {
       if (response && response.responseCode === 'OK') {
         this.productData = response.result.response.content[0];
-       } else {
+      } else {
         this.toasterService.error('Unable to get course price, Please try again later');
       }
     }, (err) => {
@@ -736,11 +757,11 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.toasterService.error('Loading notebook failed, Please try again later...');
     });
   }
-   /**
-   * Check notebook status: Notebook copied or not
-   * @param url : string
-   * @param noteBookStatusCount : number
-   */
+  /**
+  * Check notebook status: Notebook copied or not
+  * @param url : string
+  * @param noteBookStatusCount : number
+  */
   private checkNotebookStatus(url: string, noteBookStatusCount: number = 1) {
     this.juliaNoteBookService.checkNoteBookStatus(url).subscribe((response) => {
       if (response && response.responseCode === 'OK') {
@@ -767,12 +788,17 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   navigateToCollection(data) {
     if (this.enrolledCourse) {
       this.selectedModule = data;
-      const youtubeContent: any = _.find(data.children, {mimeType: 'video/x-youtube'}) || {};
-      this.selectedModule.tutorial = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
-                                        resourceType: 'Learn'});
-      this.selectedModule.exercise = _.find(data.children, {mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
-                                          resourceType: 'Lesson plan'});
-      this.navigateToContent({id: youtubeContent.identifier, title: youtubeContent.name});
+      const youtubeContent: any = _.find(data.children, { mimeType: 'video/x-youtube' }) || {};
+      this.selectedModule.tutorial = _.find(data.children, {
+        mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
+        resourceType: 'Learn'
+      });
+      this.selectedModule.exercise = _.find(data.children, {
+        mimeType: this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl,
+        resourceType: 'Lesson plan'
+      });
+      this.fetchScoreData();
+      this.navigateToContent({ id: youtubeContent.identifier, title: youtubeContent.name });
     } else {
       this.toasterService.info('Please enrol to the course …');
     }
@@ -780,7 +806,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   lastPlayedModule(contentId) {
     this.courseHierarchy.children.forEach(element => {
-      const isModule = _.find(element.children, {identifier: contentId});
+      const isModule = _.find(element.children, { identifier: contentId });
       if (isModule) {
         this.selectedModule = element;
         this.navigateToCollection(element);
@@ -797,4 +823,13 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   showDashboard() {
     this.router.navigate(['learn/course', this.courseId, 'dashboard']);
   }
- }
+
+  fetchScoreData() {
+    setTimeout(() => {
+      this.scoreData = _.find(this.contentStatus, {
+        'contentId': this.selectedModule.exercise &&
+          this.selectedModule.exercise.identifier
+      });
+    }, 0);
+  }
+}

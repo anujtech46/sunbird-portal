@@ -92,3 +92,31 @@
 .margin-top--10px {
     margin-top: -10px;
 }
+
+@media screen and  (min-width: 1024px) and (max-width: 1380px) {
+    .sideBarSibling {
+      width: 60%
+    }
+    .youtubePlayerHeight {
+        height: 400px;
+    }
+}
+
+@media screen and  (min-width: 1380px) {
+    .sideBarSibling {
+      width: 75%
+    }
+    .youtubePlayerHeight {
+        height: 600px;
+    }
+}
+
+.sidebarMenuAlign {
+    height: inherit;
+    position: relative;
+}
+
+.menuSideBar {
+    position: absolute;
+    top: auto !important;
+}

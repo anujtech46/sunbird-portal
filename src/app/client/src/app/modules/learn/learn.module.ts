@@ -16,7 +16,7 @@ import { CourseConsumptionService, CourseBatchService, CourseProgressService } f
 import { CoreModule } from '@sunbird/core';
 import { NotesModule } from '@sunbird/notes';
 import { DashboardModule } from '@sunbird/dashboard';
-import { YoutubePlayerModule } from 'ngx-youtube-player';
+import { NgxY2PlayerModule } from 'ngx-y2-player';
 
 // Julia Related services
 import { CourseBadgeService, JuliaNoteBookService, CoursePriceService, CourseCertificateService } from './services';
@@ -36,7 +36,7 @@ import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent,
     NotesModule,
     TelemetryModule,
     NgInviewModule,
-    YoutubePlayerModule
+    NgxY2PlayerModule
   ],
   providers: [CourseConsumptionService, CourseBatchService, CourseProgressService,
     CourseBadgeService,

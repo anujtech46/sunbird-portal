@@ -1,4 +1,4 @@
-<div class="ui stackable grid courseheader" *ngIf="courseHierarchy">
+<div class="ui stackable grid courseheader" *ngIf="courseHierarchy" id="app-player-collection-renderer">
   <div class="one wide column"></div>
   <div class="seven wide column P0">
     <div class="ui white tiny header">
@@ -21,7 +21,7 @@
     </div>
   </div>
   <div *ngIf="!enrolledCourse" class="three wide column P0 margin-top--10px">
-    <div class="ui white right floated tiny header margin-top--10px" >
+    <div class="ui white right floated tiny header margin-top--10px">
       <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier"
         [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
       <div *ngIf="courseMentor" appPermission [permission]="dashboardPermission">
@@ -31,50 +31,65 @@
   </div>
   <div class="one wide column"></div>
 </div>
-<div class="ui stackable grid margin-top-20" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
+<div class="ui stackable grid" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
   <div class="one wide column"></div>
   <div class="ten wide column">
     <div class="ui stackable grid">
       <div *ngIf="enrolledCourse" [ngClass]="{'nine wide column': !enrolledCourse, 'twelve wide column': enrolledCourse}"
-        style="height: 700px !important;">
+        style="height: 85vh !important;">
+        <div class="ui tiny right floated header" *ngIf="scoreData && (scoreData.result || scoreData.grade)">
+          <a class="ui blue label" target="_blank" href="{{scoreData.result}}" *ngIf="scoreData.result">
+            Feedback
+          </a>
+          <div class="ui blue label" nfIf="scoreData.grade">
+            {{scoreData.grade}}&nbsp;/&nbsp;{{scoreData.score}}
+          </div>
+        </div>
         <div class="ui button customiconbtn" *ngIf="!sideBarToggle" (click)="sidebar.toggle()">
           <a class="item right float customicon">
             <i class="sidebar bluetext icon"></i>
           </a>
         </div>
-        <div class="ui header" *ngIf="sideBarToggle">MODULES</div>
+        <div class="ui header" *ngIf="sideBarToggle">
+          <div class="ui stackable grid">
+            <div class="column">
+              MODULES
+              <span class="ui button" style="margin-left: 167px;" (click)="sidebar.toggle()">
+                <i class="chevron left icon"></i>
+              </span>
+            </div>
+          </div>
+        </div>
         <sui-sidebar-container>
           <sui-sidebar class="vertical massive" #sidebar [transition]="'push'" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
-            <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
-              <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
-                <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
-                {{child.name}}
+            <div class="sidebarMenuAlign">
+              <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+                <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
+                  <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
+                  {{child.name}}
+                </div>
               </div>
             </div>
-            <div class="ui bottom attached demo big menu">
-              <a class="item right float customicon" (click)="sidebar.toggle()">
-                <i class="chevron left icon"></i>
-              </a>
-            </div>
-
           </sui-sidebar>
-          <sui-sidebar-sibling>
-            <div class="ui basic segment" *ngIf="enrolledCourse">
-              <div class="ui grid" *ngIf="isVideoContent">
-                <div [ngClass]="{'nine wide column': sideBarToggle, 'twelve wide column': !sideBarToggle}">
-                  <div class="row" [appTelemetryImpression]="telemetryContentImpression">
-                    <youtube-player [videoId]="videoContentId" [width]="'100%'" [height]="'500'"></youtube-player>
+          <sui-sidebar-sibling [ngClass]="{ sideBarSibling: sideBarToggle } ">
+            <div class="ui basic segment" *ngIf="enrolledCourse && playerConfig">
+              <div class="ui grid">
+                <div class="twelve wide column">
+                  <div class="row" *ngIf="isVideoContent" class="youtubePlayerHeight" [appTelemetryImpression]="telemetryContentImpression"
+                    #container>
+                    <ngx-y2-player #video [playerOptions]="youtubePlayerOptions" [container]="container">
+                    </ngx-y2-player>
                   </div>
                   <div class="row">
                     <div class="ui grid margin-top-0">
-                      <div class="six wide column">
+                      <div class="seven wide column">
                         <div class="row">
                           <div class="ui large header">{{playerConfig.name}}</div>
                           <div class="ui header">
                             <div *ngIf="playerConfig.description" class="margin-top-10">
                               <p *ngIf="!readMore" class="courseStructureDesc"> {{ playerConfig.description |
-                                slice:0:200 }}&nbsp;
-                                <span class="ui cardsKnowMore mouse-pointer" *ngIf="playerConfig.description && playerConfig.description.length > 200 && readMore === false"
+                                slice:0:150 }}&nbsp;
+                                <span class="ui cardsKnowMore mouse-pointer" *ngIf="playerConfig.description && playerConfig.description.length > 150 && readMore === false"
                                   (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
                               </p>
                               <p *ngIf="readMore" class="courseStructureDesc"> {{
@@ -97,10 +112,12 @@
                           </button>
                         </div>
                       </div>
-                      <div class="three wide column infobox">
+                      <div class="five wide column infobox">
                         <p>LET'S BEGIN</p>
-                        <p>Follow along with the <span class="bluetext">interactive tutorial</span> and then
-                          complete the <span class="bluetext">exercise</span> to demonstrate your knowledge</p>
+                        <p>Follow along with the <a class="bluetext mouse-pointer" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">interactive
+                            tutorial</a> and then
+                          complete the <a class="bluetext mouse-pointer" (click)="open_notebook(selectedModule.exercise.artifactUrl)">exercise</a>
+                          to demonstrate your knowledge</p>
                       </div>
                     </div>
                   </div>
@@ -110,7 +127,7 @@
           </sui-sidebar-sibling>
         </sui-sidebar-container>
       </div>
-      <div class='three wide column' *ngIf="!enrolledCourse">
+      <div *ngIf="!enrolledCourse">
         <div class="ui header">MODULES</div>
         <div class="ui vertical massive menu">
           <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
@@ -121,7 +138,7 @@
           </div>
         </div>
       </div>
-      <div class='three wide column' *ngIf="!enrolledCourse">
+      <div *ngIf="!enrolledCourse">
         <div class="rightSideSectionCards ui card instructors-panel">
           <div class="addnotes-panel content">
             <ul class="instructors-list">
