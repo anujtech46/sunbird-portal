@@ -1,18 +1,19 @@
-<sui-modal [appTelemetryImpression]="telemetryImpression" [isClosable]="false" [size]="'normal'" (dismissed)="redirect();" #modal>
+<sui-modal [appTelemetryImpression]="telemetryImpression" [isClosable]="false" [size]="'normal'" (dismissed)="redirect();"
+  #modal>
   <div class="header">
     <div class="ui grid">
       <div class="eleven wide tablet computer only column">
         <span class="ui header">{{resourceService?.frmelmnts?.scttl?.signup}}</span>
       </div>
       <div class="one wide tablet computer only column">
-        <i class="close icon" (click)="modal.deny()"></i>
+        <i class="close icon mouse-pointer" (click)="modal.deny()"></i>
       </div>
       <div class="ten wide mobile only column">
-          <span class="ui header">{{resourceService?.frmelmnts?.scttl?.signup}}</span>
-        </div>
-        <div class="two wide mobile only column">
-          <i class="close icon" (click)="modal.deny()"></i>
-        </div>
+        <span class="ui header">{{resourceService?.frmelmnts?.scttl?.signup}}</span>
+      </div>
+      <div class="two wide mobile only column">
+        <i class="close icon" (click)="modal.deny()"></i>
+      </div>
     </div>
   </div>
   <div class="content">
@@ -21,10 +22,7 @@
         <div class=" two fields">
           <div class="required field" [ngClass]="signUpForm.controls.userName.invalid && signUpForm.controls['userName'].errors.required && !signUpForm.controls['userName'].pristine || (signUpForm.controls['userName'].errors && signUpForm.controls['userName'].errors.pattern) ? 'error' : ''">
             <label>{{resourceService?.frmelmnts?.lbl?.username}}</label>
-              <div class="ui grid margin-none">
-                <input class="eight wide field padding-right-none" type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required">
-                <input class="four wide field padding-left-none" type="text" formControlName="providerName">
-              </div>
+            <input type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required">
             <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="signUpForm.controls.userName.invalid && signUpForm.controls['userName'].errors.required && !signUpForm.controls['userName'].pristine || (signUpForm.controls['userName'].errors && signUpForm.controls['userName'].errors.pattern)">
               {{resourceService?.messages?.stmsg?.m0087}}
             </div>
@@ -53,11 +51,7 @@
       <div class="margin-top-0 margin-bottom-10 ui pointing red basic label below" *ngIf="signUpForm.controls.firstName.invalid && signUpForm.controls['firstName'].errors.required && !signUpForm.controls['firstName'].pristine || (signUpForm.controls['firstName'].errors && signUpForm.controls['firstName'].errors.pattern)">
         {{resourceService?.messages?.stmsg?.m0092}}
       </div>
-      <div class="two fields">
-        <div class="field">
-          <label>{{resourceService?.frmelmnts?.lbl?.phonenumber}}</label>
-          <input type="text" formControlName="phone" placeholder="eg:XXXXXXXXXX">
-        </div>
+      <div class="field">
         <div class="required field" [ngClass]="signUpForm.controls.email.invalid && signUpForm.controls['email'].errors.required && !signUpForm.controls['email'].pristine || (signUpForm.controls['email'].errors && signUpForm.controls['email'].errors.pattern) ? 'error' : ''">
           <label>{{resourceService?.frmelmnts?.lbl?.email}}</label>
           <input type="text" formControlName="email" placeholder="User@example.com">
