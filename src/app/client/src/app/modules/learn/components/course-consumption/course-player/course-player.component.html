@@ -1,6 +1,7 @@
-<div class="ui stackable grid courseheader" *ngIf="courseHierarchy" id="app-player-collection-renderer">
+<div class="ui stackable grid" [ngClass]="enrolledCourse ? 'courseheader' : 'courseheaderbg'" *ngIf="courseHierarchy" id="app-player-collection-renderer">
+  <img src="/assets/images/landingPage.jpg"  *ngIf="!enrolledCourse" alt="{{courseHierarchy.name}}" class="courseStructureImage">
   <div class="one wide column"></div>
-  <div class="seven wide column P0">
+  <div class="seven wide column P0" *ngIf="enrolledCourse">
     <div class="ui white tiny header">
       <a class="ui grey large label">{{courseHierarchy.gradeLevel &&
         courseHierarchy.gradeLevel[0]}}
@@ -20,23 +21,41 @@
       </button>
     </div>
   </div>
-  <div *ngIf="!enrolledCourse" class="three wide column P0 margin-top--10px">
-    <div class="ui white right floated tiny header margin-top--10px">
-      <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier"
-        [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
-      <div *ngIf="courseMentor" appPermission [permission]="dashboardPermission">
-        <button class="blue right floated ui button courseHeaderButton margin-top-10" (click)="showDashboard()">{{resourceService?.frmelmnts?.btn?.viewcoursestats}}</button>
-      </div>
-    </div>
+  <div class="ten wide column" *ngIf="!enrolledCourse">
+    <div class="courseStructureHeaderText">{{courseHierarchy.name}}</div>
   </div>
   <div class="one wide column"></div>
 </div>
+
+<div class="ui stackable grid" *ngIf="!enrolledCourse">
+    <div class="one wide column"></div>
+    <div class="ten wide column border-btm margin-bottom-10">
+      <div class="pull-left">
+        <a class="ui grey large label MR10">{{courseHierarchy.gradeLevel &&
+          courseHierarchy.gradeLevel[0]}}
+        </a>
+        <span class="smtext bluetext">{{courseHierarchy.subject}}</span> &nbsp;|&nbsp;
+        <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp;
+        <span>COST: <span class="bluetext"> FREE</span></span>
+      </div>
+      <div class="pull-right">
+        <!-- <div *ngIf="!enrolledCourse" class="three wide column P0 margin-top--10px">
+          <div class="ui white right floated tiny header margin-top--10px"> -->
+            <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+            <div *ngIf="courseMentor" appPermission [permission]="dashboardPermission">
+              <button class="blue right floated ui button courseHeaderButton margin-top-10" (click)="showDashboard()">{{resourceService?.frmelmnts?.btn?.viewcoursestats}}</button>
+            </div>
+          <!-- </div>
+        </div> -->
+      </div>
+    </div>
+    <div class="one wide column"></div>
+</div>
+
 <div class="ui stackable grid" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
   <div class="one wide column"></div>
   <div class="ten wide column">
-    <div class="ui stackable grid">
-      <div *ngIf="enrolledCourse" [ngClass]="{'nine wide column': !enrolledCourse, 'twelve wide column': enrolledCourse}"
-        style="height: 85vh !important;">
+    <div *ngIf="enrolledCourse" style="height: 85vh !important;">
         <div class="ui tiny right floated header" *ngIf="scoreData && (scoreData.result || scoreData.grade)">
           <a class="ui blue label" target="_blank" href="{{scoreData.result}}" *ngIf="scoreData.result">
             Feedback
@@ -126,44 +145,86 @@
             </div>
           </sui-sidebar-sibling>
         </sui-sidebar-container>
-      </div>
-      <div *ngIf="!enrolledCourse">
-        <div class="ui header">MODULES</div>
-        <div class="ui vertical massive menu">
-          <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
-            <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
-              <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
-              {{child.name}}
+    </div>
+    <div *ngIf="!enrolledCourse">
+      <!-- <div class="ui header">MODULES</div>
+      <div class="ui vertical massive menu">
+        <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+          <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
+            <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
+            {{child.name}}
+          </div>
+        </div>
+      </div> -->
+      
+      <div class="ui stackable grid">
+        <div class="eight wide column">
+          <div class="ui header">
+            <span class="content courseStructureHeading">
+              {{resourceService.frmelmnts.lbl.aboutthecourse}}
+            </span>
+            <div *ngIf="courseHierarchy.description" class="margin-top-10">
+              <p *ngIf="!readMore" class="courseStructureDesc"> {{ courseHierarchy.description | slice:0:200 }}&nbsp;
+                <span class="ui cardsKnowMore mouse-pointer" *ngIf="courseHierarchy.description && courseHierarchy.description.length > 200 && readMore === false"
+                  (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
+              </p>
+              <p *ngIf="readMore" class="courseStructureDesc"> {{ courseHierarchy.description}}&nbsp;
+                <span class="ui cardsKnowMore mouse-pointer" (click)="readMore = false;">{{resourceService.frmelmnts.lbl.readless}}</span>
+              </p>
             </div>
           </div>
-        </div>
-      </div>
-      <div *ngIf="!enrolledCourse">
-        <div class="rightSideSectionCards ui card instructors-panel">
-          <div class="addnotes-panel content">
-            <ul class="instructors-list">
-              <li>
-                <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
-              </li>
-              <li>
-                <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
-              </li>
-              <li>
-                <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
-              </li>
-            </ul>
-            <p>INSTRUCTORS</p>
-            <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
+
+          <div class="ui header">
+            <span class="content courseStructureHeading">
+              {{resourceService.frmelmnts.lbl.coursestructure}}
+            </span>
           </div>
+          <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"  [contentStatus]="contentStatus"></app-collection-tree>
         </div>
-        <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
-          [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
-        <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
-          <app-course-badge></app-course-badge>
-          <br>
-        </div>
-        <div *ngIf="progress === 100">
-          <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
+        <div class="four wide column">
+          <div class="rightSideSectionCards ui card instructors-panel">
+            <div class="addnotes-panel content">
+              <ul class="instructors-list">
+                <li>
+                  <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
+                </li>
+                <li>
+                  <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
+                </li>
+                <li>
+                  <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
+                </li>
+              </ul>
+              <p>INSTRUCTORS</p>
+              <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
+            </div>
+          </div>
+          <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
+            [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+          <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
+            <app-course-badge></app-course-badge>
+            <br>
+          </div>
+          <div *ngIf="progress === 100">
+            <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
+          </div>
+
+          <div class="rightSideSectionCards ui card getstartedpanel">
+            <div class="content">
+              <div class="margin-bottom-20 title">GET STARTED <span class="pull-right starticon"><img src="../../../../../../assets/images/getStarted_icon.png" alt=""></span> </div>
+              <div class="description margin-bottom-10">
+                <p>Each course contains modules which have a <span class="bluetext">lecture video</span>. Follow along with the <span class="bluetext">interactive tutorial</span> and then complete the <span class="bluetext">exercise</span> to demonstrate your knowledge.</p>
+              </div>
+            </div>
+            <div class="extra content">
+              <div class="left floated freetext">
+                FREE
+              </div>
+              <div class="right floated author">
+                <button class="ui basic blue button">Enroll</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

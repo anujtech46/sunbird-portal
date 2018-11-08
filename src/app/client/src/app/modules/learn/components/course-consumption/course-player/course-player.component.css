@@ -25,7 +25,7 @@
     background: #3449d2 !important; 
     padding-top: 25px;
     padding-bottom: 15px;
-    margin: 10px 0; 
+    margin: 0 0 10px; 
     color: #ffffff; 
     font-family: 'sunbirdregularfont'; 
 } 
@@ -39,6 +39,62 @@
     cursor: context-menu; 
     font-family: 'sunbirdregularfont'; 
 } 
+.courseStructureHeaderText {
+    font-size: 2.4em;
+    font-family: 'robotoregularfont';
+    position: absolute;
+    bottom: 56px;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    color: #ffffff;
+    max-height: 70px;
+    padding-top: 1% !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.courseStructureImage  {
+    max-height: 225px;
+    width: 100%;
+    padding: 0;
+}
+
+.courseheaderbg {
+    background: #3449d2 !important;
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-family: 'sunbirdregularfont';
+    border-bottom: 5px solid #88e3ec !important;
+    max-height: 230px !important;
+    padding: 0;
+}
+.border-btm .label.grey {
+    background: #737dc6 !important;
+    font-family: 'sunbirdregularfont';
+    font-weight: normal;
+    text-transform: uppercase;
+}
+.getstartedpanel .title {
+    font-size: 15px;
+}
+.getstartedpanel .extra.content {
+    background: #3449d2 !important;
+    color: #fff;
+    border-radius: 0 !important;
+}
+.getstartedpanel .extra.content .freetext  {
+    font-size: 18px;
+    padding: 5px 0;
+    font-weight: normal;
+}
+.getstartedpanel .extra.content .blue.button {
+    background: #ffffff !important;
+}
+.starticon img {
+    height: 28px;
+    margin: -6px 24px 0 0;
+}
 .courseheader .lgtext { 
     font-size: 22px; 
 } 
@@ -82,6 +138,13 @@
 }
 .ui.sidebar {
     overflow-x: hidden !important;
+}
+.ui.sidebar.menu .item {
+    padding: 1.1em 1em 1.1em 1.5em !important;
+}
+.ui.sidebar .item i.caret.right.icon.bluetext {
+    position: absolute;
+    left: 4px;
 }
 .infobox {
     border-left: 1px solid #cccccc;
