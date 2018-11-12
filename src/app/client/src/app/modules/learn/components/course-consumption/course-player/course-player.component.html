@@ -1,9 +1,9 @@
-<div class="ui stackable grid courseheaderbg" *ngIf="!enrolledCourse && courseHierarchy" id="app-player-collection-renderer">
+<div class="ui stackable grid courseheaderbg" *ngIf="!enrolledCourse && courseHierarchy && !loader" id="app-player-collection-renderer">
   <img src="{{courseHierarchy.posterImage || courseHierarchy.appIcon || '/assets/images/landingPage.jpg'}}" *ngIf="!enrolledCourse" alt="{{courseHierarchy.name}}" class="courseStructureImage">
   <div class="courseStructureHeaderText" >{{courseHierarchy.name}}</div>
 </div>
 
-<div class="ui stackable grid courseheader" *ngIf="enrolledCourse && courseHierarchy" id="app-player-collection-renderer">
+<div class="ui stackable grid courseheader" *ngIf="enrolledCourse && courseHierarchy && courseHierarchy.name" id="app-player-collection-renderer">
   <div class="one wide column"></div>
   <div class="seven wide column P0">
     <div class="ui white tiny header">
@@ -28,7 +28,7 @@
   <div class="one wide column"></div>
 </div>
 
-<div class="ui stackable grid" *ngIf="!enrolledCourse">
+<div class="ui stackable grid" *ngIf="!enrolledCourse && courseHierarchy && !loader">
     <div class="one wide column"></div>
     <div class="ten wide column border-btm margin-bottom-10">
       <div class="pull-left">
@@ -55,13 +55,13 @@
 
 <div class="ui stackable grid" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
   <div class="one wide column"></div>
-  <div class="ten wide column">
-    <div *ngIf="enrolledCourse" style="height: 85vh !important;">
+  <div class="ten wide column" *ngIf="courseHierarchy && courseHierarchy.name">
+    <div *ngIf="enrolledCourse && !loader" style="height: 85vh !important;">
         <div class="ui tiny right floated header" *ngIf="scoreData && (scoreData.result || scoreData.grade)">
           <a class="ui blue label" target="_blank" href="{{scoreData.result}}" *ngIf="scoreData.result">
             Feedback
           </a>
-          <div class="ui blue label" nfIf="scoreData.grade">
+          <div class="ui blue label" *ngIf="scoreData.grade">
             {{scoreData.grade}}&nbsp;/&nbsp;{{scoreData.score}}
           </div>
         </div>
@@ -120,12 +120,12 @@
                           </div>
                         </div>
                         <div class="row">
-                          <button class="ui blue basic button MR10" *ngIf="selectedModule.tutorial" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">
+                          <button class="ui blue basic button MR10" *ngIf="selectedModule.tutorial" (click)="open_notebook($event, selectedModule.tutorial.artifactUrl)">
                             <!-- <i class="icon user"></i> -->
                             <img src="../../../../../../assets/images/tuto.png" class="iconimg" alt="">
                             Tutorial
                           </button>
-                          <button class="ui blue basic button" *ngIf="selectedModule.exercise" (click)="open_notebook(selectedModule.exercise.artifactUrl)">
+                          <button class="ui blue basic button" *ngIf="selectedModule.exercise" (click)="open_notebook($event, selectedModule.exercise.artifactUrl)">
                             <img src="../../../../../../assets/images/assets.png" class="iconimg" alt="">
                             <!-- <i class="icon user"></i> -->
                             Exercise
@@ -134,9 +134,9 @@
                       </div>
                       <div class="five wide column infobox">
                         <p>LET'S BEGIN</p>
-                        <p>Follow along with the <a class="bluetext mouse-pointer" (click)="open_notebook(selectedModule.tutorial.artifactUrl)">interactive
+                        <p>Follow along with the <a class="bluetext mouse-pointer" (click)="open_notebook($event, selectedModule.tutorial.artifactUrl)">interactive
                             tutorial</a> and then
-                          complete the <a class="bluetext mouse-pointer" (click)="open_notebook(selectedModule.exercise.artifactUrl)">exercise</a>
+                          complete the <a class="bluetext mouse-pointer" (click)="open_notebook($event, selectedModule.exercise.artifactUrl)">exercise</a>
                           to demonstrate your knowledge</p>
                       </div>
                     </div>
@@ -147,7 +147,7 @@
           </sui-sidebar-sibling>
         </sui-sidebar-container>
     </div>
-    <div *ngIf="!enrolledCourse">
+    <div *ngIf="!enrolledCourse && !loader" >
       <!-- <div class="ui header">MODULES</div>
       <div class="ui vertical massive menu">
         <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
@@ -230,7 +230,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="loader">
+    <div *ngIf="loader || !courseHierarchy">
       <app-loader [data]="loaderMessage"></app-loader>
     </div>
     <div *ngIf="showError">
