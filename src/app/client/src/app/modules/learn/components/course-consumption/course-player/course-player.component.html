@@ -44,7 +44,7 @@
           <div class="ui white right floated tiny header margin-top--10px"> -->
             <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
             <div *ngIf="courseMentor" appPermission [permission]="dashboardPermission">
-              <button class="blue right floated ui button courseHeaderButton margin-top-10" (click)="showDashboard()">{{resourceService?.frmelmnts?.btn?.viewcoursestats}}</button>
+              <button class="blue right floated ui button" (click)="showDashboard()">{{resourceService?.frmelmnts?.btn?.viewcoursestats}}</button>
             </div>
           <!-- </div>
         </div> -->
