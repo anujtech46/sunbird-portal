@@ -1,9 +1,5 @@
-
 <div *ngIf="!enrolledCourse && !courseMentor && isCourseHeader && batchList && batchList.length > 0">
-    <button
-        class="ui blue large button" (click)="enrollBatch(batchList[0])">
-        {{resourceService?.frmelmnts?.btn?.enroll}}
-    </button>
+    <button class="ui basic blue button" (click)="enrollBatch(batchList[0])">{{resourceService?.frmelmnts?.btn?.enroll}}</button>
 </div>
 
 <div *ngIf="!enrolledCourse && courseMentor && !isCourseHeader" class="rightSideSectionCards ui card">

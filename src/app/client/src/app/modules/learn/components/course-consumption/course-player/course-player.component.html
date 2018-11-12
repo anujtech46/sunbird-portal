@@ -1,7 +1,11 @@
-<div class="ui stackable grid" [ngClass]="enrolledCourse ? 'courseheader' : 'courseheaderbg'" *ngIf="courseHierarchy" id="app-player-collection-renderer">
-  <img src="/assets/images/landingPage.jpg"  *ngIf="!enrolledCourse" alt="{{courseHierarchy.name}}" class="courseStructureImage">
+<div class="ui stackable grid courseheaderbg" *ngIf="!enrolledCourse && courseHierarchy" id="app-player-collection-renderer">
+  <img src="{{courseHierarchy.posterImage || courseHierarchy.appIcon || '/assets/images/landingPage.jpg'}}" *ngIf="!enrolledCourse" alt="{{courseHierarchy.name}}" class="courseStructureImage">
+  <div class="courseStructureHeaderText" >{{courseHierarchy.name}}</div>
+</div>
+
+<div class="ui stackable grid courseheader" *ngIf="enrolledCourse && courseHierarchy" id="app-player-collection-renderer">
   <div class="one wide column"></div>
-  <div class="seven wide column P0" *ngIf="enrolledCourse">
+  <div class="seven wide column P0">
     <div class="ui white tiny header">
       <a class="ui grey large label">{{courseHierarchy.gradeLevel &&
         courseHierarchy.gradeLevel[0]}}
@@ -10,7 +14,7 @@
       <span class="smtext">{{courseHierarchy.subject}}</span>
     </div>
   </div>
-  <div class="three wide column P0" *ngIf="selectedModule && enrolledCourse">
+  <div class="three wide column P0" *ngIf="selectedModule">
     <div class="ui white tiny right floated header">
       <button class="ui mini blue button" [disabled]="prevPlaylistItem === undefined">
         <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
@@ -20,9 +24,6 @@
         <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
       </button>
     </div>
-  </div>
-  <div class="ten wide column" *ngIf="!enrolledCourse">
-    <div class="courseStructureHeaderText">{{courseHierarchy.name}}</div>
   </div>
   <div class="one wide column"></div>
 </div>
@@ -35,7 +36,7 @@
           courseHierarchy.gradeLevel[0]}}
         </a>
         <span class="smtext bluetext">{{courseHierarchy.subject}}</span> &nbsp;|&nbsp;
-        <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp;
+        <!-- <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp; -->
         <span>COST: <span class="bluetext"> FREE</span></span>
       </div>
       <div class="pull-right">
@@ -221,7 +222,8 @@
                 FREE
               </div>
               <div class="right floated author">
-                <button class="ui basic blue button">Enroll</button>
+                <!-- <button class="ui basic blue button">Enroll</button> -->
+                <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
               </div>
             </div>
           </div>

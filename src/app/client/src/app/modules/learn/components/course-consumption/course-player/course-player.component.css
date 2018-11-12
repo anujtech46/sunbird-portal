@@ -43,31 +43,34 @@
     font-size: 2.4em;
     font-family: 'robotoregularfont';
     position: absolute;
-    bottom: 56px;
+    bottom: 0;
     left: 0;
     width: 100%;
     margin: 0;
     color: #ffffff;
     max-height: 70px;
-    padding-top: 1% !important;
+    padding: 0.5% 0 0.5%  8.33%!important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    background: rgba(0,0,0,0.5);
 }
 .courseStructureImage  {
-    max-height: 225px;
-    width: 100%;
+    /* max-height: 225px; */
+    width: auto;
     padding: 0;
+    margin: 0 auto;
+    display: block;
 }
-
 .courseheaderbg {
-    background: #3449d2 !important;
+    background: #ffffff !important;
     margin: 0 0 10px;
     color: #ffffff;
     font-family: 'sunbirdregularfont';
     border-bottom: 5px solid #88e3ec !important;
-    max-height: 230px !important;
+    height: 230px !important;
     padding: 0;
+    position: relative;
 }
 .border-btm .label.grey {
     background: #737dc6 !important;
