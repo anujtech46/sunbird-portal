@@ -18,8 +18,7 @@ import { ProfileBadgeComponent } from './components/profile-badge/profile-badge.
 import { MenuItemComponent } from './components/menu-item/menu-item.component';
 import { NgInviewModule } from 'angular-inport';
 import { TelemetryModule } from '@sunbird/telemetry';
-import { UserRegisteredComponent } from './components/user-registered/user-registered.component';
-import { OrgRegisteredComponent } from './components/org-registered/org-registered.component';
+import { UserRegisteredComponent, OrgRegisteredComponent } from './components';
 @NgModule({
   imports: [
     CommonModule,

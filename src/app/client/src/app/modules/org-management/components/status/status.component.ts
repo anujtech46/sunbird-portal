@@ -91,7 +91,8 @@ export class StatusComponent implements OnInit, OnDestroy {
       if (data.redirectUrl) {
         this.redirectUrl = data.redirectUrl;
       } else {
-        this.redirectUrl = '/home';
+        // this.redirectUrl = '/home';
+        this.redirectUrl = '/workspace/content/addUsersOrgs';
       }
     });
     this.statusForm = this.sbFormBuilder.group({

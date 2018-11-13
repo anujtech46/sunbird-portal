@@ -109,10 +109,12 @@ export class UserUploadComponent implements OnInit, OnDestroy {
  */
   ngOnInit() {
     this.activatedRoute.data.subscribe(data => {
+      console.log(data);
       if (data.redirectUrl) {
         this.redirectUrl = data.redirectUrl;
       } else {
-        this.redirectUrl = '/home';
+        // this.redirectUrl = '/home';
+        this.redirectUrl = '/workspace/content/addUsersOrgs';
       }
     });
     this.uploadUserForm = this.sbFormBuilder.group({

@@ -15,8 +15,10 @@ import {
   BatchListComponent, BatchCardComponent, UpdateBatchComponent,
   UpforreviewContentplayerComponent, FlagConentplayerComponent, ReviewsubmissionsContentplayerComponent,
   PublishedPopupComponent, RequestChangesPopupComponent, LimitedPublishedComponent,
-  AllContentComponent, FlagReviewerComponent, AllMyContentFilterComponent
+  AllContentComponent, FlagReviewerComponent, AllMyContentFilterComponent, AddusersorgsComponent
 } from './components';
+import { OrgManagementModule } from '@sunbird/org-management';
+import { ProfileModule } from '@sunbird/profile';
 import { NgInviewModule } from 'angular-inport';
 import { TelemetryModule } from '@sunbird/telemetry';
 @NgModule({
@@ -29,7 +31,9 @@ import { TelemetryModule } from '@sunbird/telemetry';
     CoreModule,
     ReactiveFormsModule,
     NgInviewModule,
-    TelemetryModule
+    TelemetryModule,
+    OrgManagementModule,
+    ProfileModule
   ],
   declarations: [WorkspaceComponent, WorkspacesidebarComponent,
     CreateContentComponent, DraftComponent, ReviewSubmissionsComponent,
@@ -44,7 +48,8 @@ import { TelemetryModule } from '@sunbird/telemetry';
     LimitedPublishedComponent,
     AllContentComponent,
     FlagReviewerComponent,
-    AllMyContentFilterComponent
+    AllMyContentFilterComponent,
+    AddusersorgsComponent
   ],
   providers: [WorkSpaceService, EditorService, BatchService]
 })

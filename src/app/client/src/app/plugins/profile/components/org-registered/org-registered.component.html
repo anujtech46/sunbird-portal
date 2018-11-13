@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <div  (click)="openModal()">
       <div class="ui link card width-100">
           <div class="content ">
@@ -9,9 +9,20 @@
           </div>
       </div>
     </div>
-</div>
+</div> -->
+<!-- <div (click)="openModal()">
+  <div class="ui link card workspacecontent" routerLink="course">
+    <div class="content">
+      <div class="textcontent">
+        <i class='my-icon file text outline icon'></i>
+        <span class="my-text">{{resourceService?.frmelmnts?.lbl?.addSingleOrg}}</span>
+      </div>
+    </div>
+  </div>
+  <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addSingleOrgdescription}}</p>
+</div> -->
 
-<sui-modal  *ngIf="showModal" [isClosable]="false" [size]="'normal'"  #orgModal>
+<sui-modal  *ngIf="showModal" [isClosable]="true" [size]="'normal'"  #orgModal>
   <div class="header">
     <div class="ui grid">
       <div class="eleven wide tablet computer only column">

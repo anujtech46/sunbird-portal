@@ -35,6 +35,7 @@ export class OrgRegisteredComponent implements OnInit {
     orgName: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')]),
     orgDesc: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')])
     });
+    this.showModal = true;
   }
 
   getOrgList() {

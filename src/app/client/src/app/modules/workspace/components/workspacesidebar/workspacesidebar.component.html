@@ -48,4 +48,8 @@
     [class.active]="router.isActive('/workspace/content/limited-publish')">
    {{resourceService?.frmelmnts?.snav?.limitedPublishing}}
   </a>
+  <a class="item" *ngIf='permissionService.permissionAvailable' appPermission [permission]='addUsersOrgsRole' [routerLink]="['addUsersOrgs']"
+    [class.active]="router.isActive('/workspace/content/addUsersOrgs')">
+   {{resourceService?.frmelmnts?.snav?.addUserOrg}}
+  </a>
 </div>

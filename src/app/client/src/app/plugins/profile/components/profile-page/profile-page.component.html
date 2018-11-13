@@ -55,20 +55,20 @@
                                     <div class="content ">
                                         <div class="workspace-navigate">
                                             <i class='database big icon primary-text-color-sunbird'></i>
-                                            <span class="workspace-navigate-heading">{{resourceService.frmelmnts.lbl.viewworkspace}}</span>
+                                            <span class="workspace-navigate-heading">{{resourceService.frmelmnts.lbl.myworkspace}}</span>
                                         </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
 
-                        <div class="twelve wide column" *ngIf='permissionService.permissionAvailable' appPermission [permission]='admin'>
+                        <!-- <div class="twelve wide column" *ngIf='permissionService.permissionAvailable' appPermission [permission]='admin'>
                         <app-user-registered></app-user-registered>
                         </div>
 
                         <div class="twelve wide column" *ngIf='permissionService.permissionAvailable' appPermission [permission]='admin'>
                         <app-org-registered></app-org-registered>
-                        </div>
+                        </div> -->
 
                         <div class="twelve wide column" *ngIf="contributions && contributions.length > 0">
                             <div class="ui raised segment">

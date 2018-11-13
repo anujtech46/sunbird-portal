@@ -6,8 +6,14 @@ import {
   GenericEditorComponent, UploadedComponent, DataDrivenComponent, FlaggedComponent, UpForReviewComponent,
   BatchListComponent, UpdateBatchComponent, UpforreviewContentplayerComponent, ReviewsubmissionsContentplayerComponent,
   FlagConentplayerComponent, PublishedPopupComponent, RequestChangesPopupComponent, LimitedPublishedComponent,
-  AllContentComponent, FlagReviewerComponent} from './components';
+  AllContentComponent, FlagReviewerComponent, AddusersorgsComponent
+} from './components';
+import {
+  OrganizationUploadComponent,
+  UserUploadComponent, StatusComponent
+} from '@sunbird/org-management';
 import { AuthGuard } from '../core/guard/auth-gard.service';
+import { OrgRegisteredComponent, UserRegisteredComponent } from '@sunbird/profile';
 const telemetryEnv = 'workspace';
 const objectType = 'workspace';
 const routes: Routes = [
@@ -82,6 +88,68 @@ const routes: Routes = [
                 type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
               }, breadcrumbs: [{ label: 'Home', url: '/home' },
               { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
+            }
+          }
+        ]
+      },
+      {
+        path: 'addUsersOrgs', component: AddusersorgsComponent, canActivate: [AuthGuard],
+        data: {
+          telemetry: {
+            env: telemetryEnv, uri: '/workspace/content/addUsersOrgs',
+            type: 'list', mode: 'create', object: { type: objectType, ver: '1.0' }
+          }, roles: 'addUsersOrgsRole',
+          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
+        },
+        children: [
+          {
+            path: 'organizationUpload', component: OrganizationUploadComponent,
+            data: {
+              telemetry: {
+                env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/organizationUpload',
+                type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
+              }, breadcrumbs: [{ label: 'Home', url: '/home' },
+              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+            }
+          },
+          {
+            path: 'userUpload', component: UserUploadComponent,
+            data: {
+              telemetry: {
+                env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/userUpload',
+                type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
+              }, breadcrumbs: [{ label: 'Home', url: '/home' },
+              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+            }
+          },
+          {
+            path: 'checkStatus', component: StatusComponent,
+            data: {
+              telemetry: {
+                env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/checkStatus',
+                type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
+              }, breadcrumbs: [{ label: 'Home', url: '/home' },
+              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+            }
+          },
+          {
+            path: 'addUser', component: UserRegisteredComponent,
+            data: {
+              telemetry: {
+                env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/addUser',
+                type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
+              }, breadcrumbs: [{ label: 'Home', url: '/home' },
+              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+            }
+          },
+          {
+            path: 'addOrg', component: OrgRegisteredComponent,
+            data: {
+              telemetry: {
+                env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/addOrg',
+                type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
+              }, breadcrumbs: [{ label: 'Home', url: '/home' },
+              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
             }
           }
         ]

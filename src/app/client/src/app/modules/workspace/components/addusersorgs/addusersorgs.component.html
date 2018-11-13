@@ -1,0 +1,68 @@
+<div class="ui grid">
+  <div class="twelve wide column">
+    <div class="ui grid">
+      <div class="three wide column">
+        <div class="ui link card workspacecontent" routerLink="/workspace/content/addUsersOrgs/userUpload">
+          <div class="content">
+            <div class="textcontent">
+              <i class='my-icon file text outline icon'></i>
+              <span class="my-text">{{resourceService?.frmelmnts?.lbl?.addUser}}</span>
+            </div>
+          </div>
+        </div>
+        <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addUserdescription}}</p>
+      </div>
+
+      <div class="three wide column">
+        <div class="ui link card workspacecontent" routerLink="/workspace/content/addUsersOrgs/organizationUpload">
+          <div class="content">
+            <div class="textcontent">
+              <i class='my-icon file text outline icon'></i>
+              <span class="my-text">{{resourceService?.frmelmnts?.lbl?.addOrg}}</span>
+            </div>
+          </div>
+        </div>
+        <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addOrgdescription}}</p>
+      </div>
+
+      <div class="three wide column">
+        <div class="ui link card workspacecontent" routerLink="/workspace/content/addUsersOrgs/checkStatus">
+          <div class="content">
+            <div class="textcontent">
+              <i class='my-icon file text outline icon'></i>
+              <span class="my-text">{{resourceService?.frmelmnts?.lbl?.checkUploadStatus}}</span>
+            </div>
+          </div>
+        </div>
+        <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.uploadstatusdescription}}</p>
+      </div>
+    </div>
+
+    <div class="ui grid">
+      <div class="three wide column">
+        <div class="ui link card workspacecontent" routerLink="/workspace/content/addUsersOrgs/addUser">
+            <div class="content">
+              <div class="textcontent">
+                <i class='my-icon file text outline icon'></i>
+                <span class="my-text">{{resourceService?.frmelmnts?.lbl?.addSingleUser}}</span>
+              </div>
+            </div>
+          </div>
+          <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addSingleUserdescription}}</p>
+      </div>
+
+      <div class="three wide column">
+        <div class="ui link card workspacecontent" routerLink="/workspace/content/addUsersOrgs/addOrg">
+          <div class="content">
+            <div class="textcontent">
+              <i class='my-icon file text outline icon'></i>
+              <span class="my-text">{{resourceService?.frmelmnts?.lbl?.addSingleOrg}}</span>
+            </div>
+          </div>
+        </div>
+        <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addSingleOrgdescription}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

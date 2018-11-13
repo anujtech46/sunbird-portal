@@ -45,6 +45,7 @@ export class UserRegisteredComponent implements OnInit {
       roles: new FormControl(null, [Validators.required]),
       organisations: new FormControl(null, [Validators.required])
     });
+    this.showModal = true;
   }
 
   getOrgList() {
@@ -135,7 +136,7 @@ export class UserRegisteredComponent implements OnInit {
   maptoOrg (result, org, roles) {
     const reqdata =  {
       userId: result.result.userId,
-      organisationId: org[0],
+      organisationId: org,
       roles: roles
     };
     this.profileService.mapMemberOrg(reqdata).pipe(

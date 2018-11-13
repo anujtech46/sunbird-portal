@@ -85,7 +85,8 @@ export class OrganizationUploadComponent implements OnInit, OnDestroy {
       if (data.redirectUrl) {
         this.redirectUrl = data.redirectUrl;
       } else {
-        this.redirectUrl = '/home';
+        // this.redirectUrl = '/home';
+        this.redirectUrl = '/workspace/content/addUsersOrgs';
       }
     });
     this.orgUploadInstructions = [
