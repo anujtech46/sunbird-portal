@@ -23,6 +23,7 @@ export class OrgRegisteredComponent implements OnInit {
   showNewOrg = false;
   newOorganisationId: any;
   newOrgName: any;
+  redirectUrl: any;
   constructor(public activatedRoute: ActivatedRoute, public config: ConfigService, public content: ContentService,
     public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
     public profileService: ProfileService) {
@@ -36,6 +37,7 @@ export class OrgRegisteredComponent implements OnInit {
     orgDesc: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9- ]+$')])
     });
     this.showModal = true;
+    this.redirectUrl = '/workspace/content/addUsersOrgs';
   }
 
   getOrgList() {
@@ -69,6 +71,7 @@ export class OrgRegisteredComponent implements OnInit {
     this.newOorganisationId = '';
     this.orgReg.reset();
     this.showNewOrg = false;
+    this.router.navigate([this.redirectUrl]);
   }
   onSubmitForm () {
     this.showLoader = true;
@@ -87,7 +90,6 @@ export class OrgRegisteredComponent implements OnInit {
       this.newOrgName  = this.orgReg.value.orgName;
       this.showLoader = false;
       this.toasterService.success(this.resourceService.messages.smsg.m0045);
-      // this.router.navigate(['/profile']);
     },
     err => {
       this.showLoader = false;

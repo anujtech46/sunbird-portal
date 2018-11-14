@@ -22,21 +22,21 @@
   <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addSingleOrgdescription}}</p>
 </div> -->
 
-<sui-modal  *ngIf="showModal" [isClosable]="true" [size]="'normal'"  #orgModal>
+<sui-modal *ngIf="showModal" [isClosable]="true" [mustScroll]="true" [size]="'large'" (dismissed)="closeModal()"  #orgModal>
   <div class="header">
     <div class="ui grid">
-      <div class="eleven wide tablet computer only column">
+      <div class="twelve wide tablet computer only column">
         <span class="ui header">Organization</span>
       </div>
-      <div class="one wide tablet computer only column">
+      <!-- <div class="one wide tablet computer only column">
         <i class="close icon" (click)="closeModal()"></i>
-      </div>
+      </div> -->
       <div class="ten wide mobile only column">
           <span class="ui header">Organization</span>
         </div>
-        <div class="two wide mobile only column">
+        <!-- <div class="two wide mobile only column">
           <i class="close icon" (click)="closeModal()"></i>
-        </div>
+        </div> -->
     </div>
   </div>
   <div class="content" *ngIf="!showNewOrg">

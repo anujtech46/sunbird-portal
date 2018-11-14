@@ -21,21 +21,21 @@
     </div>
     <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addSingleUserdescription}}</p>
 </div> -->
-<sui-modal *ngIf="showModal" [isClosable]="true" [mustScroll]="true" [size]="'normal'" (dismissed)="closeModal()" #addUserModal>
+<sui-modal *ngIf="showModal" [isClosable]="true" [mustScroll]="true" [size]="'large'" (dismissed)="closeModal()" #addUserModal>
   <div class="header">
     <div class="ui grid">
-      <div class="eleven wide tablet computer only column">
+      <div class="twelve wide tablet computer only column">
         <span class="ui header">User Registration</span>
       </div>
-      <div class="one wide tablet computer only column">
+      <!-- <div class="one wide tablet computer only column">
         <i class="close icon" (click)="closeModal()"></i>
-      </div>
+      </div> -->
       <div class="ten wide mobile only column">
-          <span class="ui header">User Registration</span>
-        </div>
-        <div class="two wide mobile only column">
-          <i class="close icon" (click)="closeModal()"></i>
-        </div>
+        <span class="ui header">User Registration</span>
+      </div>
+      <!-- <div class="two wide mobile only column">
+        <i class="close icon" (click)="closeModal()"></i>
+      </div> -->
     </div>
   </div>
   <div class="content">
@@ -44,9 +44,12 @@
         <div class=" two fields">
           <div class="required field" [ngClass]="userReg.controls.userName.invalid && userReg.controls['userName'].errors.required && !userReg.controls['userName'].pristine || (userReg.controls['userName'].errors && userReg.controls['userName'].errors.pattern) ? 'error' : ''">
             <label>User Name</label>
-            <input type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required">
+            <input type="text" formControlName="userName" placeholder="eg:user.name , min 5 character required" (blur)="checkUsername()" (keyup)="checkUsername()">
             <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="userReg.controls.userName.invalid && userReg.controls['userName'].errors.required && !userReg.controls['userName'].pristine || (userReg.controls['userName'].errors && userReg.controls['userName'].errors.pattern)">
                 {{resourceService?.messages?.stmsg?.m0087}}
+            </div>
+            <div class="margin-bottom-10 ui pointing red basic label below" *ngIf="UserExists && !userReg.controls['userName'].errors">
+                Username already exists
             </div>
           </div>
           <div class="required field" [ngClass]="userReg.controls.password.invalid && userReg.controls['password'].errors.required && !userReg.controls['password'].pristine || (userReg.controls['password'].errors && userReg.controls['password'].errors.pattern) ? 'error' : ''">

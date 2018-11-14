@@ -109,7 +109,7 @@ const routes: Routes = [
                 env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/organizationUpload',
                 type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
               }, breadcrumbs: [{ label: 'Home', url: '/home' },
-              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+              { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
             }
           },
           {
@@ -119,7 +119,7 @@ const routes: Routes = [
                 env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/userUpload',
                 type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
               }, breadcrumbs: [{ label: 'Home', url: '/home' },
-              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+              { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
             }
           },
           {
@@ -129,7 +129,7 @@ const routes: Routes = [
                 env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/checkStatus',
                 type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
               }, breadcrumbs: [{ label: 'Home', url: '/home' },
-              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+              { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
             }
           },
           {
@@ -139,7 +139,7 @@ const routes: Routes = [
                 env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/addUser',
                 type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
               }, breadcrumbs: [{ label: 'Home', url: '/home' },
-              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+              { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
             }
           },
           {
@@ -149,7 +149,7 @@ const routes: Routes = [
                 env: telemetryEnv, uri: '/workspace/content/addUsersOrgs/addOrg',
                 type: 'view', mode: 'create', object: { type: objectType, ver: '1.0' }
               }, breadcrumbs: [{ label: 'Home', url: '/home' },
-              { label: 'Add User/Org', url: '/addUsersOrgs' }, { label: 'My Workspace', url: '' }]
+              { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
             }
           }
         ]

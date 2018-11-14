@@ -1,7 +1,7 @@
 import { Component, OnInit} from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import {  ConfigService, ResourceService, ServerResponse, ToasterService } from '@sunbird/shared';
+import { ConfigService, ResourceService, ServerResponse, ToasterService } from '@sunbird/shared';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import { SignupService } from '../../../../modules/public/services/signup.service';
@@ -24,10 +24,13 @@ export class UserRegisteredComponent implements OnInit {
   showLoader = false;
   public unsubscribe$ = new Subject<void>();
   showcommonerror = false;
+  redirectUrl: string;
+  UserExists = false;
 
   constructor(public activatedRoute: ActivatedRoute, public config: ConfigService, public signupService: SignupService,
-    public content: ContentService, public resourceService: ResourceService, public permissionService: PermissionService, 
-    public toasterService: ToasterService, public router: Router,  public userService: UserService, public profileService: ProfileService) {
+    public content: ContentService, public resourceService: ResourceService, public permissionService: PermissionService,
+    public toasterService: ToasterService, public router: Router, public userService: UserService,
+    public profileService: ProfileService,  public searchService: SearchService) {
     this.languages = this.config.dropDownConfig.COMMON.languages;
     console.log('lang', this.languages);
     this.getOrgList();
@@ -46,6 +49,7 @@ export class UserRegisteredComponent implements OnInit {
       organisations: new FormControl(null, [Validators.required])
     });
     this.showModal = true;
+    this.redirectUrl = '/workspace/content/addUsersOrgs';
   }
 
   getOrgList() {
@@ -92,6 +96,7 @@ export class UserRegisteredComponent implements OnInit {
     this.showModal = false;
     this.userReg.reset();
     this.showcommonerror = false;
+    this.router.navigate([this.redirectUrl]);
   }
 
   getRoles() {
@@ -107,8 +112,31 @@ export class UserRegisteredComponent implements OnInit {
     //   this.allRoles = _.map(this.allRoles, (obj) => {
     //     return { 'id': obj.id, 'name': obj.name };
     // });
-      // console.log(this.allRoles);
     });
+  }
+  checkUsername () {
+    const name = this.userReg.value.userName;
+    if (name && name.length > 3) {
+      const requestParams = {
+        filters: {
+          loginId: name + '@' + (<HTMLInputElement>document.getElementById('defaultTenant')).value
+        },
+        pageNumber: 1,
+        limit: this.config.appConfig.SEARCH.PAGE_LIMIT,
+      };
+      this.searchService.userSearch(requestParams).subscribe(
+        (apiResponse: ServerResponse) => {
+          if (apiResponse.result.response.count && apiResponse.result.response.content.length > 0) {
+            this.UserExists = true;
+          } else {
+            this.UserExists = false;
+          }
+        },
+        err => {
+          this.toasterService.error(this.resourceService.messages.emsg.m0005);
+        }
+      );
+    }
   }
 
   onSubmitForm() {
@@ -122,6 +150,7 @@ export class UserRegisteredComponent implements OnInit {
       this.signupService.signup(this.userReg.value).pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(res => {
+        this.showModal = false;
         this.showLoader = false;
         this.maptoOrg(res, this.userReg.value.organisations, this.userReg.value.roles);
         this.userReg.reset();
@@ -143,7 +172,7 @@ export class UserRegisteredComponent implements OnInit {
       takeUntil(this.unsubscribe$))
       .subscribe(res => {
         this.toasterService.success(this.resourceService.messages.smsg.m0046);
-        // this.router.navigate(['/profile']);
+        this.router.navigate([this.redirectUrl]);
     },
     err => {
       this.showLoader = false;
