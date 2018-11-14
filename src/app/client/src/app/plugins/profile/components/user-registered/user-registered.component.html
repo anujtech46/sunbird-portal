@@ -1,26 +1,3 @@
-<!-- <div >
-  <div  (click)="openModal()">
-      <div class="ui link card width-100">
-          <div class="content ">
-              <div class="workspace-navigate">
-                  <i class='user big icon primary-text-color-sunbird'></i>
-                  <span class="workspace-navigate-heading"> Add User</span>
-              </div>
-          </div>
-      </div>
-    </div>
-</div> -->
-<!-- <div (click)="openModal()">
-    <div class="ui link card workspacecontent" routerLink="course">
-      <div class="content">
-        <div class="textcontent">
-          <i class='my-icon file text outline icon'></i>
-          <span class="my-text">{{resourceService?.frmelmnts?.lbl?.addSingleUser}}</span>
-        </div>
-      </div>
-    </div>
-    <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.addSingleUserdescription}}</p>
-</div> -->
 <sui-modal *ngIf="showModal" [isClosable]="true" [mustScroll]="true" [size]="'large'" (dismissed)="closeModal()" #addUserModal>
   <div class="header">
     <div class="ui grid">
@@ -132,6 +109,6 @@
   </div>
   <div class="actions">
     <div *ngIf="showcommonerror && !(this.userReg.value.phone || this.userReg.value.email)" class="pull-left ui basic red label">Please provide either phone number or emmail id</div>
-    <button [disabled]="userReg.invalid" class="ui primary button" (click)="onSubmitForm()">Add User</button>
+    <button [disabled]="userReg.invalid || UserExists" class="ui primary button" (click)="onSubmitForm()">Add User</button>
   </div>
 </sui-modal>
