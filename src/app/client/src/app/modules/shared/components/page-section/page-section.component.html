@@ -22,9 +22,9 @@
                             <img src="{{ content.appIcon || content.image || 'assets/images/default.png' | cdnprefixurl}}">
                         </div>
                         <div class="content">
-                            <div class="cardImageText center aligned" suiPopup popupText="{{content.name}}">
-                                <span>{{content.name | slice:0:16}}
-                                    <i class="ellipsis horizontal icon" *ngIf="content.name && content.name.length >= 16" ></i>
+                            <div class="cardImageText center aligned">
+                                <span>{{content.name}}
+                                    <!-- <i class="ellipsis horizontal icon" *ngIf="content.name && content.name.length >= 16" ></i> -->
                                 </span>
                             </div>
                             <div class="card-component-description">

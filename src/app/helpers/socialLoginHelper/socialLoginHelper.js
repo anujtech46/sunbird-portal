@@ -38,7 +38,7 @@ module.exports = {
     telemetryHelper.logAPICallEvent(telemetryData)
 
     request(options, function (error, response, body) {
-      telemetryData.statusCode = response.statusCode
+      telemetryData.statusCode = response && response.statusCode || 500
       console.log('check user exists', response.statusCode, 'for user Id :', userId)
       if (body.responseCode === 'OK') {
         callback()

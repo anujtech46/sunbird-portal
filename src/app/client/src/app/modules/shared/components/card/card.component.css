@@ -29,6 +29,10 @@
 
 .card-component-description {
     margin-top: 10px;
+    line-height: 1em; 
+    max-height: 2.1em; 
+    min-height: 2.1em; 
+    overflow: hidden; 
 }
 
 .cardsHeading {
@@ -46,14 +50,13 @@
   }
   .course-card .card {
     width: 340px;
-    height: 414px;
     border-radius: 0 !important
   }
   .course-card .card .image {
     position: relative;
     display: flex;
     flex: 0 0 auto;
-    padding: 1em 1.2em;
+    padding: 1em 1.2.1em;
     background: transparent;    
     border-bottom: 1px solid #eee;
     align-items: center;
@@ -67,11 +70,14 @@
     color: #3449d2;
     width: 100%;
     margin: 0;
-    max-height: 70px;
     padding: 0;
     text-align: left;
     font-size: 1.6em;
     position: relative !important;
+    overflow: hidden;
+    max-height: 3em;
+    min-height: 3em;
+    line-height: 1em;
   }
   .course-card .content {
     flex-grow: 1;
@@ -82,7 +88,6 @@
     box-shadow: none;
     font-size: 1em;
     border-radius: 0;
-    line-height: 1.6em;
     font-weight: 500;
   }
   .course-card .extra {
@@ -111,6 +116,9 @@
       height: 200px;
       overflow:hidden;
     }
+    .ui.card {
+      height: 390px;
+    }
   }
   @media (min-width: 900px) and (max-width:1024px) {
     .ui.image {
@@ -122,6 +130,9 @@
     }
     .course-card .extra  {
       text-align: center !important;
+    }
+    .ui.card {
+      height: 360px;
     }
   }
 
@@ -136,10 +147,16 @@
     .course-card .extra  {
       text-align: center !important;
     }
+    .ui.card {
+      height: 328px;
+    }
   }
   @media (max-width: 767px) {
     .ui.image {
       height: 108px;
       overflow:hidden;
+    }
+    .ui.card {
+      height: 308px;
     }
   }
