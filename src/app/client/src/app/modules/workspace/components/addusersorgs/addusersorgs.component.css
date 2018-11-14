@@ -10,3 +10,20 @@
 .workspaceinstuction {
     margin-right: 25px;
 }
+.iconimg {
+    width: 62px;
+    height: 45px;
+    padding: 0 4px;
+    text-align: center;
+}
+.iconimg img {
+    width: 100%;
+    height: auto;
+}
+.singusericon {
+    width: 58% !important;
+}
+
+.singorgicon {
+    width: 72% !important;
+}
