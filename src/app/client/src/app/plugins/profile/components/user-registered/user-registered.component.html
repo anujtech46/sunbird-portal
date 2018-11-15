@@ -108,7 +108,7 @@
     </div>
   </div>
   <div class="actions">
-    <div *ngIf="showcommonerror && !(this.userReg.value.phone || this.userReg.value.email)" class="pull-left ui basic red label">Please provide either phone number or emmail id</div>
+    <div *ngIf="showcommonerror && !(this.userReg.value.phone || this.userReg.value.email)" class="pull-left ui basic red label">Please provide either phone number or email id</div>
     <button [disabled]="userReg.invalid || UserExists" class="ui primary button" (click)="onSubmitForm()">Add User</button>
   </div>
 </sui-modal>

@@ -35,7 +35,7 @@
     },
      "ROLES":{
        "announcement": ["ANNOUNCEMENT_SENDER"],
-       "workspace":["CONTENT_CREATOR" , "CONTENT_CREATION" , "CONTENT_REVIEWER" , "CONTENT_REVIEW" , "FLAG_REVIEWER" , "COURSE_MENTOR" ,"BOOK_REVIEWER","BOOK_CREATOR"],
+       "workspace":["CONTENT_CREATOR" , "CONTENT_CREATION" , "CONTENT_REVIEWER" , "CONTENT_REVIEW" , "FLAG_REVIEWER" , "COURSE_MENTOR" ,"BOOK_REVIEWER","BOOK_CREATOR", "ORG_ADMIN"],
        "createRole": ["CONTENT_CREATOR","CONTENT_CREATION","CONTENT_REVIEWER","CONTENT_REVIEW","BOOK_CREATOR"],
        "draftRole": ["CONTENT_CREATOR","CONTENT_CREATION","CONTENT_REVIEWER","CONTENT_REVIEW","BOOK_CREATOR"],
        "inreviewRole":["CONTENT_CREATOR","CONTENT_CREATION","CONTENT_REVIEWER","CONTENT_REVIEW","BOOK_CREATOR"],
@@ -90,6 +90,10 @@
     {
         "roles":["CONTENT_CREATOR","CONTENT_CREATION","CONTENT_REVIEWER","CONTENT_REVIEW","BOOK_CREATOR"],
         "roleName":"limitedPublishingRole","url":"workspace/content/upForReview/1","tab":"Limited Publishing"
+    },
+    {
+        "roles":["ORG_ADMIN"],
+        "roleName":"addUsersOrgsRole","url":"workspace/content/addUsersOrgs","tab":"Add Users/Organisations"
     }
    ]
 
