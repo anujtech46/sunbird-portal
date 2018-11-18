@@ -171,6 +171,8 @@ function getLocals(req) {
   locals.isDigiLockerEnabled = envHelper.IS_DIGILOCKER_ENABLED;
   locals.isCollectPaymentEnabled = envHelper.IS_COLLECT_PAYMENT_ENABLED;
   locals.isRefundPaymentEnabled = envHelper.IS_REFUND_PAYMENT_ENABLED;
+  locals.privacyPolicy = envHelper.PRIVACY_POLICY_URL;
+  locals.termsOfService = envHelper.TERM_OF_SERVICE_URL;
   return locals;
 }
 
@@ -231,6 +233,8 @@ app.all('/explore', indexPage)
 app.all('/explore/*', indexPage)
 app.all(['/groups', '/groups/*'], keycloak.protect(), indexPage)
 app.all('/play/*', indexPage)
+app.all('/guideline', indexPage)
+app.all('/guideline/*', indexPage)
 
 // Mobile redirection to app
 require('./helpers/mobileAppHelper.js')(app)

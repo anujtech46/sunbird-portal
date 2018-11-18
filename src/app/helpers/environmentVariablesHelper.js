@@ -67,7 +67,9 @@ const julia_env_variable = {
   CERTIFICATE_PLATFORM_NAME: env.julia_certificate_platform_name,
   IS_DIGILOCKER_ENABLED: env.julia_is_digiLocker_enabled || 'false',
   IS_COLLECT_PAYMENT_ENABLED: env.julia_is_collect_payment_enabled || 'false',
-  IS_REFUND_PAYMENT_ENABLED: env.julia_is_refund_payment_enabled || 'false'
+  IS_REFUND_PAYMENT_ENABLED: env.julia_is_refund_payment_enabled || 'false',
+  PRIVACY_POLICY_URL: env.julia_privacy_policies || 'https://jaldhara.blob.core.windows.net/attachments/announcement/privacyPolicy.pdf',
+  TERM_OF_SERVICE_URL: env.julia_terms_of_service || 'https://jaldhara.blob.core.windows.net/attachments/announcement/TermsOfService.pdf',
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

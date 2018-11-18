@@ -21,6 +21,7 @@ import { CacheService } from 'ng2-cache-service';
 import { WebExtensionModule } from 'sunbird-web-extension';
 import { TelemetryModule } from '@sunbird/telemetry';
 
+import { GuidelineModule } from '../guideline';
 // Julia related service
 import { JuliaBoxService, PaymentService } from './services';
 @NgModule({
@@ -32,7 +33,8 @@ import { JuliaBoxService, PaymentService } from './services';
     FormsModule,
     ReactiveFormsModule,
     WebExtensionModule,
-    TelemetryModule
+    TelemetryModule,
+    GuidelineModule
   ],
   declarations: [MainHeaderComponent, MainFooterComponent, MainMenuComponent, SearchComponent, PermissionDirective, ConceptPickerComponent,
     DataDrivenFilterComponent, BreadcrumbsComponent, SortByComponent, ErrorPageComponent, FlagContentComponent,
