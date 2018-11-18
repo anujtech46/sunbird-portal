@@ -11,6 +11,7 @@ import {
 } from '@sunbird/core';
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs';
+declare var ga: Function;
 /**
  * main app component
  *
@@ -222,5 +223,20 @@ export class AppComponent implements OnInit {
         }
       }
     );
+  }
+
+  addGoogleAnalytics() {
+    this.router.events.subscribe(event => {
+      try {
+        if (typeof ga === 'function') {
+          if (event instanceof NavigationEnd) {
+            ga('set', 'page', event.urlAfterRedirects);
+            ga('send', 'pageview');
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
   }
 }

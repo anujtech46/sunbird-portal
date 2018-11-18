@@ -76,6 +76,7 @@
     "tenants-push-cdn": "gulp pushTenantsToCDN --gulpfile gulp-tenant.js"
   },
   "dependencies": {
+    "@types/google.analytics": "0.0.39",
     "async": "^2.5.0",
     "asyncawait": "^1.0.7",
     "atob": "^2.1.1",
