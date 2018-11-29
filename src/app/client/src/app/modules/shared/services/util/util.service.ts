@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { ICard } from '@sunbird/shared';
+import * as moment from 'moment';
 @Injectable()
 export class UtilService {
   getDataForCard(data, staticData, dynamicFields, metaData) {
@@ -34,5 +35,16 @@ export class UtilService {
           });
       });
      return content;
+  }
+
+  parseDuration(durationInMS) {
+    let totalDuration = '';
+    const hour = moment.utc(durationInMS).hours();
+    const min = moment.utc(durationInMS).minutes() + hour * 60;
+    const second = moment.utc(durationInMS).seconds() || '00';
+    // totalDuration += hour ? hour + 'h : ' : '  ';
+    totalDuration += min ? min + 'm' : '  ';
+    totalDuration += second ? ' : ' + second + 's' : '';
+    return totalDuration;
   }
 }

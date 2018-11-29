@@ -178,7 +178,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private courseProgressService: CourseProgressService,
     public juliaNoteBookService: JuliaNoteBookService,
     public coursePriceService: CoursePriceService,
-    public paymentService: PaymentService) {
+    public paymentService: PaymentService,
+    public utilService: UtilService) {
     this.contentService = contentService;
     this.activatedRoute = activatedRoute;
     this.windowScrollService = windowScrollService;
@@ -255,6 +256,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
           this.parseChildContent();
         }
         this.collectionTreeNodes = { data: this.courseHierarchy };
+        this.courseHierarchy.totalTimeDuration = this.utilService.parseDuration(this.courseHierarchy.totalTimeDuration * 1000);
         this.loader = false;
       }, (error) => {
         this.loader = false;
@@ -288,6 +290,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
           identifier: node.model.identifier
         });
       } else {
+        if (node.model.duration) {
+          this.courseHierarchy.totalTimeDuration = this.courseHierarchy.totalTimeDuration ? +this.courseHierarchy.totalTimeDuration : 0;
+          this.courseHierarchy.totalTimeDuration = this.courseHierarchy.totalTimeDuration + +Number(node.model.duration);
+        }
         this.contentIds.push(node.model.identifier);
       }
     });

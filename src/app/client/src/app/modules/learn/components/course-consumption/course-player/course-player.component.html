@@ -38,6 +38,7 @@
         <span class="smtext bluetext">{{courseHierarchy.subject}}</span> &nbsp;|&nbsp;
         <!-- <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp; -->
         <span>COST: <span class="bluetext"> FREE</span></span>
+        <span *ngIf="courseHierarchy.totalTimeDuration"> &nbsp;|&nbsp;DURATION: <span class="bluetext"> {{courseHierarchy.totalTimeDuration}}</span></span>
       </div>
       <div class="pull-right">
         <!-- <div *ngIf="!enrolledCourse" class="three wide column P0 margin-top--10px">
@@ -178,6 +179,9 @@
           <div class="ui header">
             <span class="content courseStructureHeading">
               {{resourceService.frmelmnts.lbl.coursestructure}}
+            </span>
+            <span class="pull-right content courseStructureHeading smtext">
+              Duration
             </span>
           </div>
           <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"  [contentStatus]="contentStatus"></app-collection-tree>

@@ -10,7 +10,8 @@ import {
 } from '@angular/core';
 import * as _ from 'lodash';
 import { ICollectionTreeNodes, ICollectionTreeOptions, MimeTypeTofileType } from '../../interfaces';
-
+import * as moment from 'moment';
+import { UtilService } from '../../services';
 @Component({
   selector: 'app-collection-tree',
   templateUrl: './collection-tree.component.html',
@@ -20,7 +21,7 @@ export class CollectionTreeComponent implements OnInit, OnChanges {
 
   @Input() public nodes: ICollectionTreeNodes;
   @Input() public options: ICollectionTreeOptions;
-  @Output() public contentSelect: EventEmitter<{id: string, title: string}> = new EventEmitter();
+  @Output() public contentSelect: EventEmitter<{ id: string, title: string }> = new EventEmitter();
   @Input() contentStatus: any;
   private rootNode: any;
   public rootChildrens: any;
@@ -29,6 +30,8 @@ export class CollectionTreeComponent implements OnInit, OnChanges {
     '1': 'fancy-tree-blue',
     '2': 'fancy-tree-green'
   };
+
+  constructor(public utilService: UtilService) { }
   ngOnInit() {
     this.initialize();
   }
@@ -75,12 +78,12 @@ export class CollectionTreeComponent implements OnInit, OnChanges {
         }
         node.folder = true;
       } else {
-        if ( node.fileType === MimeTypeTofileType['application/vnd.ekstep.content-collection']) {
+        if (node.fileType === MimeTypeTofileType['application/vnd.ekstep.content-collection']) {
           node.folder = true;
         } else {
-          const indexOf = _.findIndex(this.contentStatus, { });
+          const indexOf = _.findIndex(this.contentStatus, {});
           if (this.contentStatus) {
-            const content: any = _.find(this.contentStatus, { 'contentId': node.model.identifier});
+            const content: any = _.find(this.contentStatus, { 'contentId': node.model.identifier });
             const status = (content && content.status) ? content.status.toString() : 0;
             node.iconColor = this.iconColor[status];
           } else {
@@ -92,5 +95,19 @@ export class CollectionTreeComponent implements OnInit, OnChanges {
         node.icon = `${node.icon} ${node.iconColor}`;
       }
     });
+  }
+
+  getModuleDuration(child) {
+    let totalDuration = 0;
+    if (child.children) {
+      child.children.forEach(element => {
+        if (element.model.duration) {
+          totalDuration += Number(element.model.duration);
+        }
+      });
+      if (totalDuration > 0) {
+        return this.utilService.parseDuration(totalDuration * 1000);
+      }
+    }
   }
 }

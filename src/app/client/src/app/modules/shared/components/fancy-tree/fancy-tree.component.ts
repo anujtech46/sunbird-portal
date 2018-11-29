@@ -2,6 +2,7 @@ import { Component, AfterViewInit, Input, ViewChild, ElementRef, Output, EventEm
 import 'jquery.fancytree';
 import { IFancytreeOptions } from '../../interfaces';
 import * as _ from 'lodash';
+import { UtilService } from '../../services';
 
 @Component({
   selector: 'app-fancy-tree',
@@ -33,6 +34,10 @@ export class FancyTreeComponent implements AfterViewInit {
 
   // Julia related code
   @Input() public contentState: any;
+
+  constructor(public utilsService: UtilService) {
+
+  }
 
   ngAfterViewInit() {
     let options: IFancytreeOptions = {
@@ -72,18 +77,19 @@ export class FancyTreeComponent implements AfterViewInit {
    */
   updateNodeTitle = (data) => {
     let title = '';
-    const scoreData: any = _.find(this.contentState, { 'contentId': data.node.data.id });
-    if (scoreData) {
-      if (scoreData.grade) {
-        title = title + '<span class="fancy-tree-feedback">( Score: ' +
-          scoreData.grade + '/' + scoreData.score + ' ) </span>';
-      }
-      if (scoreData.result) {
-        const feedbackLinkHtml = '<span> <a href=' + scoreData.result +
-          ' target="_blank" return false; onclick="event.stopPropagation();"> Feedback </a> </span>';
-        title = title + feedbackLinkHtml;
-      }
-      title = '<div style="padding-left: 3rem;">' + title + '</div>';
+    // const scoreData: any = _.find(this.contentState, { 'contentId': data.node.data.id });
+    if (data.node.data.model && data.node.data.model.duration) {
+    //   if (scoreData.grade) {
+    //     title = title + '<span class="fancy-tree-feedback">( Score: ' +
+    //       scoreData.grade + '/' + scoreData.score + ' ) </span>';
+    //   }
+      // if (scoreData.result) {
+      //   const feedbackLinkHtml = '<span> <a href=' + scoreData.result +
+      //     ' target="_blank" return false; onclick="event.stopPropagation();"> Feedback </a> </span>';
+      //   title = title + feedbackLinkHtml;
+      // }
+      title = '<span class="bluetext pull-right fancy-tree-feedback">'
+        + this.utilsService.parseDuration(data.node.data.model.duration * 1000) + '</span>';
     }
     const $nodeSpan = $(data.node.span);
     if (!$nodeSpan.data('rendered')) {
