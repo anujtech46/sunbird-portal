@@ -129,6 +129,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     loaderMessage: 'Fetching content details!'
   };
 
+  exerciseResourceType: 'lesson plan';
+
   public collectionTreeOptions: ICollectionTreeOptions;
 
   public unsubscribe = new Subject<void>();
@@ -256,7 +258,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
           this.parseChildContent();
         }
         this.collectionTreeNodes = { data: this.courseHierarchy };
-        this.courseHierarchy.totalTimeDuration = this.utilService.parseDuration(this.courseHierarchy.totalTimeDuration * 1000);
+        this.courseHierarchy.totalTimeDuration = this.utilService.parseDurationInHM(this.courseHierarchy.totalTimeDuration * 1000);
         this.loader = false;
       }, (error) => {
         this.loader = false;
@@ -318,6 +320,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
           this.fetchScoreData();
         }
         if (this.progress === 100) {
+          console.log('Call stop pulling content status when progress', this.progress);
           this.stopPullingContentStatus();
         }
       }, (err) => {
@@ -492,7 +495,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private checkExerciseLink() {
     if (this.playerConfig.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl &&
-      this.playerConfig.resourceType === 'Lesson plan'
+      this.playerConfig.resourceType.toLowerCase() === this.exerciseResourceType
     ) {
       // Start pulling status for sometime
       console.log('Check pooling is started or not :: ', this.statePullingClearTimeInterval);
@@ -643,9 +646,9 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
  * This function is use to start pulling content status
  */
   startPullingContentStatus = () => {
-    console.log('Start pulling status, if course is not completed', this.courseHierarchy.progress);
+    console.log('Start pulling status, if course is not completed :: ', this.progress, this.statePullingClearTimeInterval);
     if (this.progress !== 100 && !this.statePullingClearTimeInterval) {
-      console.log('Course not completed :: and pooling id not started ::', this.progress, this.statePullingClearTimeInterval);
+      console.log('Course not completed :: and pooling is not started ::', this.progress, this.statePullingClearTimeInterval);
       this.statePullingClearTimeInterval = setInterval(() => {
         this.getContentState();
       }, this.statePullingTimeInterval);
@@ -744,12 +747,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.juliaNoteBookService.checkNoteBookToken().subscribe((response) => {
       if (response && response.responseCode === 'OK') {
         const newUrl = url + '&Authorization=' + (response.result && response.result.token);
+        (<any>$('#openNoteBookModal')).modal('hide');
         const windowPopup = window.open(newUrl);
         if (!windowPopup) {
           const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
           this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
         }
-        (<any>$('#openNoteBookModal')).modal('hide');
         if (!this.juliaBoxPingIntervalTime) {
           this.startJuliaNoteBookPing();
         }
@@ -803,7 +806,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.selectedModule.exercise = _.find(data.children, (child) => {
         return (child.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl) &&
-        (child.resourceType.toLowerCase() === 'lesson plan');
+        (child.resourceType.toLowerCase() === this.exerciseResourceType);
       });
       this.fetchScoreData();
       this.navigateToContent({ id: youtubeContent.identifier, title: youtubeContent.name });

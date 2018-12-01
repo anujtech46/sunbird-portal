@@ -54,6 +54,8 @@ const CoursePrice = require('sb_course_price_plugin').PriceRoutes
 const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
 const juliaLogoutHelper = require('./helpers/juliaNoteBook/juliaNoteBookHelper')
 
+const cassandra = require('./cassandra-connection')
+
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
 } else {
@@ -141,6 +143,9 @@ coursePrice.init(app, config)
 // Handle course routes
 require('./helpers/contentStateUpdateHelper.js')(app)
 require('./helpers/pdfCreator/pdfCreator.js')(app)
+
+// Handle instructor routes
+require('./helpers/instructor/instructorRoute')(app, keycloak)
 
 var Payment = require('sb_payment_plugin').PaymentRoutes
 const payment = new Payment(app)

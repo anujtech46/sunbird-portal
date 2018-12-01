@@ -1,6 +1,7 @@
 <div class="ui stackable grid courseheaderbg" *ngIf="!enrolledCourse && courseHierarchy && !loader" id="app-player-collection-renderer">
-  <img src="{{courseHierarchy.posterImage || courseHierarchy.appIcon || '/assets/images/landingPage.jpg'}}" *ngIf="!enrolledCourse" alt="{{courseHierarchy.name}}" class="courseStructureImage">
-  <div class="courseStructureHeaderText" >{{courseHierarchy.name}}</div>
+  <img src="{{courseHierarchy.thumbnail || courseHierarchy.appIcon || '/assets/images/landingPage.jpg'}}" *ngIf="!enrolledCourse"
+    alt="{{courseHierarchy.name}}" class="courseStructureImage">
+  <div class="courseStructureHeaderText">{{courseHierarchy.name}}</div>
 </div>
 
 <div class="ui stackable grid courseheader" *ngIf="enrolledCourse && courseHierarchy && courseHierarchy.name" id="app-player-collection-renderer">
@@ -180,30 +181,14 @@
             <span class="content courseStructureHeading">
               {{resourceService.frmelmnts.lbl.coursestructure}}
             </span>
-            <span class="pull-right content courseStructureHeading smtext">
+            <span class="pull-right content courseStructureHeading smtext margin-right-30">
               Duration
             </span>
           </div>
           <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"  [contentStatus]="contentStatus"></app-collection-tree>
         </div>
         <div class="four wide column">
-          <div class="rightSideSectionCards ui card instructors-panel">
-            <div class="addnotes-panel content">
-              <ul class="instructors-list">
-                <li>
-                  <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
-                </li>
-                <li>
-                  <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
-                </li>
-                <li>
-                  <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
-                </li>
-              </ul>
-              <p>INSTRUCTORS</p>
-              <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
-            </div>
-          </div>
+          <app-course-instructor></app-course-instructor>
           <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
             [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
           <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">

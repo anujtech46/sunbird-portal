@@ -37,7 +37,7 @@ export class UtilService {
      return content;
   }
 
-  parseDuration(durationInMS) {
+  parseDurationInMS(durationInMS) {
     let totalDuration = '';
     const hour = moment.utc(durationInMS).hours();
     const min = moment.utc(durationInMS).minutes() + hour * 60;
@@ -45,6 +45,19 @@ export class UtilService {
     // totalDuration += hour ? hour + 'h : ' : '  ';
     totalDuration += min ? min + 'm' : '  ';
     totalDuration += second ? ' : ' + second + 's' : '';
+    return totalDuration;
+  }
+
+  parseDurationInHM(durationInMS) {
+    let totalDuration = '';
+    const hour = moment.utc(durationInMS).hours();
+    const min = moment.utc(durationInMS).minutes();
+    const second = moment.utc(durationInMS).seconds() || '00';
+    totalDuration += hour ? hour + 'h : ' : '';
+    totalDuration += min ? min + 'm' : '';
+    if (!hour) {
+      totalDuration += second ? ' : ' + second + 's' : '';
+    }
     return totalDuration;
   }
 }

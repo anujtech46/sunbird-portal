@@ -189,3 +189,7 @@
     position: absolute;
     top: auto !important;
 }
+
+.margin-right-30 {
+    margin-right: 30px;
+}
