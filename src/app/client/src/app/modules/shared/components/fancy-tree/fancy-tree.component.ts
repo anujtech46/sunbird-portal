@@ -89,7 +89,7 @@ export class FancyTreeComponent implements AfterViewInit {
       //   title = title + feedbackLinkHtml;
       // }
       title = '<span class="bluetext pull-right fancy-tree-feedback">'
-        + this.utilsService.parseDurationInMS(data.node.data.model.duration * 1000) + '</span>';
+        + this.utilsService.parseDuration(data.node.data.model.duration * 1000) + '</span>';
     }
     const $nodeSpan = $(data.node.span);
     if (!$nodeSpan.data('rendered')) {
