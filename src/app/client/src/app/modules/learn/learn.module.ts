@@ -20,7 +20,8 @@ import { NgxY2PlayerModule } from 'ngx-y2-player';
 
 // Julia Related services
 import { CourseBadgeService, JuliaNoteBookService, CoursePriceService, CourseCertificateService } from './services';
-import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent, CourseBenefitComponent } from './components';
+import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent, CourseBenefitComponent, CourseInstructorComponent
+ } from './components';
 
 @NgModule({
   imports: [
@@ -50,7 +51,8 @@ import { CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent,
     CourseBadgeComponent,
     CoursePriceComponent,
     CourseCertificateComponent,
-    CourseBenefitComponent
+    CourseBenefitComponent,
+    CourseInstructorComponent
   ]
 })
 export class LearnModule { }

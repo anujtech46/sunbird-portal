@@ -106,7 +106,7 @@ export class CollectionTreeComponent implements OnInit, OnChanges {
         }
       });
       if (totalDuration > 0) {
-        return this.utilService.parseDuration(totalDuration * 1000);
+        return this.utilService.parseDurationInMS(totalDuration * 1000);
       }
     }
   }

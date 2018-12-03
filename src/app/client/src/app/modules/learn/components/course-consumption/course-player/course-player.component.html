@@ -1,5 +1,6 @@
 <div class="ui stackable grid courseheaderbg" *ngIf="!enrolledCourse && courseHierarchy && !loader" id="app-player-collection-renderer">
-  <img src="{{courseHierarchy.posterImage || courseHierarchy.appIcon || '/assets/images/landingPage.jpg'}}" *ngIf="!enrolledCourse" alt="{{courseHierarchy.name}}" class="courseStructureImage">
+    <img src="{{courseHierarchy.thumbnail || courseHierarchy.appIcon || '/assets/images/landingPage.jpg'}}" *ngIf="!enrolledCourse" 
+    alt="{{courseHierarchy.name}}" class="courseStructureImage">
   <div class="courseStructureHeaderText" >{{courseHierarchy.name}}</div>
 </div>
 
@@ -43,7 +44,7 @@
       <div class="pull-right">
         <!-- <div *ngIf="!enrolledCourse" class="three wide column P0 margin-top--10px">
           <div class="ui white right floated tiny header margin-top--10px"> -->
-            <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+            <app-batch-details (instructorList)="onInstructorList($event)" *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
             <div *ngIf="courseMentor" appPermission [permission]="dashboardPermission">
               <button class="blue right floated ui button" (click)="showDashboard()">{{resourceService?.frmelmnts?.btn?.viewcoursestats}}</button>
             </div>
@@ -180,32 +181,18 @@
             <span class="content courseStructureHeading">
               {{resourceService.frmelmnts.lbl.coursestructure}}
             </span>
-            <span class="pull-right content courseStructureHeading smtext">
+            <span *ngIf="courseHierarchy.totalTimeDuration" class="pull-right content courseStructureHeading smtext margin-right-30"> 
               Duration
             </span>
           </div>
           <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"  [contentStatus]="contentStatus"></app-collection-tree>
         </div>
         <div class="four wide column">
-          <div class="rightSideSectionCards ui card instructors-panel">
-            <div class="addnotes-panel content">
-              <ul class="instructors-list">
-                <li>
-                  <div class="circleimg"><img src="/assets/images/Alan.png" alt=""></div>
-                </li>
-                <li>
-                  <div class="circleimg"><img src="/assets/images/Jane.png" alt=""></div>
-                </li>
-                <li>
-                  <div class="circleimg"><img src="/assets/images/Matt.png" alt=""></div>
-                </li>
-              </ul>
-              <p>INSTRUCTORS</p>
-              <p class="bluetext">ALAN EDELMAN, JANE HERRIMAN, MATT BAUMAN</p>
-            </div>
+          <div *ngIf="instructorsList && instructorsList.length > 0">
+              <app-course-instructor [instructorsList]="instructorsList"></app-course-instructor>
           </div>
           <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
-            [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+            [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy" (instructorList)="onInstructorList($event)"></app-batch-details>
           <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
             <app-course-badge></app-course-badge>
             <br>
@@ -227,7 +214,7 @@
               </div>
               <div class="right floated author">
                 <!-- <button class="ui basic blue button">Enroll</button> -->
-                <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+                <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy" (instructorList)="onInstructorList($event)"></app-batch-details>
               </div>
             </div>
           </div>

@@ -1,0 +1,17 @@
+<div class="rightSideSectionCards ui card instructors-panel">
+  <div class="addnotes-panel content">
+    <ul class="instructors-list">
+      <li *ngFor="let instructor of selectedMentors | slice:0:3">
+        <div class="circleimg"><img src="{{instructor.avatar || 'assets/images/user_logo.png'}}" alt=""></div>
+      </li>
+    </ul>
+    <p>INSTRUCTORS</p>
+    <p class="bluetext"><span *ngFor="let instructor of selectedMentors | slice:0:3 ; index as i ">
+      {{instructor.firstName}}
+        <span *ngIf="instructor.lastName"> &nbsp;{{instructor.lastName}}</span>
+        <span *ngIf=" selectedMentors.length > 1 && (i < selectedMentors.length - 1)">,&nbsp;</span>
+      </span>
+      
+    </p>
+  </div>
+</div>

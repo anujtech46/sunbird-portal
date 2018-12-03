@@ -2,7 +2,7 @@
 import { takeUntil } from 'rxjs/operators';
 import { CourseBatchService } from './../../../services';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ResourceService, ServerResponse, ToasterService } from '@sunbird/shared';
 import { PermissionService, UserService } from '@sunbird/core';
 import * as _ from 'lodash';
@@ -21,6 +21,7 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
   @Input() batchId: string;
   @Input() courseHierarchy: any;
   @Input() isCourseHeader: boolean;
+  @Output() instructorList = new EventEmitter<any>();
   public courseInteractObject: IInteractEventObject;
   public updateBatchIntractEdata: IInteractEventEdata;
   public createBatchIntractEdata: IInteractEventEdata;
@@ -102,6 +103,7 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
       .subscribe((data: ServerResponse) => {
         if (data.result.response.content && data.result.response.content.length > 0) {
           this.batchList = data.result.response.content;
+          this.instructorList.emit(this.batchList && this.batchList[0] && this.batchList[0].mentors);
           this.fetchUserDetails();
         } else {
           this.showBatchList = true;
