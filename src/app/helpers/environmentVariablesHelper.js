@@ -70,6 +70,9 @@ const julia_env_variable = {
   IS_REFUND_PAYMENT_ENABLED: env.julia_is_refund_payment_enabled || 'false',
   PRIVACY_POLICY_URL: env.julia_privacy_policies || 'https://jaldhara.blob.core.windows.net/attachments/announcement/privacyPolicy.pdf',
   TERM_OF_SERVICE_URL: env.julia_terms_of_service || 'https://jaldhara.blob.core.windows.net/attachments/announcement/TermsOfService.pdf',
+  IDENTITY_PROVIDER: env.julia_identity_provider || 'oidc',
+  IDENTITY_PROVIDER_SCOPE: env.julia_identity_provider_scope || 'offline_access email profile'
+
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

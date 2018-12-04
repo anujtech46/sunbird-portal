@@ -9,6 +9,7 @@ const dateFormat = require('dateformat')
 module.exports = {
   createUserIfNotExist: function (req, callback) {
     var payload = (req.kauth && req.kauth.grant.access_token.content) || {}
+    console.log('session token', req.kauth.grant.access_token.token)
     var userId = payload['sub']
     console.log('payload ::', JSON.stringify(payload))
     var options = {

@@ -70,13 +70,14 @@ if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   }, function () { })
 }
 
-let keycloak = new Keycloak({ store: memoryStore }, {
+let keycloak = new Keycloak({ store: memoryStore, idpHint: envHelper.IDENTITY_PROVIDER, scope: envHelper.IDENTITY_PROVIDER_SCOPE }, {
   'realm': realm,
   'auth-server-url': authServerUrl,
   'ssl-required': 'none',
   'resource': keycloakResource,
   'public-client': true
 })
+
 let tenantId = ''
 
 app.use(helmet())
@@ -584,7 +585,4 @@ const telemetryConfig = {
 }
 
 telemetry.init(telemetryConfig)
-
-
-
 
