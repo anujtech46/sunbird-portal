@@ -13,17 +13,21 @@ module.exports = {
     var userId = payload['sub']
     console.log('payload ::', JSON.stringify(payload))
     var options = {
-      method: 'GET',
-      url: learnerURL + 'user/v1/read/' + userId,
+      method: 'POST',
+      url: learnerURL + 'user/v1/search',
       headers: {
-        'x-device-id': 'trampoline',
-        'x-msgid': uuidv1(),
-        'ts': dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss:lo'),
         'x-consumer-id': learnerAuthorization,
         'content-type': 'application/json',
         accept: 'application/json',
         'Authorization': 'Bearer ' + learnerAuthorization,
         'x-authenticated-user-token': req.kauth.grant.access_token.token
+      },
+      body: {
+        request: {
+          filters: {
+            email: payload.email
+          }
+        }
       },
       json: true
     }
@@ -40,10 +44,10 @@ module.exports = {
 
     request(options, function (error, response, body) {
       telemetryData.statusCode = response && response.statusCode || 500
-      console.log('check user exists', response.statusCode, 'for user Id :', userId)
-      if (body.responseCode === 'OK') {
+      console.log('check user exists', response.statusCode, 'for email :', payload.email, JSON.stringify(body))
+      if (body.responseCode === 'OK' && body.result && body.result.response && body.result.response.count > 0) {
         callback()
-      } else if (body && body.params && body.params.err === 'USER_NOT_FOUND') {
+      } else if (body.result && body.result.response && body.result.response.count === 0) {
         module.exports.createUser(req, function (err, res) {
           if (err) {
             callback()
