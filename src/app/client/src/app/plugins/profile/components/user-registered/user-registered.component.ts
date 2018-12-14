@@ -145,7 +145,6 @@ export class UserRegisteredComponent implements OnInit {
     } else {
       this.showcommonerror = false;
       this.showLoader = true;
-      this.showModal = false;
 
       this.signupService.signup(this.userReg.value).pipe(
       takeUntil(this.unsubscribe$))
