@@ -71,7 +71,8 @@ const julia_env_variable = {
   PRIVACY_POLICY_URL: env.julia_privacy_policies || 'https://jaldhara.blob.core.windows.net/attachments/announcement/privacyPolicy.pdf',
   TERM_OF_SERVICE_URL: env.julia_terms_of_service || 'https://jaldhara.blob.core.windows.net/attachments/announcement/TermsOfService.pdf',
   IDENTITY_PROVIDER: env.julia_identity_provider || 'oidc',
-  IDENTITY_PROVIDER_SCOPE: env.julia_identity_provider_scope || 'offline_access email profile'
+  IDENTITY_PROVIDER_SCOPE: env.julia_identity_provider_scope || 'offline_access email profile',
+  JULIA_BOX_SUPPORT_EMAIL: env.julia_box_support_email || 'academy@juliacomputing.com'
 
 }
 

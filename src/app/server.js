@@ -174,6 +174,7 @@ function getLocals(req) {
   locals.isRefundPaymentEnabled = envHelper.IS_REFUND_PAYMENT_ENABLED;
   locals.privacyPolicy = envHelper.PRIVACY_POLICY_URL;
   locals.termsOfService = envHelper.TERM_OF_SERVICE_URL;
+  locals.juliaBoxSupportEmail = envHelper.JULIA_BOX_SUPPORT_EMAIL
   return locals;
 }
 

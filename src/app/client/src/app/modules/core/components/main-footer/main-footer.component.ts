@@ -17,6 +17,8 @@ export class MainFooterComponent implements OnInit {
    */
   private router: Router;
 
+  juliaBoxSupportEmail;
+
   /*
   * constructor
   */
@@ -26,6 +28,7 @@ export class MainFooterComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.juliaBoxSupportEmail = (<HTMLInputElement>document.getElementById('juliaBoxSupportEmail')).value;
   }
 
 }
