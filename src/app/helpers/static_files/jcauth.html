@@ -1,0 +1,21 @@
+<html>
+    <body>
+    <script>
+        function getAuthURL() {
+            var idx = document.URL.indexOf('?');
+            if (idx != -1) {
+                return document.URL.substring(idx + 11, document.URL.length)
+            }
+            return '';
+        }
+    </script>
+
+        <div align="center">
+        <iframe src="" id='authURL' frameborder="0" scrolling="no" allowtransparency="true" width="200px" height="160px">
+        </iframe>
+        <script>
+            document.getElementById("authURL").src = this.getAuthURL();
+        </script>
+        </div>
+    </body>
+</html>
