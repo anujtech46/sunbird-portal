@@ -72,7 +72,6 @@ app.use(session({
 }))
 
 app.all('/jclogin', function(req, res) {
-  console.log('Am in jclogin rule ............................');
   res.sendFile(path.join(__dirname, 'helpers/static_files' , 'jcauth.html'))
 })
 
