@@ -71,6 +71,11 @@ app.use(session({
   store: memoryStore
 }))
 
+app.all('/jclogin', function(req, res) {
+  console.log('Am in jclogin rule ............................');
+  res.sendFile(path.join(__dirname, 'helpers/static_files' , 'jcauth.html'))
+})
+
 app.use(keycloak.middleware({ admin: '/callback', logout: '/logout' }))
 
 /* the below line will be replaced while creating the deployment package. this line must not be deleted */
