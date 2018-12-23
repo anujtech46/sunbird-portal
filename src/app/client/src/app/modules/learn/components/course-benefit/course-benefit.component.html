@@ -1,0 +1,39 @@
+<div *ngIf="isShowBTButton" class="margin-bottom-15 margin-top-15">
+  <button class="ui fluid blue basic button margin-bottom-10 margin-right-10" (click)="getBenefit()">GET BENEFIT</button>
+</div>
+
+<sui-modal *ngIf='showModel' [isClosable]="false" [size]="small">
+  <div class="header" [appTelemetryImpression]="telemetryImpression">
+    <div class="ui grid">
+      <div class="eleven wide column">
+        <span class="ui header">Get Benefit Request</span>
+      </div>
+      <div class="one wide column actions">
+        <h5 class="ui basic icon circular button deny" (click)="close()">
+          <i class="ui remove icon"></i>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <div class="scrolling content">
+    <div class="ui description" *ngIf="progress">
+      <h2 class="ui center aligned icon header">
+        <i class="notched circle loading icon"></i>
+        <p>We requested to the merchant for benefit transfer, Please wait... !</p>
+      </h2>
+    </div>
+    <div class="description" *ngIf="statusMessage === 'PAYMENT_SUCCESS'">
+      <div class="ui header">Transaction has been done successfully.</div>
+      <p>You have received your benefit ! </p>
+    </div>
+    <div class="description" *ngIf="statusMessage === 'PAYMENT_ERROR'">
+      <div class="ui header">Transaction failed.</div>
+      <p>Please try again later ! </p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button" (click)="close()" *ngIf="!progress">
+      close
+    </div>
+  </div>
+</sui-modal>

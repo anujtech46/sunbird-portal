@@ -1,0 +1,242 @@
+<div class="ui stackable grid courseheaderbg" *ngIf="!enrolledCourse && courseHierarchy && !loader" id="app-player-collection-renderer">
+    <img src="{{courseHierarchy.thumbnail || courseHierarchy.appIcon || '/assets/images/landingPage.jpg'}}" *ngIf="!enrolledCourse" 
+    alt="{{courseHierarchy.name}}" class="courseStructureImage">
+  <div class="courseStructureHeaderText" >{{courseHierarchy.name}}</div>
+</div>
+
+<div class="ui stackable grid courseheader" *ngIf="enrolledCourse && courseHierarchy && courseHierarchy.name" id="app-player-collection-renderer">
+  <div class="one wide column"></div>
+  <div class="seven wide column P0">
+    <div class="ui white tiny header">
+      <a class="ui grey large label">{{courseHierarchy.gradeLevel &&
+        courseHierarchy.gradeLevel[0]}}
+      </a>
+      <span class="lgtext MR10">{{courseHierarchy.name}}</span>
+      <span class="smtext">{{courseHierarchy.subject}}</span>
+    </div>
+  </div>
+  <div class="three wide column P0" *ngIf="selectedModule">
+    <div class="ui white tiny right floated header">
+      <button class="ui mini blue button" [disabled]="prevPlaylistItem === undefined">
+        <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
+      </button>
+      <span>{{selectedModule.name | slice:0:20 }}</span>
+      <button class="ui mini blue button" [disabled]="nextPlaylistItem === undefined">
+        <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
+      </button>
+    </div>
+  </div>
+  <div class="one wide column"></div>
+</div>
+
+<div class="ui stackable grid" *ngIf="!enrolledCourse && courseHierarchy && !loader">
+    <div class="one wide column"></div>
+    <div class="ten wide column border-btm margin-bottom-10">
+      <div class="pull-left">
+        <a class="ui grey large label MR10">{{courseHierarchy.gradeLevel &&
+          courseHierarchy.gradeLevel[0]}}
+        </a>
+        <span class="smtext bluetext">{{courseHierarchy.subject}}</span> &nbsp;|&nbsp;
+        <!-- <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp; -->
+        <span>COST: <span class="bluetext"> FREE</span></span>
+        <span *ngIf="courseHierarchy.totalTimeDuration"> &nbsp;|&nbsp;DURATION: <span class="bluetext"> {{courseHierarchy.totalTimeDuration}}</span></span>
+      </div>
+      <div class="pull-right">
+        <!-- <div *ngIf="!enrolledCourse" class="three wide column P0 margin-top--10px">
+          <div class="ui white right floated tiny header margin-top--10px"> -->
+            <app-batch-details (instructorList)="onInstructorList($event)" *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy"></app-batch-details>
+            <div *ngIf="courseMentor" appPermission [permission]="dashboardPermission">
+              <button class="blue right floated ui button" (click)="showDashboard()">{{resourceService?.frmelmnts?.btn?.viewcoursestats}}</button>
+            </div>
+          <!-- </div>
+        </div> -->
+      </div>
+    </div>
+    <div class="one wide column"></div>
+</div>
+
+<div class="ui stackable grid" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
+  <div class="one wide column"></div>
+  <div class="ten wide column" *ngIf="courseHierarchy && courseHierarchy.name">
+    <div *ngIf="enrolledCourse && !loader" style="height: 85vh !important;">
+        <div class="ui tiny right floated header" *ngIf="scoreData && (scoreData.result || scoreData.grade)">
+          <a class="ui blue label" target="_blank" href="{{scoreData.result}}" *ngIf="scoreData.result">
+            Feedback
+          </a>
+          <div class="ui blue label" *ngIf="scoreData.grade">
+            {{scoreData.grade}}&nbsp;/&nbsp;{{scoreData.score}}
+          </div>
+        </div>
+        <div class="ui button customiconbtn" *ngIf="!sideBarToggle" (click)="sidebar.toggle()">
+          <a class="item right float customicon">
+            <i class="sidebar bluetext icon"></i>
+          </a>
+        </div>
+        <div class="ui header" *ngIf="sideBarToggle">
+          <div class="ui stackable grid">
+            <div class="column">
+              MODULES
+              <span class="ui button" style="margin-left: 167px;" (click)="sidebar.toggle()">
+                <i class="chevron left icon"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <sui-sidebar-container>
+          <sui-sidebar class="vertical massive" #sidebar [transition]="'push'" [isVisible]="true" (isVisibleChange)="toggleSidebar()">
+            <div class="sidebarMenuAlign">
+              <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+                <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
+                  <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
+                  {{child.name}}
+                </div>
+              </div>
+            </div>
+          </sui-sidebar>
+          <sui-sidebar-sibling [ngClass]="{ sideBarSibling: sideBarToggle } ">
+            <div class="ui basic segment" *ngIf="enrolledCourse && playerConfig">
+              <div class="ui grid">
+                <div class="twelve wide column">
+                  <div class="row" *ngIf="isVideoContent" class="youtubePlayerHeight" [appTelemetryImpression]="telemetryContentImpression"
+                    #container>
+                    <ngx-y2-player #video [playerOptions]="youtubePlayerOptions" [container]="container">
+                    </ngx-y2-player>
+                  </div>
+                  <div class="row">
+                    <div class="ui grid margin-top-0">
+                      <div class="seven wide column">
+                        <div class="row">
+                          <div class="ui large header">{{playerConfig.name}}</div>
+                          <div class="ui header">
+                            <div *ngIf="playerConfig.description" class="margin-top-10">
+                              <p *ngIf="!readMore" class="courseStructureDesc"> {{ playerConfig.description |
+                                slice:0:150 }}&nbsp;
+                                <span class="ui cardsKnowMore mouse-pointer" *ngIf="playerConfig.description && playerConfig.description.length > 150 && readMore === false"
+                                  (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
+                              </p>
+                              <p *ngIf="readMore" class="courseStructureDesc"> {{
+                                playerConfig.description}}&nbsp;
+                                <span class="ui cardsKnowMore mouse-pointer" (click)="readMore = false;">{{resourceService.frmelmnts.lbl.readless}}</span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <button class="ui blue basic button MR10" *ngIf="selectedModule.tutorial" (click)="open_notebook($event, selectedModule.tutorial.artifactUrl)">
+                            <!-- <i class="icon user"></i> -->
+                            <img src="../../../../../../assets/images/tuto.png" class="iconimg" alt="">
+                            Tutorial
+                          </button>
+                          <button class="ui blue basic button" *ngIf="selectedModule.exercise" (click)="open_notebook($event, selectedModule.exercise.artifactUrl)">
+                            <img src="../../../../../../assets/images/assets.png" class="iconimg" alt="">
+                            <!-- <i class="icon user"></i> -->
+                            Exercise
+                          </button>
+                        </div>
+                      </div>
+                      <div class="five wide column infobox">
+                        <p>LET'S BEGIN</p>
+                        <p>Follow along with the <a class="bluetext mouse-pointer" (click)="open_notebook($event, selectedModule.tutorial.artifactUrl)">interactive
+                            tutorial</a> and then
+                          complete the <a class="bluetext mouse-pointer" (click)="open_notebook($event, selectedModule.exercise.artifactUrl)">exercise</a>
+                          to demonstrate your knowledge</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sui-sidebar-sibling>
+        </sui-sidebar-container>
+    </div>
+    <div *ngIf="!enrolledCourse && !loader" >
+      <!-- <div class="ui header">MODULES</div>
+      <div class="ui vertical massive menu">
+        <div class="item mouse-pointer" *ngFor="let child of courseHierarchy.children" (click)="navigateToCollection(child)">
+          <div class="middle aligned content" [ngClass]="{ 'bluetext': selectedModule && selectedModule.identifier === child.identifier }">
+            <i class="caret right icon bluetext" *ngIf="selectedModule && selectedModule.identifier === child.identifier"></i>
+            {{child.name}}
+          </div>
+        </div>
+      </div> -->
+      
+      <div class="ui stackable grid">
+        <div class="eight wide column">
+          <div class="ui header">
+            <span class="content courseStructureHeading">
+              {{resourceService.frmelmnts.lbl.aboutthecourse}}
+            </span>
+            <div *ngIf="courseHierarchy.description" class="margin-top-10">
+              <p *ngIf="!readMore" class="courseStructureDesc"> {{ courseHierarchy.description | slice:0:200 }}&nbsp;
+                <span class="ui cardsKnowMore mouse-pointer" *ngIf="courseHierarchy.description && courseHierarchy.description.length > 200 && readMore === false"
+                  (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
+              </p>
+              <p *ngIf="readMore" class="courseStructureDesc"> {{ courseHierarchy.description}}&nbsp;
+                <span class="ui cardsKnowMore mouse-pointer" (click)="readMore = false;">{{resourceService.frmelmnts.lbl.readless}}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="ui header">
+            <span class="content courseStructureHeading">
+              {{resourceService.frmelmnts.lbl.coursestructure}}
+            </span>
+            <span *ngIf="courseHierarchy.totalTimeDuration" class="pull-right content courseStructureHeading smtext margin-right-30"> 
+              Duration
+            </span>
+          </div>
+          <app-collection-tree (contentSelect)="navigateToContent($event)" [nodes]="collectionTreeNodes" [options]="collectionTreeOptions"  [contentStatus]="contentStatus"></app-collection-tree>
+        </div>
+        <div class="four wide column">
+          <div *ngIf="instructorsList && instructorsList.length > 0">
+              <app-course-instructor [instructorsList]="instructorsList"></app-course-instructor>
+          </div>
+          <app-batch-details *ngIf="courseMentor && courseStatus !== 'Unlisted'" [courseId]="courseId" [batchId]="batchId"
+            [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy" (instructorList)="onInstructorList($event)"></app-batch-details>
+          <div *ngIf="progress === 100" class="margin-bottom-15 margin-top-15">
+            <app-course-badge></app-course-badge>
+            <br>
+          </div>
+          <div *ngIf="progress === 100">
+            <app-course-benefit [courseId]="courseId" [batchId]="batchId"></app-course-benefit>
+          </div>
+
+          <div class="rightSideSectionCards ui card getstartedpanel">
+            <div class="content">
+              <div class="margin-bottom-20 title">GET STARTED <span class="pull-right starticon"><img src="../../../../../../assets/images/getStarted_icon.png" alt=""></span> </div>
+              <div class="description margin-bottom-10">
+                <p>Each course contains modules which have a <span class="bluetext">lecture video</span>. Follow along with the <span class="bluetext">interactive tutorial</span> and then complete the <span class="bluetext">exercise</span> to demonstrate your knowledge.</p>
+              </div>
+            </div>
+            <div class="extra content">
+              <div class="left floated freetext">
+                FREE
+              </div>
+              <div class="right floated author">
+                <!-- <button class="ui basic blue button">Enroll</button> -->
+                <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy" (instructorList)="onInstructorList($event)"></app-batch-details>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="loader || !courseHierarchy">
+      <app-loader [data]="loaderMessage"></app-loader>
+    </div>
+    <div *ngIf="showError">
+    </div>
+    <div class="one wide column"></div>
+  </div>
+</div>
+<sui-modal [hidden]="true" [isClosable]="false" id="openNoteBookModal" #modal>
+  <div class="content">
+    <div class="ui tweleve wide column margin-bottom-20">
+      <h2 class="ui center aligned icon header">
+        <i class="notched circle loading icon"></i>
+        <p>Opening notebook</p>
+      </h2>
+    </div>
+  </div>
+</sui-modal>
+<router-outlet></router-outlet>

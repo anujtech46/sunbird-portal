@@ -1,0 +1,195 @@
+.click-notify-xurl {
+    position: absolute; z-index: 999; top: 25%; left: 34%;;
+}
+.ui.button.right.floated{
+    text-align: right;
+}
+.ui.button.left.floated{
+    text-align: left;
+}
+
+.video-view {
+    width: 100%;
+    height: 314px;
+}
+
+.white {
+    color: #ffffff;
+}
+
+/* new css */ 
+.MR10 { 
+    margin-right: 10px !important; 
+} 
+.courseheader { 
+    background: #3449d2 !important; 
+    padding-top: 25px;
+    padding-bottom: 15px;
+    margin: 0 0 10px; 
+    color: #ffffff; 
+    font-family: 'sunbirdregularfont'; 
+} 
+ 
+.courseheader .label, .courseheader .label:hover { 
+    background: rgba(255,255,255,0.5) !important; 
+    font-weight: normal; 
+    border-color: rgba(255,255,255,0.5) !important; 
+    margin-right: 20px; 
+    vertical-align: bottom; 
+    cursor: context-menu; 
+    font-family: 'sunbirdregularfont'; 
+} 
+.courseStructureHeaderText {
+    font-size: 2.4em;
+    font-family: 'robotoregularfont';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    color: #ffffff;
+    max-height: 70px;
+    padding: 0.5% 0 0.5%  8.33%!important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: rgba(0,0,0,0.5);
+}
+.courseStructureImage  {
+    /* max-height: 225px; */
+    width: 100%;
+    padding: 0;
+    margin: 0 auto;
+    display: block;
+    height: 230px !important;
+ }
+ .courseheaderbg {
+    background: #ffffff !important;
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-family: 'sunbirdregularfont';
+    border-bottom: 5px solid #88e3ec !important;
+    height: 230px !important;
+    padding: 0;
+    position: relative;
+    width:100%;
+    overflow: hidden;
+ }
+.border-btm .label.grey {
+    background: #737dc6 !important;
+    font-family: 'sunbirdregularfont';
+    font-weight: normal;
+    text-transform: uppercase;
+}
+.getstartedpanel .title {
+    font-size: 15px;
+}
+.getstartedpanel .extra.content {
+    background: #3449d2 !important;
+    color: #fff;
+    border-radius: 0 !important;
+}
+.getstartedpanel .extra.content .freetext  {
+    font-size: 18px;
+    padding: 5px 0;
+    font-weight: normal;
+}
+.getstartedpanel .extra.content .blue.button {
+    background: #ffffff !important;
+}
+.starticon img {
+    height: 28px;
+    margin: -6px 24px 0 0;
+}
+.courseheader .lgtext { 
+    font-size: 22px; 
+} 
+.smtext { 
+    font-size: 13px; 
+} 
+.customiconbtn {
+    padding:12px 2px 3px 3px !important;
+}
+.iconimg {
+    vertical-align: text-bottom;
+    margin-right: 5px;
+}
+.ui.basic.blue.button {
+    background: transparent !important;
+} 
+.ui.large.header {
+    color: #495cd6!important;
+}
+.nextprevcourse {
+    background: transparent !important;
+    font-size: 18px;
+    vertical-align: middle;
+    border: 0;
+}
+.customicon {
+    font-size: 24px !important;
+    padding: 10px !important;
+}
+.ui.attached.menu:not(.tabular) {
+    border-top: 1px solid #eeeeee !important;
+    border-bottom: 0 !important;
+}
+.pushable {
+    background: #eeeeee;
+}
+
+.ui.left.visible.sidebar, .ui.right.visible.sidebar {
+    box-shadow: 0px 1px 8px 0px rgba(34,36,38,.15) !important;
+    border: 1px solid #eeeeee !important;
+}
+.ui.sidebar {
+    overflow-x: hidden !important;
+}
+.ui.sidebar.menu .item {
+    padding: 1.1em 1em 1.1em 1.5em !important;
+}
+.ui.sidebar .item i.caret.right.icon.bluetext {
+    position: absolute;
+    left: 4px;
+}
+.infobox {
+    border-left: 1px solid #cccccc;
+    color: #888888;
+    font-weight: normal;
+}
+
+.margin-top--10px {
+    margin-top: -10px;
+}
+
+@media screen and  (min-width: 1024px) and (max-width: 1380px) {
+    .sideBarSibling {
+      width: 60%
+    }
+    .youtubePlayerHeight {
+        height: 400px;
+    }
+}
+
+@media screen and  (min-width: 1380px) {
+    .sideBarSibling {
+      width: 75%
+    }
+    .youtubePlayerHeight {
+        height: 600px;
+    }
+}
+
+.sidebarMenuAlign {
+    height: inherit;
+    position: relative;
+}
+
+.menuSideBar {
+    position: absolute;
+    top: auto !important;
+}
+
+.margin-right-30 { 
+    margin-right: 30px; 
+}

@@ -1,0 +1,139 @@
+.cardsHeading {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 400 !important;
+  font-family: inherit !important;
+  text-transform: uppercase;
+  margin: 15px 0 28px;
+}
+.cards.course-card {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+.course-card .card {
+  width: 340px;
+  border-radius: 0 !important;
+}
+.course-card .card .image {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  padding: 1em 1.2em;
+  background: transparent;    
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+.course-card .card .image  img{
+  border-radius: 0;
+  max-height: 224px;
+}
+.course-card .cardImageText {
+  background-color: #ffffff;
+  color: #3449d2;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-size: 1.6em;
+  position: relative !important;
+  overflow: hidden;
+  max-height: 3em;
+  min-height: 3em;
+  line-height: 1em;
+}
+.course-card .content {
+  flex-grow: 1;
+  border: none;
+  background: 0 0;
+  margin: 0;
+  padding: 1em 1.2em !important;
+  box-shadow: none;
+  font-size: 1em;
+  border-radius: 0;
+  font-weight: 500;
+}
+.course-card .extra {
+  padding: .75em 1.2em !important;
+  box-shadow: none;
+}
+.course-card .button {
+  box-shadow: 0 0 0 1px #3449d2 inset !important;
+  color: #3449d2 !important;
+}
+.course-card .extra .ui.rating {
+  padding: 7px 0 0 !important;
+}
+.course-card i.icon {
+  font-size: 1.3em !important;
+}
+
+/* .ui.image {
+  height: 250px;
+  overflow:hidden;
+} */
+
+.card-component-description {
+  margin-top: 10px;
+  line-height: 1em; 
+  max-height: 2.1em; 
+  min-height: 2.1em; 
+  overflow: hidden; 
+}
+
+@media (min-width: 1321px) {
+  .ui.image {
+    height: 250px;
+    overflow:hidden;
+  }
+}
+
+@media (min-width: 1025px) and (max-width:1320px) {
+  .ui.image {
+    height: 200px;
+    overflow:hidden;
+  }
+  .ui.card {
+    height: 390px;
+  }
+}
+@media (min-width: 900px) and (max-width:1024px) {
+  .ui.image {
+    height: 170px;
+    overflow:hidden;
+  }
+  .course-card .extra .left.floated, .course-card .extra .right.floated {
+    float: none !important;
+  }
+  .course-card .extra  {
+    text-align: center !important;
+  }
+  .ui.card {
+    height: 360px;
+  }
+}
+
+@media (min-width: 768px) and (max-width:899px) {
+  .ui.image {
+    height: 138px;
+    overflow:hidden;
+  }
+  .course-card .extra .left.floated, .course-card .extra .right.floated {
+    float: none !important;
+  }
+  .course-card .extra  {
+    text-align: center !important;
+  }
+  .ui.card {
+    height: 328px;
+  }
+}
+@media (max-width: 767px) {
+  .ui.image {
+    height: 108px;
+    overflow:hidden;
+  }
+  .ui.card {
+    height: 308px;
+  }
+}

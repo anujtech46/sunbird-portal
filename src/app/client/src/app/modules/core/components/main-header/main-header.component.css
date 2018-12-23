@@ -1,0 +1,22 @@
+.ui.secondary.pointing.menu .ui.item.text-upper-case {
+    text-transform: uppercase;
+} 
+
+.anon-consumption-sec-menu {
+    border-bottom: 2px solid rgba(34,36,38,.15);   
+}
+
+.ui.grid>.header-height-before-login {
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+}
+.padding-left-5 {
+    padding-left: 5px !important;
+}
+.mainheader {
+    min-height: 92px;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.13);
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0,0,0,0.13);
+    -moz-box-shadow: 0 1px 3px 0 rgba(0,0,0,0.13);
+}

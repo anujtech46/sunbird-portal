@@ -1,0 +1,78 @@
+<div *ngIf="!enrolledCourse && !courseMentor && isCourseHeader && batchList && batchList.length > 0">
+    <button class="ui basic blue button" (click)="enrollBatch(batchList[0])">{{resourceService?.frmelmnts?.btn?.enroll}}</button>
+</div>
+
+<div *ngIf="!enrolledCourse && courseMentor && !isCourseHeader" class="rightSideSectionCards ui card">
+    <div class="content bluepanel-header">
+        <span class="header">{{resourceService?.frmelmnts?.lbl?.batches}}</span>
+        <a>
+            <sui-select (selectedOptionChange)="getAllBatchDetails()" class="batchCardDropDown" [(ngModel)]="batchStatus" [options]="statusOptions"
+                valueField="value" labelField="name" #batchStatusSelect>
+                <sui-select-option *ngFor="let option of batchStatusSelect.filteredOptions" [value]="option">
+                </sui-select-option>
+            </sui-select>
+        </a>
+    </div>
+    <div class="content batchcardListContent" id="batchcardList">
+        <div class="description annannouncement-description">
+            <div *ngIf="showBatchList" class="ui divided list">
+                <div class="item padding-bottom-10 padding-top-10" *ngFor="let batch of batchList">
+                    <i class="write icon blue large  float-ContentRight cursor-pointer" appTelemetryInteract [telemetryInteractEdata]="updateBatchIntractEdata"
+                        [telemetryInteractObject]="{id:batch.identifier,type:'batch',ver:'1',rollup:{l1:courseId}}" (click)="batchUpdate(batch)"
+                        *ngIf="courseMentor"></i>
+                    <app-course-price *ngIf="courseMentor" [viewType]="'ICON'" [courseId]="courseId" [batchId]="batch.identifier"></app-course-price>
+                    
+                    <i class="calendar outline icon"></i>
+                    <div class="content padding-bottom-15 coursedates">
+                        <span class="header padding-bottom-5"> {{batch.startDate | dateFormat}}</span>
+                        <span *ngIf="batch.endDate" class="header padding-bottom-5">  -  {{batch.endDate | dateFormat}} </span>
+                        <div class="description">Created by {{userNames[batch.createdBy].firstName}} {{userNames[batch.createdBy].lastName}}</div>
+                    </div>
+
+                    <button class="ui blue basic large button enrollBtn" appTelemetryInteract [telemetryInteractEdata]="enrollBatchIntractEdata"
+                        [telemetryInteractObject]="{id:batch.identifier,type:'batch',ver:'1',rollup:{l1:courseId}}" (click)="enrollBatch(batch)"
+                        *ngIf="!courseMentor">{{resourceService.frmelmnts.btn.enroll}}</button>
+                        <div *ngIf="!courseMentor" class="ui big label button pull-right dblueetext">
+                            <i class="dollar sign icon"></i> Free
+                        </div>
+                </div>
+                <div *ngIf="batchList.length <= 0">
+                    <div class="ui success message">
+                        <div class="header">{{resourceService.messages.stmsg.m0081}}</div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="showError">
+                <div class="ui success message">
+                    <div class="header">{{resourceService.messages.stmsg.m0081}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui bottom attached batchCard button" appTelemetryInteract [telemetryInteractEdata]="createBatchIntractEdata"
+        [telemetryInteractObject]="courseInteractObject" (click)="createBatch()" *ngIf="courseMentor">
+        <a>
+            <i class="add icon"></i>{{resourceService.frmelmnts.lbl.createbatch}}</a>
+    </div>
+</div>
+<!-- <br> -->
+<!-- <div *ngIf="enrolledCourse && enrolledBatchInfo" class="rightSideSectionCards ui card">
+    <div class="content bluepanel-header">
+        <div class="header">{{resourceService.frmelmnts.lbl.batchdetails}}</div>
+    </div>
+    <div class="content">
+        <div class="heade blueheader-text">{{enrolledBatchInfo.name}}</div>
+        <div class="selectedBatchMeta meta">
+            <span class="date">{{enrolledBatchInfo.startDate | dateFormat}}</span>
+            <span *ngIf="enrolledBatchInfo.endDate" class="date"> - {{enrolledBatchInfo.endDate | dateFormat}}</span>
+        </div>
+    </div>
+    <div class="selectedBatchContent extra content" *ngIf="enrolledBatchInfo.participant.length > 0 || enrolledBatchInfo.mentors.length >0">
+        <span class="right floated" *ngIf="enrolledBatchInfo.participant.length > 0">
+            {{enrolledBatchInfo.participant.length}} {{resourceService.frmelmnts.lbl.learners}}
+        </span>
+        <span *ngIf="enrolledBatchInfo.mentors.length > 0">
+            {{enrolledBatchInfo.mentors.length}} {{resourceService.frmelmnts.lbl.mentors}}
+        </span>
+    </div>
+</div> -->

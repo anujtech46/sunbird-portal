@@ -1,0 +1,36 @@
+::ng-deep .ui.tiny.progress .bar{
+    min-width: 0
+}
+.ui.grid.progress-bar-margin {
+    margin-top: 13px;
+} 
+.course-header-divider {
+    border-right: 0 !important;
+    vertical-align: text-bottom !important;
+}
+
+.courseStructureHeaderText {
+    font-size: 2.2em;
+    font-family: 'robotoregularfont';
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    background-color:#3449d2;
+    width: 100%;
+    margin: 0;
+    color: #ffffff;
+    max-height: 70px;
+    padding-bottom: 38px;
+    padding-left: 163px;
+    padding-top: 1% !important;
+}
+.courseStructureHeader {
+    max-height: 220px !important;
+    background: #f1f2f2 !important;
+    margin: 0px;
+}
+
+.courseStructureImage {
+    max-height: 180px;
+    width: 100%;
+}

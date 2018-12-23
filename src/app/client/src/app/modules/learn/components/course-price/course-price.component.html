@@ -1,0 +1,96 @@
+<div class="rightSideSectionCards ui card margin-bottom-10" *ngIf="viewType === 'CARD'">
+  <div class="content" *ngIf="data && data.price">
+    <div class="header announcementCard-header">Price Detail
+    </div>
+    <div class="ui middle aligned list margin-top-0">
+      <div class="item padding-top-10 padding-bottom-5">
+        <div class="right floated content contentMetaDetail">
+          <div>{{data.price}} Rs.</div>
+        </div>
+        <div class="content">
+          Price
+        </div>
+      </div>
+      <div class="item padding-top-10 padding-bottom-5">
+        <div class="right floated content contentMetaDetail">
+          <div>{{data.benefit}} Rs.</div>
+        </div>
+        <div class="content">
+          Benefit
+        </div>
+      </div>
+      <div class="item padding-top-10 padding-bottom-5">
+        <div class="right floated content contentMetaDetail">
+          <div>{{data.payment}}</div>
+        </div>
+        <div class="content ">
+          Payment
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="twelve wide column" *ngIf="showLoader">
+    <app-loader [data]="loaderMessage"></app-loader>
+  </div>
+  <div class="ui warning message" *ngIf="data && !data.price && !showLoader">
+    <div class="header">
+      Price is not defined for this batch, Please contact admin...
+    </div>
+  </div>
+</div>
+
+<sui-modal *ngIf="showCoursePriceModal" [isClosable]="false" [size]="'small'" (dismissed)="close()">
+  <div class="header">
+    <div class="ui grid">
+      <div class="eleven wide column">
+        <span class="ui header">{{titleMessage}}</span>
+      </div>
+      <div class="one wide column actions">
+        <h5 class="ui basic icon circular button deny" (click)="close()">
+          <i class="ui remove icon"></i>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <form [formGroup]="modelDataForm" class="ui form modelDataForm">
+      <div class="two fields">
+        <div class="required field">
+          <label>Price (In Rs.)</label>
+          <input type="text" name="price" placeholder="Course Price" formControlName="price" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+        </div>
+        <div class="required field">
+          <label>Benefit (In Rs.)</label>
+          <input type="text" name="benefit" placeholder="Course Benefit" formControlName="benefit" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+        </div>
+      </div>
+      <div class="required fields inline">
+        <label for="payment">Payment:</label>
+        <div class="field">
+          <div class="ui radio checkbox">
+            <input type="radio" name="payment" value='Optional' formControlName="payment">
+            <label>Optional</label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui radio checkbox">
+            <input type="radio" name="payment" value='Mandatory' formControlName="payment">
+            <label>Mandatory</label>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="actions margin-top-20" *ngIf="!showLoader">
+      <button class="ui primary button " (click)="saveMetaData(data)">
+        Submit
+      </button>
+    </div>
+    <div class=" ui segment margin-top-10 " *ngIf="showLoader ">
+      <app-loader [data]="loader"></app-loader>
+    </div>
+  </div>
+</sui-modal>
+
+<!-- <span *ngIf="viewType === 'ICON'" class="ui mouse-pointer content-font" title="Add Price">
+  <i class="dollar sign blue large icon float-ContentRight cursor-pointer" (click)="initializeModal()"></i>&nbsp;
+</span> -->

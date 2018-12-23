@@ -1,0 +1,24 @@
+.ui.styled.accordion.align-content {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 16px 13px 16px 13px;
+    width: 100%;
+}
+.my-course-section {
+    background-color: #d4d4d587;
+    border-bottom: 5px solid #88e3ec;
+    box-shadow: 0 1px 3px rgba(0,0,0,.075);
+    margin-top: 0;
+}
+.ui.styled.accordion {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.ui.styled.accordion .removeline.title {
+    margin-right: 16px !important;
+}
+
+.ui.styled.accordion .removeline.title .icon {
+    margin-right: 0 !important;
+}

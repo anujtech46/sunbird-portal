@@ -1,0 +1,51 @@
+<div class="ui link popular-section" *ngIf="section.contents && section.contents.length > 0 && !section.pageType">
+    <h4 class="ui header card-section-header sectionHeading">{{getPageDisplayName(section)}}
+        <span class="ui red circular inline label">{{section.contents.length}}</span>
+    </h4>
+    <div>
+        <ngx-slick in-view-container (inview)="inview($event)" [throttle]="[1000]" [trigger]="section.contents" (afterChange)="inviewChange(section.contents,$event)"class="carousel" #slickModal="slick-modal" [config]="slideConfig">
+            <div in-view-item [id]="i" [data]="content" ngxSlickItem *ngFor="let content of section.contents;let i = index" class="slide">    
+                <app-card appTelemetryInteract [telemetryInteractEdata]="cardIntractEdata" 
+                [telemetryInteractObject]="{id:content.metaData.identifier || content.metaData.courseId,type:content.metaData.contentType || 'Course',ver:'1.0'}"
+                (clickEvent)="playContent($event)"[data]="content" [customClass]="'margin-right-20'"></app-card>
+            </div>
+        </ngx-slick>
+    </div>
+</div>
+<div class="ui link popular-section" *ngIf="section.contents && section.contents.length > 0 && section.pageType ">
+    <div>
+        <ngx-slick in-view-container (inview)="inview($event)" [throttle]="[1000]" [trigger]="section.contents" (afterChange)="inviewChange(section.contents,$event)"class="carousel" #slickModal="slick-modal" [config]="slideConfig">
+            <div in-view-item [id]="i" [data]="content" ngxSlickItem *ngFor="let content of section.contents;let i = index" class="slide">    
+                <div class="ui link cards course-card">   
+                    <div class="ui card margin-right-20">
+                        <div class="ui image">
+                            <img src="{{ content.appIcon || content.image || 'assets/images/default.png' | cdnprefixurl}}">
+                        </div>
+                        <div class="content">
+                            <div class="cardImageText center aligned">
+                                <span>{{content.name}}
+                                    <!-- <i class="ellipsis horizontal icon" *ngIf="content.name && content.name.length >= 16" ></i> -->
+                                </span>
+                            </div>
+                            <div class="card-component-description">
+                                <div *ngIf="content.description && content.description.length > 0">
+                                {{content.description | slice:0:74}}
+                                <i class="ellipsis horizontal icon" *ngIf="content.description && content.description.length >= 74" suiPopup popupText="{{content.description}}"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="extra data">
+                            <div  class="right floated">
+                                <button class="ui blue basic button" tabindex="0" (click)="onPlayEnroll(content,content.action.right)">Enroll</button>
+                            </div>
+                            <span *ngIf="content.rating">
+                                <sui-rating class="courseHeader-rating star left floated ui rating read-only" [ngModel]="content.rating | number:0" [maximum]="5" [isReadonly]="true">
+                                </sui-rating>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ngx-slick>
+    </div>
+</div>

@@ -6,6 +6,7 @@ const session = require('express-session')
 const uuidv1 = require('uuid/v1')
 const dateFormat = require('dateformat')
 const CassandraStore = require('cassandra-session-store')
+const _ = require('lodash')
 const permissionsHelper = require('./permissionsHelper.js')
 const telemetryHelper = require('./telemetryHelper.js')
 const envHelper = require('./environmentVariablesHelper.js')
@@ -50,120 +51,153 @@ let keycloak = new Keycloak({ store: memoryStore }, {
 module.exports = {
   handleRequest: function (req, res) {
     let self = this
-    async.series({
-      verifySignature: function (callback) {
-        console.log('echoAPI : ' + echoAPI)
-        var options = {
-          method: 'GET',
-          url: echoAPI + '/test',
-          'rejectUnauthorized': false,
-          headers: {
-            'cache-control': 'no-cache',
-            authorization: 'Bearer ' + req.query['token']
-          }
-        }
-        request(options, function (error, response, body) {
-          self.errorMsg = 'Request credentials verification failed. Please try with valid credentials.'
-          if (error) {
-            console.log('echo API error', error)
-            callback(error, response)
-          } else if (body === '/test') {
-            self.errorMsg = undefined
-            console.log('echo API succesful')
-            callback(null, response)
-          } else {
-            console.log('echo returned invalid response', body)
-            callback(body, response)
-          }
-        })
-      },
-      verifyRequest: function (callback) {
-        self.payload = jwt.decode(req.query['token'])
-        var timeInSeconds = parseInt(Date.now() / 1000)
-        self.errorMsg = 'Request credentials verification failed. Please try with valid credentials.'
-        if (!(self.payload['iat'] && self.payload['iat'] < timeInSeconds)) {
-          callback(new Error('Token issued time is not available or it is in future'), null)
-        } else if (!(self.payload['exp'] && self.payload['exp'] > timeInSeconds)) {
-          callback(new Error('Token expired time is not available or it is expired'), null)
-        } else if (!self.payload['sub']) {
-          callback(new Error('user id not present'), null)
-        } else {
-          self.errorMsg = undefined
-          callback(null, {})
-        }
-      },
-      verifyUser: function (callback) {
-        // check user exist
-        self.checkUserExists(self.payload, function (err, status) {
-          self.errorMsg = 'Failed to create/authenticate user. Please try again with valid user data'
-          if (err) {
-            console.log('get user profile API error', err)
-            callback(err, null)
-          } else if (status) {
-            self.errorMsg = undefined
-            console.log('user already exists')
-            callback(null, status)
-          } else {
-            // create User
-            console.log('create User Flag', createUserFlag, 'type of', typeof createUserFlag)
-            if (createUserFlag === 'true') {
-              self.createUser(self.payload, function (error, status) {
-                if (error) {
-                  console.log('create user failed', error)
-                  callback(error, null)
-                } else if (status) {
-                  self.errorMsg = undefined
-                  console.log('create user successful')
-                  callback(null, status)
-                } else {
-                  console.log('unable to create user')
-                  callback(new Error('unable to create user'), null)
-                }
-              })
-            } else {
-              callback(new Error('user not found'), null)
+    var jwtPayload = jwt.decode(req.query['token'])
+
+    async.series(
+      {
+        getChannel: function (callback) {
+          self.getUserChannel(req, jwtPayload, callback)
+        },
+        logSSOStartEvent: function (callback) {
+          console.log('SSO start event')
+          telemetryHelper.logSSOStartEvent(req)
+          callback()
+        },
+        verifySignature: function (callback) {
+          console.log('echoAPI : ' + echoAPI)
+          var options = {
+            method: 'GET',
+            url: echoAPI + '/test',
+            'rejectUnauthorized': false,
+            headers: {
+              'cache-control': 'no-cache',
+              authorization: 'Bearer ' + req.query['token']
             }
           }
-        })
-      },
-      getGrantFromUserName: function (callback) {
-        var userName = self.payload['sub'] + (self.payload['iss'] ? '@' + self.payload['iss'] : '')
-        self.errorMsg = 'Request credentials verification failed. Please try with valid credentials.'
-        keycloak.grantManager.obtainDirectly(userName)
-          .then(function (grant) {
-            keycloak.storeGrant(grant, req, res)
-            req.kauth.grant = grant
-            try {
-              keycloak.authenticated(req)
-            } catch (err) {
-              console.log(err)
-              callback(err, null)
-              return
-            };
-            self.errorMsg = undefined
-            callback(null, grant)
-          },
-          function (err) {
-            console.log('grant failed', err)
-            callback(err, null)
+
+          const telemetryData = {reqObj: req,
+            options: options,
+            uri: 'test',
+            userId: jwt.decode(req.query['token']).sub || req.headers['x-consumer-userid']}
+          // telemetryHelper.logAPICallEvent(telemetryData)
+
+          request(options, function (error, response, body) {
+            telemetryData.statusCode = response.statusCode
+            self.errorMsg = 'Request credentials verification failed. Please try with valid credentials.'
+            if (error) {
+              telemetryData.resp = body
+              telemetryHelper.logAPIErrorEvent(telemetryData)
+              console.log('echo API error', error)
+              callback(error, response)
+            } else if (body === '/test') {
+              self.errorMsg = undefined
+              console.log('echo API succesful with token:', req.query['token'])
+              callback(null, response)
+            } else {
+              telemetryData.resp = body
+              telemetryHelper.logAPIErrorEvent(telemetryData)
+              console.log('echo returned invalid response', body, ' for token ', req.query['token'])
+              callback(body, response)
+            }
           })
-      }
-    },
-    function (err, results) {
-      if (err) {
-        console.log('err', err)
-        res.redirect((req.get('X-Forwarded-Protocol') || req.protocol) + '://' + req.get('host') + '?error=' + Buffer.from(self.errorMsg).toString('base64'))
-      } else {
-        console.log('grant successful')
-        if (self.payload['redirect_uri']) {
-          res.redirect(self.payload['redirect_uri'])
-        } else {
-          res.redirect((req.get('X-Forwarded-Protocol') || req.protocol) + '://' + req.get('host') + '/private/index')
+        },
+        verifyRequest: function (callback) {
+          self.payload = jwt.decode(req.query['token'])
+          var timeInSeconds = parseInt(Date.now() / 1000)
+          self.errorMsg = 'Request credentials verification failed. Please try with valid credentials.'
+          if (!(self.payload['iat'] && self.payload['iat'] < timeInSeconds)) {
+            callback(
+              new Error('Token issued time is not available or it is in future, Token :', req.query['token'])
+              , null)
+          } else if (!(self.payload['exp'] && self.payload['exp'] > timeInSeconds)) {
+            callback(new Error('Token expired time is not available or it is expired Token :',
+              req.query['token']), null)
+          } else if (!self.payload['sub']) {
+            callback(new Error('user id not present Token :', req.query['token']), null)
+          } else {
+            self.errorMsg = undefined
+            callback(null, {})
+          }
+        },
+        verifyUser: function (callback) {
+        // check user exist
+          self.checkUserExists(req, self.payload, function (err, status) {
+            self.errorMsg = 'Failed to create/authenticate user. Please try again with valid user data'
+            if (!err) {
+              self.errorMsg = undefined
+              console.log('user already exists')
+              callback(null, status)
+            } else {
+            // create User
+              console.log('create User Flag', createUserFlag, 'type of', typeof createUserFlag)
+              if (createUserFlag === 'true') {
+                self.createUser(req, self.payload, function (error, status) {
+                  if (error) {
+                    console.log('create user failed', error)
+                    callback(error, null)
+                  } else if (status) {
+                    self.errorMsg = undefined
+                    console.log('create user successful')
+                    callback(null, status)
+                  } else {
+                    console.log('unable to create user')
+                    callback(new Error('unable to create user'), null)
+                  }
+                })
+              } else {
+                callback(new Error('user not found'), null)
+              }
+            }
+          })
+        },
+        getGrantFromUserName: function (callback) {
+          var userName = self.payload['sub'] + (self.payload['iss'] ? '@' + self.payload['iss'] : '')
+          self.errorMsg = 'Request credentials verification failed. Please try with valid credentials.'
+          keycloak.grantManager.obtainDirectly(userName)
+            .then(function (grant) {
+              keycloak.storeGrant(grant, req, res)
+              req.kauth.grant = grant
+              try {
+                keycloak.authenticated(req)
+              } catch (err) {
+                console.log(err)
+                callback(err, null)
+                return
+              };
+              telemetryHelper.logGrantLogEvent({
+                reqObj: req,
+                userId: userName,
+                success: grant})
+              self.errorMsg = undefined
+              callback(null, grant)
+            },
+            function (err) {
+              telemetryHelper.logGrantLogEvent({
+                reqObj: req,
+                userId: userName,
+                err: err})
+              console.log('grant failed', err, userName)
+              callback(err, null)
+            })
         }
-      }
-    })
+      },
+      function (err, results) {
+        telemetryHelper.logSSOEndEvent(req)
+        console.log('logSSOEndEvent')
+        if (err) {
+          console.log('err', err)
+          res.redirect((req.get('X-Forwarded-Protocol') || req.protocol) + '://' + req.get('host') + '?error=' + Buffer.from(self.errorMsg).toString('base64'))
+        } else {
+          console.log('grant successful')
+          if (self.payload['redirect_uri']) {
+            res.redirect(self.payload['redirect_uri'])
+          } else {
+            res.redirect((req.get('X-Forwarded-Protocol') || req.protocol) + '://' + req.get('host') + '/private/index')
+          }
+        }
+      })
   },
-  checkUserExists: function (payload, callback) {
+  checkUserExists: function (req, payload, callback) {
     var loginId = payload['sub'] + (payload['iss'] ? '@' + payload['iss'] : '')
     var options = {
       method: 'POST',
@@ -181,19 +215,28 @@ module.exports = {
       json: true
     }
 
+    const telemetryData = {reqObj: req,
+      options: options,
+      uri: 'user/v1/profile/read',
+      type: 'user',
+      id: loginId,
+      userId: loginId}
+    // telemetryHelper.logAPICallEvent(telemetryData)
+
     request(options, function (error, response, body) {
-      console.log('check user exists', JSON.stringify(body))
-      if (body.responseCode === 'RESOURCE_NOT_FOUND') {
-        callback(null, false)
-      } else if (body.responseCode === 'OK') {
+      telemetryData.statusCode = response.statusCode
+      console.log('check user exists', response.statusCode, 'for Login Id :', loginId)
+      if (body.responseCode === 'OK') {
         callback(null, true)
-      } else if (error || response.statusCode !== 200) {
-        var err = error || body
+      } else {
+        telemetryData.resp = body
+        telemetryHelper.logAPIErrorEvent(telemetryData)
+        var err = error || body || true
         callback(err, false)
       }
     })
   },
-  createUser: function (payload, callback) {
+  createUser: function (req, payload, callback) {
     var options = {
       method: 'POST',
       url: learnerURL + 'user/v1/create',
@@ -221,15 +264,57 @@ module.exports = {
       },
       json: true
     }
+    const telemetryData = {reqObj: req,
+      options: options,
+      uri: 'user/v1/create',
+      type: 'user',
+      id: options.headers['x-consumer-id'],
+      userId: options.headers['x-consumer-id']}
+    // telemetryHelper.logAPICallEvent(telemetryData)
+
     request(options, function (error, response, body) {
-      console.log('create user', body)
+      telemetryData.statusCode = response.statusCode
       if (error || response.statusCode !== 200) {
+        telemetryData.resp = body
+        telemetryHelper.logAPIErrorEvent(telemetryData)
         var err = error || body
         callback(err, null)
       } else if (body.responseCode === 'OK') {
         callback(null, true)
       } else {
+        telemetryData.resp = body
+        telemetryHelper.logAPIErrorEvent(telemetryData)
         callback(body.params.err, null)
+      }
+    })
+  },
+  getUserChannel: function (req, payload, callback) {
+    var loginId = payload['sub'] + (payload['iss'] ? '@' + payload['iss'] : '')
+    var options = {
+      method: 'POST',
+      url: learnerURL + 'user/v1/profile/read',
+      headers: {
+        'x-device-id': 'trampoline',
+        'x-msgid': uuidv1(),
+        'ts': dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss:lo'),
+        'x-consumer-id': learnerAuthorization,
+        'content-type': 'application/json',
+        accept: 'application/json',
+        'Authorization': 'Bearer ' + learnerAuthorization
+      },
+      body: { params: {}, request: { loginId: loginId } },
+      json: true
+    }
+
+    request(options, function (error, response, body) {
+      console.log('get user channel ', response.statusCode, 'for Login Id :', loginId, 'error', error)
+
+      if (body.responseCode === 'OK') {
+        req['headers']['X-Channel-Id'] = _.get(req, 'headers.X-Channel-Id') ||
+         _.get(body, 'result.response.rootOrg.hashTagId')
+        callback(null, _.get(body, 'result.response.rootOrg.hashTagId'))
+      } else {
+        callback(null, null)
       }
     })
   }
@@ -238,6 +323,7 @@ module.exports = {
 // Method called after successful authentication and it will log the telemetry
 // for CP_SESSION_START
 keycloak.authenticated = function (request) {
+  permissionsHelper.getPermissions(request)
   async.series({
     getUserData: function (callback) {
       permissionsHelper.getCurrentUserRoles(request, callback)
@@ -260,10 +346,7 @@ keycloak.deauthenticated = function (request) {
   delete request.session['rootOrgId']
   if (request.session) {
     request.session.sessionEvents = request.session.sessionEvents || []
-    telemetryHelper.sendTelemetry(request, request.session.sessionEvents, function (err, status) {
-      if (err) {} // nothing to do on error
-      // remove session data
-      delete request.session.sessionEvents
-    })
+    telemetryHelper.logSessionEnd(request)
+    delete request.session.sessionEvents
   }
 }
