@@ -168,6 +168,7 @@ export namespace CollectionHierarchyAPI {
     usedByContent?: any[];
     board?: string;
     status?: string;
+    posterImage?: string;
   }
 
 }

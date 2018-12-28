@@ -24,6 +24,7 @@ export interface ActionCard {
     */
     courseLogoUrl?: string;
     appIcon?: string;
+    posterImage?: string;
     /**
     * course id
     */

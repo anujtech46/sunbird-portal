@@ -69,6 +69,7 @@ export interface IContents {
     * Content action
     */
     contnetShare?: any;
+    posterImage?: string;
 }
 
 export interface IbadgeAssertions {

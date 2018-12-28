@@ -40,4 +40,5 @@ export interface ContentData {
     pkgVersion?: string;
     visibility?: string;
     attributions?: Array<string>;
+    posterImage?: string;
 }
