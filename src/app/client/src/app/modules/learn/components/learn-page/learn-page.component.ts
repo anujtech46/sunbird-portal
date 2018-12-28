@@ -1,7 +1,7 @@
 
-import {combineLatest as observableCombineLatest,  Subscription ,  Observable ,  Subject } from 'rxjs';
+import { combineLatest as observableCombineLatest, Subscription, Observable, Subject } from 'rxjs';
 
-import {takeUntil} from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { PageApiService, CoursesService, ICourses, ISort, PlayerService } from '@sunbird/core';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
@@ -88,6 +88,7 @@ export class LearnPageComponent implements OnInit, OnDestroy {
   public unsubscribe = new Subject<void>();
   courseDataSubscription: Subscription;
   caraouselEnrollData: any;
+  showEnrolledCourseSection: boolean;
   /**
 	 * Constructor to create injected service(s) object
    * @param {ResourceService} resourceService Reference of ResourceService
@@ -151,45 +152,46 @@ export class LearnPageComponent implements OnInit, OnDestroy {
       sort_by: { [this.queryParams.sort_by]: this.queryParams.sortType }
     };
     this.pageSectionService.getPageData(option).pipe(
-    takeUntil(this.unsubscribe))
-    .subscribe(
-      (apiResponse) => {
-        this.noResultMessage = {
-          'message': this.resourceService.messages.stmsg.m0007,
-          'messageText': this.resourceService.messages.stmsg.m0006
-        };
-        let noResultCounter = 0;
-        if (apiResponse && apiResponse.sections) {
-          this.showLoader = false;
-          const sections = this.processActionObject(apiResponse.sections);
-          this.caraouselData = sections;
-          if (this.caraouselData.length > 0) {
-            _.forIn(this.caraouselData, (value, key) => {
-              if (this.caraouselData[key].contents === null || this.caraouselData[key].contents === undefined
-                || (this.caraouselData[key].name && this.caraouselData[key].name === 'My Courses')) {
-                noResultCounter++;
-              }
-            });
-          }
-          if (noResultCounter === this.caraouselData.length) {
+      takeUntil(this.unsubscribe))
+      .subscribe(
+        (apiResponse) => {
+          this.noResultMessage = {
+            'message': this.resourceService.messages.stmsg.m0007,
+            'messageText': this.resourceService.messages.stmsg.m0006
+          };
+          let noResultCounter = 0;
+          if (apiResponse && apiResponse.sections) {
+            this.showLoader = false;
+            const sections = this.processActionObject(apiResponse.sections);
+            this.caraouselData = sections;
+            if (this.caraouselData.length > 0) {
+              _.forIn(this.caraouselData, (value, key) => {
+                if (this.caraouselData[key].contents === null || this.caraouselData[key].contents === undefined
+                  || (this.caraouselData[key].name && this.caraouselData[key].name === 'My Courses')) {
+                  noResultCounter++;
+                }
+              });
+            }
+            if (noResultCounter === this.caraouselData.length) {
+              this.noResult = true;
+            }
+          } else {
             this.noResult = true;
+            this.showLoader = false;
           }
-        } else {
-          this.noResult = true;
-          this.showLoader = false;
-        }
 
-      },
-      err => {
-        this.noResult = true;
-        this.noResultMessage = {
-          'message': this.resourceService.messages.stmsg.m0007,
-          'messageText': this.resourceService.messages.stmsg.m0006
-        };
-        this.showLoader = false;
-        this.toasterService.error(this.resourceService.messages.fmsg.m0002);
-      }
-    );
+        },
+        err => {
+          this.noResult = true;
+          this.noResultMessage = {
+            'message': this.resourceService.messages.stmsg.m0007,
+            'messageText': this.resourceService.messages.stmsg.m0006
+          };
+          this.showLoader = false;
+          this.showEnrolledCourseSection = true;
+          this.toasterService.error(this.resourceService.messages.fmsg.m0002);
+        }
+      );
   }
   /**
    * This method process the action object.
@@ -207,8 +209,23 @@ export class LearnPageComponent implements OnInit, OnDestroy {
             const metaData = { metaData: this.configService.appConfig.Course.enrolledCourses.metaData };
             const dynamicFields = {};
             const enrolledCourses = _.find(this.enrolledCourses, ['courseId', sections[index].contents[index2].identifier]);
+            const posterImage = sections[index].contents[index2].posterImage;
+            console.log('sections[index].contents[index2]', sections[index].contents[index2]);
+            if (this.caraouselEnrollData[0] && this.caraouselEnrollData[0].contents) {
+              this.caraouselEnrollData[0].contents.forEach(element => {
+                if (element.metaData.courseId === sections[index].contents[index2].identifier) {
+                  element.image = sections[index].contents[index2].posterImage;
+                }
+              });
+              console.log(this.caraouselEnrollData[0].contents);
+              this.showEnrolledCourseSection = true;
+            }
             sections[index].contents[index2] = this.utilService.processContent(enrolledCourses,
               constantData, dynamicFields, metaData);
+            if (posterImage) {
+              sections[index].contents[index2].image = posterImage;
+              this.enrolledCourses[index].courseLogoUrl = posterImage;
+            }
           } else {
             const constantData = this.configService.appConfig.Course.otherCourse.constantData;
             const metaData = this.configService.appConfig.Course.otherCourse.metaData;
@@ -292,7 +309,7 @@ export class LearnPageComponent implements OnInit, OnDestroy {
           queryParams: queryParams
         };
       }).pipe(
-      takeUntil(this.unsubscribe))
+        takeUntil(this.unsubscribe))
       .subscribe(bothParams => {
         this.queryParams = { ...bothParams.queryParams };
         this.filters = {};
@@ -314,7 +331,7 @@ export class LearnPageComponent implements OnInit, OnDestroy {
       event.data.metaData.contentType = 'Course';
     }
     this.playerService.playContent(event.data.metaData,
-      (event.action.eventName === 'Enroll' || event.action.eventName === 'Resume') ? true : undefined );
+      (event.action.eventName === 'Enroll' || event.action.eventName === 'Resume') ? true : undefined);
   }
   ngOnDestroy() {
     if (this.courseDataSubscription) {

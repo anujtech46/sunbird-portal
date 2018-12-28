@@ -17,7 +17,7 @@ export class UtilService {
     let fieldValue: any;
     const content = {
       name: data.name || data.courseName,
-      image: data.posterImage || data.appIcon || data.courseLogoUrl,
+      image: data.posterImage || data.courseLogoUrl || data.appIcon,
       description: data.description,
       rating: data.me_averageRating || '0'
     };
