@@ -709,8 +709,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     // TODO: Show a loaded screen till the time window.open is called
     event.stopPropagation();
     (<any>$('#openNoteBookModal')).modal('show');
-    console.log("Opening dummy tab ...");
-    var nbWindow = window.open("http://localhost:3000/");
+    console.log("Opening interim tab ... url = " + url);
+    var nbWindow = window.open(window.location.origin + "/jbnotebook");
     this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
       const newUrl = url + this.loadCourseDetails();
       console.log('SSO successful :: Opening notebook :: ', newUrl);

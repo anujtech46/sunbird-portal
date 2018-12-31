@@ -92,6 +92,10 @@ app.all('/jclogin', function(req, res) {
   res.sendFile(path.join(__dirname, 'helpers/static_files' , 'jcauth.html'))
 })
 
+app.all('/jbnotebook', function(req, res) {
+  res.sendFile(path.join(__dirname, 'helpers/static_files' , 'loading.html'))
+})
+
 app.use(keycloak.middleware({ admin: '/callback', logout: '/logout' }))
 
 app.set('view engine', 'ejs')
