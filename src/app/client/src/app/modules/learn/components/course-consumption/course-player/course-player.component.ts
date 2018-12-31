@@ -709,13 +709,16 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     // TODO: Show a loaded screen till the time window.open is called
     event.stopPropagation();
     (<any>$('#openNoteBookModal')).modal('show');
+    console.log("Opening dummy tab ...");
+    var nbWindow = window.open("http://localhost:3000/");
     this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
       const newUrl = url + this.loadCourseDetails();
       console.log('SSO successful :: Opening notebook :: ', newUrl);
-      this.checkNotebookStatus(newUrl);
+      this.checkNotebookStatus(newUrl, nbWindow);
     }, (err) => {
       (<any>$('#openNoteBookModal')).modal('hide');
       this.toasterService.error('Loading notebook failed, Please try again later...');
+      nbWindow.close();
       console.log('Failed to load notebook :: ', JSON.stringify(err));
     });
   }
@@ -745,15 +748,16 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
    * Open notebook
    * @param url : string
    */
-  private openNoteBook(url) {
+  private openNoteBook(url, nbWindow) {
     this.juliaNoteBookService.checkNoteBookToken().subscribe((response) => {
       if (response && response.responseCode === 'OK') {
         const newUrl = url + '&Authorization=' + (response.result && response.result.token);
         (<any>$('#openNoteBookModal')).modal('hide');
-        const windowPopup = window.open(newUrl);
-        if (!windowPopup) {
+        nbWindow.location = newUrl;
+        const windowPopup = nbWindow;
+        if (!windowPopup) { // This case may not be hit because of opening a dummy window.
           const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
-          this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain);
+          this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain + '. Check https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&hl=en for details');
         }
         if (!this.juliaBoxPingIntervalTime) {
           this.startJuliaNoteBookPing();
@@ -774,24 +778,26 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   * @param url : string
   * @param noteBookStatusCount : number
   */
-  private checkNotebookStatus(url: string, noteBookStatusCount: number = 1) {
+  private checkNotebookStatus(url: string, nbWindow, noteBookStatusCount: number = 1) {
     this.juliaNoteBookService.checkNoteBookStatus(url).subscribe((response) => {
       if (response && response.responseCode === 'OK') {
-        this.openNoteBook(url);
+        this.openNoteBook(url, nbWindow);
       }
     }, (err) => {
       if (err.error && err.error.responseCode === 'RESOURCE_NOT_FOUND') {
         console.log('Getting 404 :: checkNotebookStatus ::', noteBookStatusCount);
         if (noteBookStatusCount <= 10) {
           setTimeout(() => {
-            this.checkNotebookStatus(url, noteBookStatusCount + 1);
+            this.checkNotebookStatus(url, nbWindow, noteBookStatusCount + 1);
           }, 1000);
         } else {
           (<any>$('#openNoteBookModal')).modal('hide');
+           nbWindow.close();
           this.toasterService.error('Loading notebook failed, Please try again later...');
         }
       } else {
         (<any>$('#openNoteBookModal')).modal('hide');
+        nbWindow.close();
         this.toasterService.error('Loading notebook failed, Please try again later...');
       }
     });
