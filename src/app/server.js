@@ -183,6 +183,7 @@ function getLocals(req) {
   locals.privacyPolicy = envHelper.PRIVACY_POLICY_URL;
   locals.termsOfService = envHelper.TERM_OF_SERVICE_URL;
   locals.juliaBoxSupportEmail = envHelper.JULIA_BOX_SUPPORT_EMAIL
+  locals.error_handler_plugin = envHelper.ERROR_HANDLER_PLUGIN
   return locals;
 }
 

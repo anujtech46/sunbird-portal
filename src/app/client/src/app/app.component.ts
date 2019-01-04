@@ -12,6 +12,7 @@ import {
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs';
 declare var ga: Function;
+import * as Raven from 'raven-js';
 /**
  * main app component
  *
@@ -114,6 +115,7 @@ export class AppComponent implements OnInit {
       });
       this.initTenantService();
     }
+    this.loadErrorHandlerPlugin();
   }
   initializeLogedInsession() {
     this.userService.startSession();
@@ -238,5 +240,16 @@ export class AppComponent implements OnInit {
         console.log(e);
       }
     });
+  }
+
+  loadErrorHandlerPlugin() {
+    const pluginUrl = (<HTMLInputElement>document.getElementById('error_handler_plugin')).value;
+    if (pluginUrl) {
+      try {
+        Raven.config(pluginUrl).install();
+      } catch (err) {
+        console.log('Unable to load error handler plugin');
+      }
+    }
   }
 }

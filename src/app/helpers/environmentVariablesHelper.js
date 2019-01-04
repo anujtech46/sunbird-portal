@@ -74,6 +74,7 @@ const julia_env_variable = {
   IDENTITY_PROVIDER_SCOPE: env.julia_identity_provider_scope || 'offline_access email profile',
   JULIA_BOX_SUPPORT_EMAIL: env.julia_box_support_email || 'academy@juliacomputing.com',
   PORTAL_ADMIN_TRAMPOLINE_CLIENT_ID: env.sunbird_trampoline_admin_client_id,
+  ERROR_HANDLER_PLUGIN: env.jaldhara_error_handler_plugin,
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

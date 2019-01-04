@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,6 +15,9 @@ import { WebExtensionsConfig, PluginModules } from './framework.config';
 import { CacheService } from 'ng2-cache-service';
 import { CacheStorageAbstract } from 'ng2-cache-service/dist/src/services/storage/cache-storage-abstract.service';
 import { CacheSessionStorage } from 'ng2-cache-service/dist/src/services/storage/session-storage/cache-session-storage.service';
+import { ResponseInterceptor } from './modules/shared/interceptors/ResponseInterceptor';
+import { RavenErrorHandler } from './raven-error-handler';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -39,6 +42,8 @@ import { CacheSessionStorage } from 'ng2-cache-service/dist/src/services/storage
   providers: [
     CacheService,
     { provide: CacheStorageAbstract, useClass: CacheSessionStorage },
+    { provide: HTTP_INTERCEPTORS, useClass: ResponseInterceptor, multi: true },
+    { provide: ErrorHandler, useClass: RavenErrorHandler }
   ]
 })
 export class AppModule {
