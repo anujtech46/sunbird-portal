@@ -170,6 +170,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   youtubePlayerOptions: any;
   instructorsList: any;
   exerciseResourceType = 'lesson plan';
+  juliaBoxSupportEmail: string;
 
   constructor(contentService: ContentService, activatedRoute: ActivatedRoute, private configService: ConfigService,
     private courseConsumptionService: CourseConsumptionService, windowScrollService: WindowScrollService,
@@ -195,6 +196,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.courseMentor = false;
     }
+    this.juliaBoxSupportEmail = (<HTMLInputElement>document.getElementById('juliaBoxSupportEmail')).value;
     this.activatedRouteSubscription = this.activatedRoute.params.pipe(first(),
       mergeMap((params) => {
         this.courseId = params.courseId;
@@ -469,7 +471,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.enableContentPlayer = true;
       this.router.navigate([], navigationExtras);
     } else {
-      this.toasterService.info('Please enrol to the course …');
+      this.toasterService.info('Please enroll in the course to view it.');
     }
   }
 
@@ -709,15 +711,15 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     // TODO: Show a loaded screen till the time window.open is called
     event.stopPropagation();
     (<any>$('#openNoteBookModal')).modal('show');
-    console.log("Opening interim tab ... url = " + url);
-    var nbWindow = window.open(window.location.origin + "/jbnotebook");
+    console.log('Opening interim tab ... url = ' + url);
+    const nbWindow = window.open(window.location.origin + '/jbnotebook');
     this.juliaNoteBookService.ssoJuliaBox({}).subscribe((r) => {
       const newUrl = url + this.loadCourseDetails();
       console.log('SSO successful :: Opening notebook :: ', newUrl);
       this.checkNotebookStatus(newUrl, nbWindow);
     }, (err) => {
       (<any>$('#openNoteBookModal')).modal('hide');
-      this.toasterService.error('Loading notebook failed, Please try again later...');
+      this.toasterService.error('We were unable to create a Jupyter notebook for you. Please email '  + this.juliaBoxSupportEmail);
       nbWindow.close();
       console.log('Failed to load notebook :: ', JSON.stringify(err));
     });
@@ -757,7 +759,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         const windowPopup = nbWindow;
         if (!windowPopup) { // This case may not be hit because of opening a dummy window.
           const domain = url.split('//')[1] && url.split('//')[1].split('/')[0];
-          this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain ' + domain + '. Check https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&hl=en for details');
+          this.toasterService.impInfo('Unable to open a new tab. Please enable popups for domain '
+          + domain + '. Check https://support.google.com/chrome/answer/95472?co=GENIE.Platform%3DDesktop&hl=en for details');
         }
         if (!this.juliaBoxPingIntervalTime) {
           this.startJuliaNoteBookPing();
@@ -765,12 +768,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         (<any>$('#openNoteBookModal')).modal('hide');
         console.log('Failed to get token', JSON.stringify(response));
-        this.toasterService.error('Loading notebook failed, Please try again later...');
+        this.toasterService.error('We were unable to create a Jupyter notebook for you. Please email '  + this.juliaBoxSupportEmail);
       }
     }, (err) => {
       (<any>$('#openNoteBookModal')).modal('hide');
       console.log('Failed to get token ::', JSON.stringify(err));
-      this.toasterService.error('Loading notebook failed, Please try again later...');
+      this.toasterService.error('We were unable to create a Jupyter notebook for you. Please email '  + this.juliaBoxSupportEmail);
     });
   }
   /**
@@ -793,12 +796,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
           (<any>$('#openNoteBookModal')).modal('hide');
            nbWindow.close();
-          this.toasterService.error('Loading notebook failed, Please try again later...');
+          this.toasterService.error('We were unable to create a Jupyter notebook for you. Please email '  + this.juliaBoxSupportEmail);
         }
       } else {
         (<any>$('#openNoteBookModal')).modal('hide');
         nbWindow.close();
-        this.toasterService.error('Loading notebook failed, Please try again later...');
+        this.toasterService.error('We were unable to create a Jupyter notebook for you. Please email '  + this.juliaBoxSupportEmail);
       }
     });
   }
@@ -819,7 +822,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.fetchScoreData();
       this.navigateToContent({ id: youtubeContent.identifier, title: youtubeContent.name });
     } else {
-      this.toasterService.info('Please enrol to the course …');
+      this.toasterService.info('Please enroll in the course to view it.');
     }
   }
 

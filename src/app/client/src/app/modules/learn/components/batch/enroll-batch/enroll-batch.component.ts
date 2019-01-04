@@ -212,7 +212,7 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
     this.amount = data.amount * 100;
     this.paymentType = data.payment;
     if (!this.orderData) {
-      this.getOrderDetail();
+      // this.getOrderDetail();
     }
   }
 
