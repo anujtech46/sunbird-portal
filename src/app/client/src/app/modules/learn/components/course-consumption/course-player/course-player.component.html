@@ -36,9 +36,10 @@
         <a class="ui grey large label MR10">{{courseHierarchy.gradeLevel &&
           courseHierarchy.gradeLevel[0]}}
         </a>
-        <span class="smtext bluetext">{{courseHierarchy.subject}}</span> &nbsp;|&nbsp;
+        <span class="smtext bluetext">{{courseHierarchy.subject}}</span>
         <!-- <span>DURATION: <span class="bluetext">3.5 Hours</span></span> &nbsp;|&nbsp; -->
-        <span>COST: <span class="bluetext"> FREE</span></span>
+        <!-- Commented cost -->
+        <!-- <span>COST:  &nbsp;|&nbsp;<span class="bluetext"> FREE</span></span> -->
         <span *ngIf="courseHierarchy.totalTimeDuration"> &nbsp;|&nbsp;DURATION: <span class="bluetext"> {{courseHierarchy.totalTimeDuration}}</span></span>
       </div>
       <div class="pull-right">
@@ -209,9 +210,9 @@
               </div>
             </div>
             <div class="extra content">
-              <div class="left floated freetext">
+              <!-- <div class="left floated freetext">
                 FREE
-              </div>
+              </div> -->
               <div class="right floated author">
                 <!-- <button class="ui basic blue button">Enroll</button> -->
                 <app-batch-details *ngIf="courseStatus !== 'Unlisted' && !courseMentor" [isCourseHeader]="true" [courseId]="courseHierarchy.identifier" [enrolledCourse]="enrolledCourse" [courseHierarchy]="courseHierarchy" (instructorList)="onInstructorList($event)"></app-batch-details>
