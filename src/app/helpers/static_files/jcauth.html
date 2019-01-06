@@ -1,5 +1,11 @@
 <html>
-    <body>
+
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
+</head>
+
+<body>
     <script>
         function getAuthURL() {
             var idx = document.URL.indexOf('?');
@@ -9,13 +15,37 @@
             return '';
         }
     </script>
-
-        <div align="center">
-        <iframe src="" id='authURL' frameborder="0" scrolling="no" allowtransparency="true" width="200px" height="160px">
-        </iframe>
-        <script>
-            document.getElementById("authURL").src = this.getAuthURL();
-        </script>
+    <div>
+        <img class="header-logo-before-login" alt="Julia Academy" src="https://academy.juliabox.com/assets/images/sunbird_logo.png"
+            style="
+                display: block;
+                width: auto;
+                height: auto;
+                max-height: 80px;
+                padding: 14px 140px;
+                ">
+    </div>
+    <div class="row" style="padding: 100px 0!important;background: #e6e7e8;">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4">
+            <div class="panel">
+                <div class="panel-heading" style="color: #495cd6;font-size: 40px;">Sign On To JuliaAcademy</div>
+                <div class="panel-body" style="color: black;font-size: 16px;">
+                    If you're new, just log in to get started!<br>
+                    Use any one of the supported authentication providers and we'll automatically create your account.
+                </div>
+            </div>
         </div>
-    </body>
+        <div class="col-sm-4">
+            <div align="center">
+                <iframe id="authURL" frameborder="0" scrolling="no" allowtransparency="true" width="200px" height="160px">
+                </iframe>
+                <script>
+                    document.getElementById("authURL").src = this.getAuthURL();
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
