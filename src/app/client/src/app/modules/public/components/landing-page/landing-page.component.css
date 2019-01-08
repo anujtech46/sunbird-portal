@@ -45,10 +45,6 @@
     margin: 34px 0;
 }
 
-/* learn best section */
-.learnbestdiv {
-    padding-bottom: 50px;
-}
 .learnbestdiv .title-center {
     margin: 40px 0 80px;
     text-align: center;
@@ -337,5 +333,5 @@
   }
 
   .padding-top-48 {
-      padding-top: 3rem;
+      padding-top: 5rem;
   }
