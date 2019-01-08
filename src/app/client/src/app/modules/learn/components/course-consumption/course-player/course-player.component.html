@@ -137,10 +137,13 @@
                       </div>
                       <div class="five wide column infobox">
                         <p>LET'S BEGIN</p>
-                        <p>Follow along with the <a class="bluetext mouse-pointer" (click)="open_notebook($event, selectedModule.tutorial.artifactUrl)">interactive
+                        <p>Follow along with the 
+                          <a [ngClass]="{'disabled': !selectedModule.tutorial, 'mouse-pointer': selectedModule.tutorial}" class="bluetext" (click)="open_notebook($event, selectedModule.tutorial.artifactUrl)">interactive
                             tutorial</a> and then
-                          complete the <a class="bluetext mouse-pointer" (click)="open_notebook($event, selectedModule.exercise.artifactUrl)">exercise</a>
-                          to demonstrate your knowledge</p>
+                          complete the 
+                          <a [ngClass]="{'disabled': !selectedModule.exercise, 'mouse-pointer': selectedModule.exercise}" class="bluetext" (click)="open_notebook($event, selectedModule.exercise.artifactUrl)">exercise</a>
+                          to demonstrate your knowledge
+                        </p>
                       </div>
                     </div>
                   </div>

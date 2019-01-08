@@ -210,14 +210,12 @@ export class LearnPageComponent implements OnInit, OnDestroy {
             const dynamicFields = {};
             const enrolledCourses = _.find(this.enrolledCourses, ['courseId', sections[index].contents[index2].identifier]);
             const posterImage = sections[index].contents[index2].posterImage;
-            console.log('sections[index].contents[index2]', sections[index].contents[index2]);
             if (this.caraouselEnrollData[0] && this.caraouselEnrollData[0].contents) {
               this.caraouselEnrollData[0].contents.forEach(element => {
                 if (element.metaData.courseId === sections[index].contents[index2].identifier) {
                   element.image = sections[index].contents[index2].posterImage;
                 }
               });
-              console.log(this.caraouselEnrollData[0].contents);
               this.showEnrolledCourseSection = true;
             }
             sections[index].contents[index2] = this.utilService.processContent(enrolledCourses,

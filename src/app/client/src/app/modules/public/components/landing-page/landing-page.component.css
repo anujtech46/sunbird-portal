@@ -265,9 +265,6 @@
         height: 200px;
         overflow:hidden;
     }
-    .ui.card {
-        height: 390px;
-      }
 }
 @media (min-width: 900px) and (max-width:1024px) {
     .ui.image {
@@ -280,9 +277,6 @@
     .course-card .extra  {
         text-align: center !important;
     }
-    .ui.card {
-        height: 360px;
-      }
 }
   
 @media (min-width:900px) and (max-width:1210px) {
@@ -319,9 +313,6 @@
     .course-card .extra  {
         text-align: center !important;
     }
-    .ui.card {
-        height: 328px;
-      }
 }
 
 @media (max-width:767px) {
@@ -335,9 +326,6 @@
         height: 108px;
         overflow:hidden;
     }
-    .ui.card {
-        height: 308px;
-      }
 }
  
 .card-component-description {
