@@ -160,3 +160,7 @@
       height: 308px;
     }
   }
+
+  .center-aligned {
+    text-align: center;
+  }
