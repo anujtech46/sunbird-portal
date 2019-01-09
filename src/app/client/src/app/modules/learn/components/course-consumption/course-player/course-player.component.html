@@ -6,21 +6,21 @@
 
 <div class="ui stackable grid courseheader" *ngIf="enrolledCourse && courseHierarchy && courseHierarchy.name" id="app-player-collection-renderer">
   <div class="one wide column"></div>
-  <div class="seven wide column P0">
+  <div class="five wide column P0">
     <div class="ui white tiny header">
       <a class="ui grey large label">{{courseHierarchy.gradeLevel &&
         courseHierarchy.gradeLevel[0]}}
       </a>
       <span class="lgtext MR10">{{courseHierarchy.name}}</span>
-      <span class="smtext">{{courseHierarchy.subject}}</span>
+      <!-- <span class="smtext">{{courseHierarchy.subject}}</span> -->
     </div>
   </div>
-  <div class="three wide column P0" *ngIf="selectedModule">
+  <div class="five wide column P0" *ngIf="selectedModule">
     <div class="ui white tiny right floated header">
       <button class="ui mini blue button" [disabled]="prevPlaylistItem === undefined">
         <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
       </button>
-      <span>{{selectedModule.name | slice:0:20 }}</span>
+      <span>{{selectedModule.name | slice:0:35 }}</span>
       <button class="ui mini blue button" [disabled]="nextPlaylistItem === undefined">
         <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
       </button>
