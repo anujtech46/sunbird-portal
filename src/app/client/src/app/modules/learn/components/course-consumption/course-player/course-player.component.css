@@ -102,7 +102,7 @@
     margin: -6px 24px 0 0;
 }
 .courseheader .lgtext { 
-    font-size: 22px; 
+    font-size: 20px; 
 } 
 .smtext { 
     font-size: 13px; 
@@ -168,6 +168,30 @@
     }
     .youtubePlayerHeight {
         height: 400px;
+    }
+}
+
+@media screen and  (min-width: 1190px) and (max-width: 1380px) {
+    .sideBarSibling {
+      width: 60%
+    }
+    .youtubePlayerHeight {
+        height: 400px;
+    }
+    .lgtext {
+        font-size: 16px!important;
+    }
+    .moduletext {
+        font-size: 14px!important;
+    }
+}
+
+@media screen and (max-width: 1189px) {
+    .lgtext {
+        font-size: 14px!important;
+    }
+    .moduletext {
+        font-size: 12px!important;
     }
 }
 

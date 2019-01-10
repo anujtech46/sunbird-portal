@@ -784,6 +784,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   private checkNotebookStatus(url: string, nbWindow, noteBookStatusCount: number = 1) {
     this.juliaNoteBookService.checkNoteBookStatus(url).subscribe((response) => {
       if (response && response.responseCode === 'OK') {
+        (<any>$('#openNoteBookModal')).modal('hide');
         this.openNoteBook(url, nbWindow);
       }
     }, (err) => {

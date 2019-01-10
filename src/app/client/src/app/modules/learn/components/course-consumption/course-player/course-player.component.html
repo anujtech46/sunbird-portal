@@ -20,7 +20,7 @@
       <button class="ui mini blue button" [disabled]="prevPlaylistItem === undefined">
         <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
       </button>
-      <span>{{selectedModule.name | slice:0:35 }}</span>
+      <span class="moduletext">{{selectedModule.name | slice:0:35 }}</span>
       <button class="ui mini blue button" [disabled]="nextPlaylistItem === undefined">
         <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
       </button>
@@ -59,7 +59,7 @@
 <div class="ui stackable grid" [appTelemetryStart]="telemetryCourseStart" [appTelemetryEnd]="telemetryCourseEndEvent">
   <div class="one wide column"></div>
   <div class="ten wide column" *ngIf="courseHierarchy && courseHierarchy.name">
-    <div *ngIf="enrolledCourse && !loader" style="height: 85vh !important;">
+    <div *ngIf="enrolledCourse && !loader">
         <div class="ui tiny right floated header" *ngIf="scoreData && (scoreData.result || scoreData.grade)">
           <a class="ui blue label" target="_blank" href="{{scoreData.result}}" *ngIf="scoreData.result">
             Feedback
