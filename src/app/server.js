@@ -503,7 +503,7 @@ app.all('/juliabox/*',
     limit: reqDataLimitOfContentUpload,
     proxyReqPathResolver: function (req) {
       // Check expiry of token
-      if (req.kauth.grant.access_token.isExpired()) {
+      if (req.kauth && req.kauth.grant && req.kauth.grant.access_token.isExpired()) {
         trampolineServiceHelper.refresh_token(req.kauth.grant.refresh_token.token, function (err, token) {
           if (err) {
             return keycloak.redirectToLogin(req)
@@ -512,7 +512,7 @@ app.all('/juliabox/*',
           }
         })
       } else {
-        return returnJuliaReqPath(req, juliaBoxBaseUrl, req.kauth.grant.access_token.token)
+        return returnJuliaReqPath(req, juliaBoxBaseUrl, req.kauth && req.kauth.grant.access_token && req.kauth.grant.access_token.token)
       }
     }
   })
