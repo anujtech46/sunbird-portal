@@ -347,7 +347,7 @@ module.exports = {
       if (body) {
         try {
           body = JSON.parse(body)
-          cb(null, body.refresh_token)
+          cb(null, body.access_token)
         } catch (err) {
           cb(true, null)
         }
