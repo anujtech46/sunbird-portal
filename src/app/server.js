@@ -512,7 +512,7 @@ app.all('/juliabox/*',
           }
         })
       } else {
-        return returnJuliaReqPath(req, juliaBoxBaseUrl, req.kauth && req.kauth.grant.access_token && req.kauth.grant.access_token.token)
+        return returnJuliaReqPath(req, juliaBoxBaseUrl, req.kauth && req.kauth.grant && req.kauth.grant.access_token && req.kauth.grant.access_token.token)
       }
     }
   })
