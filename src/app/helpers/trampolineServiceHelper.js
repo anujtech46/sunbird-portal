@@ -21,6 +21,7 @@ const trampolineSecret = envHelper.PORTAL_TRAMPOLINE_SECRET
 const learnerAuthorization = envHelper.PORTAL_API_AUTH_TOKEN
 let cassandraCP = envHelper.PORTAL_CASSANDRA_URLS
 let memoryStore = null
+const trampolineAuthServerClient = envHelper.PORTAL_AUTH_SERVER_CLIENT
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -35,7 +36,7 @@ if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
         'prepare': true
       }
     }
-  }, function () {})
+  }, function () { })
 }
 
 let keycloak = new Keycloak({ store: memoryStore }, {
@@ -75,10 +76,12 @@ module.exports = {
             }
           }
 
-          const telemetryData = {reqObj: req,
+          const telemetryData = {
+            reqObj: req,
             options: options,
             uri: 'test',
-            userId: jwt.decode(req.query['token']).sub || req.headers['x-consumer-userid']}
+            userId: jwt.decode(req.query['token']).sub || req.headers['x-consumer-userid']
+          }
           // telemetryHelper.logAPICallEvent(telemetryData)
 
           request(options, function (error, response, body) {
@@ -120,7 +123,7 @@ module.exports = {
           }
         },
         verifyUser: function (callback) {
-        // check user exist
+          // check user exist
           self.checkUserExists(req, self.payload, function (err, status) {
             self.errorMsg = 'Failed to create/authenticate user. Please try again with valid user data'
             if (!err) {
@@ -128,7 +131,7 @@ module.exports = {
               console.log('user already exists')
               callback(null, status)
             } else {
-            // create User
+              // create User
               console.log('create User Flag', createUserFlag, 'type of', typeof createUserFlag)
               if (createUserFlag === 'true') {
                 self.createUser(req, self.payload, function (error, status) {
@@ -167,18 +170,20 @@ module.exports = {
               telemetryHelper.logGrantLogEvent({
                 reqObj: req,
                 userId: userName,
-                success: grant})
+                success: grant
+              })
               self.errorMsg = undefined
               callback(null, grant)
             },
-            function (err) {
-              telemetryHelper.logGrantLogEvent({
-                reqObj: req,
-                userId: userName,
-                err: err})
-              console.log('grant failed', err, userName)
-              callback(err, null)
-            })
+              function (err) {
+                telemetryHelper.logGrantLogEvent({
+                  reqObj: req,
+                  userId: userName,
+                  err: err
+                })
+                console.log('grant failed', err, userName)
+                callback(err, null)
+              })
         }
       },
       function (err, results) {
@@ -215,12 +220,14 @@ module.exports = {
       json: true
     }
 
-    const telemetryData = {reqObj: req,
+    const telemetryData = {
+      reqObj: req,
       options: options,
       uri: 'user/v1/profile/read',
       type: 'user',
       id: loginId,
-      userId: loginId}
+      userId: loginId
+    }
     // telemetryHelper.logAPICallEvent(telemetryData)
 
     request(options, function (error, response, body) {
@@ -264,12 +271,14 @@ module.exports = {
       },
       json: true
     }
-    const telemetryData = {reqObj: req,
+    const telemetryData = {
+      reqObj: req,
       options: options,
       uri: 'user/v1/create',
       type: 'user',
       id: options.headers['x-consumer-id'],
-      userId: options.headers['x-consumer-id']}
+      userId: options.headers['x-consumer-id']
+    }
     // telemetryHelper.logAPICallEvent(telemetryData)
 
     request(options, function (error, response, body) {
@@ -311,12 +320,41 @@ module.exports = {
 
       if (body.responseCode === 'OK') {
         req['headers']['X-Channel-Id'] = _.get(req, 'headers.X-Channel-Id') ||
-         _.get(body, 'result.response.rootOrg.hashTagId')
+          _.get(body, 'result.response.rootOrg.hashTagId')
         callback(null, _.get(body, 'result.response.rootOrg.hashTagId'))
       } else {
         callback(null, null)
       }
     })
+  },
+  refresh_token: function (refresh_token, cb) {
+    var options = {
+      method: 'POST',
+      url: trampolineServerUrl + '/realms/' + trampolineRealm + '/protocol/openid-connect/token',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      form: {
+        client_id: trampolineAuthServerClient,
+        grant_type: 'refresh_token',
+        refresh_token: refresh_token,
+        client_secret: trampolineSecret
+      }
+    };
+
+    request(options, function (error, response, body) {
+
+      if (body) {
+        try {
+          body = JSON.parse(body)
+          cb(null, body.refresh_token)
+        } catch (err) {
+          cb(true, null)
+        }
+      } else {
+        cb(true, null)
+      }
+    });
   }
 }
 

@@ -72,8 +72,8 @@ const julia_env_variable = {
   TERM_OF_SERVICE_URL: env.julia_terms_of_service || 'https://jaldhara.blob.core.windows.net/attachments/announcement/TermsOfService.pdf',
   IDENTITY_PROVIDER: env.julia_identity_provider || 'oidc',
   IDENTITY_PROVIDER_SCOPE: env.julia_identity_provider_scope || 'offline_access email profile',
-  JULIA_BOX_SUPPORT_EMAIL: env.julia_box_support_email || 'academy@juliacomputing.com'
-
+  JULIA_BOX_SUPPORT_EMAIL: env.julia_box_support_email || 'academy@juliacomputing.com',
+  PORTAL_ADMIN_TRAMPOLINE_CLIENT_ID: env.sunbird_trampoline_admin_client_id,
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')

@@ -88,12 +88,12 @@ app.use(session({
   store: memoryStore
 }))
 
-app.all('/jclogin', function(req, res) {
-  res.sendFile(path.join(__dirname, 'helpers/static_files' , 'jcauth.html'))
+app.all('/jclogin', function (req, res) {
+  res.sendFile(path.join(__dirname, 'helpers/static_files', 'jcauth.html'))
 })
 
-app.all('/jbnotebook', function(req, res) {
-  res.sendFile(path.join(__dirname, 'helpers/static_files' , 'loading.html'))
+app.all('/jbnotebook', function (req, res) {
+  res.sendFile(path.join(__dirname, 'helpers/static_files', 'loading.html'))
 })
 
 app.use(keycloak.middleware({ admin: '/callback', logout: '/logout' }))
@@ -134,7 +134,7 @@ app.use('/announcement/v1', bodyParser.urlencoded({ extended: false }),
 
 app.all('/logoff', endSession, function (req, res) {
   res.cookie('connect.sid', '', { expires: new Date() })
-  juliaLogoutHelper.logoutHelper()
+  juliaLogoutHelper.logoutHelper(req)
   res.redirect('/logout')
 })
 
@@ -482,19 +482,37 @@ function loadTenantFromLocal(req, res) {
 // Handle content share request
 require('./helpers/shareUrlHelper.js')(app)
 
+/**
+ * Function is used to return the proxy path
+ */
+function returnJuliaReqPath(req, juliaBoxBaseUrl, token) {
+  let urlParam = req.params['0']
+  let query = require('url').parse(req.url).query
+  let auth_query = "Authorization=" + token
+  if (query) {
+    query = query + '&' + auth_query
+    return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
+  } else {
+    return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + auth_query).path
+  }
+}
+
 // Julia box service
 app.all('/juliabox/*',
   proxy(juliaBoxBaseUrl, {
     limit: reqDataLimitOfContentUpload,
     proxyReqPathResolver: function (req) {
-      let urlParam = req.params['0']
-      let query = require('url').parse(req.url).query
-      let auth_query = "Authorization=" + (req.kauth && req.kauth.grant  && req.kauth.grant.id_token['token'])
-      if (query) {
-        query = query + '&' + auth_query
-        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
+      // Check expiry of token
+      if (req.kauth.grant.access_token.isExpired()) {
+        trampolineServiceHelper.refresh_token(req.kauth.grant.refresh_token.token, function (err, token) {
+          if (err) {
+            return keycloak.redirectToLogin(req)
+          } else {
+            return returnJuliaReqPath(req, juliaBoxBaseUrl, token)
+          }
+        })
       } else {
-        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + auth_query).path
+        return returnJuliaReqPath(req, juliaBoxBaseUrl, req.kauth.grant.access_token.token)
       }
     }
   })

@@ -17,12 +17,12 @@
   </div>
   <div class="five wide column P0" *ngIf="selectedModule">
     <div class="ui white tiny right floated header">
-      <button class="ui mini blue button" [disabled]="prevPlaylistItem === undefined">
-        <i class="chevron left icon" (click)="navigateToCollection(prevPlaylistItem)"></i>
+      <button class="ui mini blue button" [disabled]="prevPlaylistItem === undefined" (click)="navigateToCollection(prevPlaylistItem)">
+        <i class="chevron left icon"></i>
       </button>
       <span class="moduletext">{{selectedModule.name | slice:0:35 }}</span>
-      <button class="ui mini blue button" [disabled]="nextPlaylistItem === undefined">
-        <i class="chevron right icon" (click)="navigateToCollection(nextPlaylistItem)"></i>
+      <button class="ui mini blue button" [disabled]="nextPlaylistItem === undefined" (click)="navigateToCollection(nextPlaylistItem)">
+        <i class="chevron right icon"></i>
       </button>
     </div>
   </div>

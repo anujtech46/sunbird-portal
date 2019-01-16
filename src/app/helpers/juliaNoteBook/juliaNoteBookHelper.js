@@ -137,7 +137,7 @@ function getUserAuthToken(req, res) {
 	/**
  * This function helps up to call logout api to julia notebook
  */
-module.exports.logoutHelper = function() {
+module.exports.logoutHelper = function(req) {
   console.log('Call logout to Julia notebook ::')
   const url = envHelper.JULIA_BOX_BASE_URL + 'jbox/cleanup'
   var options = {
@@ -145,7 +145,8 @@ module.exports.logoutHelper = function() {
     method: 'GET',
     json: false,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: req.kauth && req.kauth.grant && req.kauth.grant.access_token && req.kauth.grant.access_token.token
     }
   };
    request(options, function (err, response, body) {
