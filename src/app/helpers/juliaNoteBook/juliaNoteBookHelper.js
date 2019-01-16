@@ -139,14 +139,14 @@ function getUserAuthToken(req, res) {
  */
 module.exports.logoutHelper = function(req) {
   console.log('Call logout to Julia notebook ::')
-  const url = envHelper.JULIA_BOX_BASE_URL + 'jbox/cleanup'
+  const token = req.kauth && req.kauth.grant && req.kauth.grant.access_token && req.kauth.grant.access_token.token
+  const url = envHelper.JULIA_BOX_BASE_URL + 'jbox/cleanup' + '&Authorization=' + token
   var options = {
     url: url,
     method: 'GET',
     json: false,
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: req.kauth && req.kauth.grant && req.kauth.grant.access_token && req.kauth.grant.access_token.token
+      'Content-Type': 'application/json'
     }
   };
    request(options, function (err, response, body) {
