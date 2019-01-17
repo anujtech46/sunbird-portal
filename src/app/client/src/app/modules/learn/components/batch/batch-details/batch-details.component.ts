@@ -43,6 +43,7 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
     this.batchStatus = this.statusOptions[0].value;
   }
   disableSubmitBtn: boolean;
+  isEnrollNotCalled = true;
 
   ngOnInit() {
     this.courseInteractObject = {
@@ -171,17 +172,23 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
       }
     };
     this.disableSubmitBtn = true;
-    this.courseBatchService.enrollToCourse(request).pipe(
-      takeUntil(this.unsubscribe))
-      .subscribe((data) => {
-        this.disableSubmitBtn = true;
-        this.toasterService.success(this.resourceService.messages.smsg.m0036);
+    if (this.isEnrollNotCalled) {
+      this.isEnrollNotCalled = false;
+      this.courseBatchService.enrollToCourse(request).pipe(
+        takeUntil(this.unsubscribe))
+        .subscribe((data) => {
+          this.disableSubmitBtn = true;
+          this.toasterService.success(this.resourceService.messages.smsg.m0036);
           this.router.navigate(['/learn/course', batch.courseId, 'batch', batch.identifier]);
-          window.location.reload();
-      }, (err) => {
-        this.disableSubmitBtn = false;
-        this.router.navigate(['/learn']);
-      });
+          setTimeout(() => {
+            this.isEnrollNotCalled = false;
+            window.location.reload();
+          }, 1000);
+        }, (err) => {
+          this.disableSubmitBtn = false;
+          this.router.navigate(['/learn']);
+        });
+    }
   }
 
   ngOnDestroy() {
