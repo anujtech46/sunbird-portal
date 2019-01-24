@@ -74,7 +74,7 @@ module.exports = {
       },
       body: {
         request: {
-          firstName: payload['given_name'] || payload['preferred_username'],
+          firstName: payload['given_name'] || payload['preferred_username'].split('@')[0],
           lastName: payload['family_name'],
           email: payload['email'],
           emailVerified: true,
