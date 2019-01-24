@@ -7,7 +7,7 @@
 }
 .banner-div  {
     padding: 50px 0 !important;
-    background: url('/assets/images/landingPage.jpg') center no-repeat transparent;
+    background: url('/assets/images/landingPage.png') center no-repeat transparent;
     background-size: cover;
 }
 .banner-div h2 {
