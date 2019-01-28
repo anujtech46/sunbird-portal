@@ -28,8 +28,6 @@ const { frameworkAPI } = require('@project-sunbird/ext-framework-server/api');
 const frameworkConfig = require('./framework.config.js');
 const configHelper = require('./helpers/configServiceSDKHelper.js')
 
-
-
 const app = express()
 
 let keycloak = getKeyCloakClient({

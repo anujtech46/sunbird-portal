@@ -5,6 +5,7 @@ import { UserService, PermissionService, LearnerService } from '@sunbird/core';
 import { ResourceService, ConfigService, IUserProfile, IUserData, ServerResponse } from '@sunbird/shared';
 @Injectable()
 export class ProfileService {
+  [x: string]: any;
   constructor(private learnerService: LearnerService,
     public userService: UserService, public configService: ConfigService) { }
   /**
@@ -92,6 +93,22 @@ export class ProfileService {
       url: this.configService.urlConFig.URLS.USER.SKILLS
     };
     return this.learnerService.get(options);
+  }
+
+  createOrg (req) {
+    const options = {
+      url: this.configService.urlConFig.URLS.USER.ADD_ORG,
+      data: { request: req }
+    };
+    return this.learnerService.post(options);
+  }
+
+  mapMemberOrg (req) {
+    const options = {
+      url: this.configService.urlConFig.URLS.USER.ADD_MEMBERTOORG,
+      data: { request: req }
+    };
+    return this.learnerService.post(options);
   }
 
   public getUserLocation(request) {

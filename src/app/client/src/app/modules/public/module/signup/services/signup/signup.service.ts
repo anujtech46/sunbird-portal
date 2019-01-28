@@ -6,6 +6,7 @@ import { ConfigService } from '@sunbird/shared';
   providedIn: 'root'
 })
 export class SignupService {
+  [x: string]: any;
 
   constructor(private learnerService: LearnerService, public configService: ConfigService) { }
 

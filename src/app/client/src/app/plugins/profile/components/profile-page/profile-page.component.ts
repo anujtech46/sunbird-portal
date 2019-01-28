@@ -167,6 +167,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
   editMobileInteractEdata: IInteractEventEdata;
   editEmailInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
+  workSpaceRole: any;
+  admin: any;
   constructor( private cacheService: CacheService, public resourceService: ResourceService, public coursesService: CoursesService,
     public permissionService: PermissionService, public toasterService: ToasterService, public profileService: ProfileService,
     public userService: UserService, public configService: ConfigService, public router: Router, public utilService: UtilService,
@@ -204,6 +206,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
           this.getAttendedTraining();
         }
       });
+    this.workSpaceRole = this.configService.rolesConfig.headerDropdownRoles.workSpaceRole;
+    this.admin = this.configService.rolesConfig.headerDropdownRoles.adminDashboard;
+    let pageId = '';
+    if (this.activatedRoute.snapshot.params.section && this.activatedRoute.snapshot.params.action) {
+      pageId = `profile-${this.activatedRoute.snapshot.params.section}-${this.activatedRoute.snapshot.params.action}`;
+    } else {
+      pageId = 'profile-read';
+    }
     this.telemetryImpression = {
       context: {
         env: this.activatedRoute.snapshot.data.telemetry.env

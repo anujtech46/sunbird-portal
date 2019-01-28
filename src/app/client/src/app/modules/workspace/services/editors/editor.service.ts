@@ -11,6 +11,9 @@ import { WorkSpaceService } from './../work-space/workspace.service';
  */
 @Injectable()
 export class EditorService {
+  getById(req: { contentId: string; }, qs: { fields: string; mode: string; }): any {
+    throw new Error("Method not implemented.");
+  }
     /**
      * base Url for content api
      */

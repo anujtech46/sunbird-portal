@@ -113,8 +113,7 @@ export class OrgSearchComponent implements OnInit {
    */
   constructor(searchService: SearchService, route: Router,
     activatedRoute: ActivatedRoute, paginationService: PaginationService, resourceService: ResourceService,
-    toasterService: ToasterService, public ngZone: NgZone, config: ConfigService,
-    userService: UserService) {
+    toasterService: ToasterService, public ngZone: NgZone, config: ConfigService) {
     this.searchService = searchService;
     this.route = route;
     this.activatedRoute = activatedRoute;
@@ -122,7 +121,7 @@ export class OrgSearchComponent implements OnInit {
     this.resourceService = resourceService;
     this.toasterService = toasterService;
     this.config = config;
-    this.userService = userService;
+    this.userService = this.userService;
   }
 
   /**

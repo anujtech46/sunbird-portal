@@ -1,0 +1,25 @@
+.ui.secondary.pointing.menu .ui.item.text-upper-case {
+    text-transform: uppercase;
+} 
+
+.anon-consumption-sec-menu {
+    border-bottom: 2px solid rgba(34,36,38,.15);   
+}
+
+.ui.grid>.header-height-before-login {
+    height: 80px;
+    justify-content: center;
+    align-items: center;
+}
+
+.notify-circle {
+    position: absolute;
+    right: 14px;
+    top: 30%;
+    background: #25997D;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 12px !important;
+}

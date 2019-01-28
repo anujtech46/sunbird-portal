@@ -932,6 +932,11 @@
     "inPageredirectUrl": "workspace/content/collaborating-on/1",
     "searchPageredirectUrl": "workspace/content/collaborating-on/1"
   },
+  "addUsersOrgs": {
+    "filterType": "addUsersOrgs",
+    "inPageredirectUrl": "workspace/content/addUsersOrgs",
+    "searchPageredirectUrl": "workspace/content/addUsersOrgs"
+  },
   "explore": {
     "filterType": "explore",
     "inPageredirectUrl": "/explore",

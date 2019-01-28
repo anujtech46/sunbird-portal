@@ -6,8 +6,10 @@ import {
   GenericEditorComponent, UploadedComponent, DataDrivenComponent, FlaggedComponent, UpForReviewComponent,
   BatchListComponent, UpdateBatchComponent, UpforreviewContentplayerComponent, ReviewsubmissionsContentplayerComponent,
   FlagConentplayerComponent, PublishedPopupComponent, RequestChangesPopupComponent, LimitedPublishedComponent,
-  AllContentComponent, FlagReviewerComponent, CollaboratingOnComponent} from './components';
+  AllContentComponent, FlagReviewerComponent, CollaboratingOnComponent, AddusersorgsComponent} from './components';
 import { AuthGuard } from '../core/guard/auth-gard.service';
+import { OrganizationUploadComponent, UserUploadComponent, StatusComponent } from '@sunbird/org-management';
+import { OrgRegisteredComponent, UserRegisteredComponent } from '@sunbird/profile';
 const telemetryEnv = 'workspace';
 const objectType = 'workspace';
 const routes: Routes = [
@@ -223,6 +225,28 @@ const routes: Routes = [
             env: telemetryEnv, pageid: 'workspace-content-flagreviewer', subtype: 'paginate', uri: 'workspace/content/flagreviewer',
             type: 'list', mode: 'create', object: { type: objectType, ver: '1.0' }
           }, roles: 'flagReviewerRole',
+          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
+        }
+      },
+      {
+        path: 'collaborating-on/:pageNumber', component: CollaboratingOnComponent, canActivate: [AuthGuard],
+        data: {
+          telemetry: {
+            env: telemetryEnv, pageid: 'workspace-content-collaborating-on',
+            subtype: 'paginate', uri: 'workspace/content/collaborating-on',
+            type: 'list', mode: 'create', object: { type: objectType, ver: '1.0' }
+          }, roles: 'collaboratingRole',
+          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
+        }
+      },
+      {
+        path: 'addUsersOrgs', component: AddusersorgsComponent, canActivate: [AuthGuard],
+        data: {
+          telemetry: {
+            env: telemetryEnv, pageid: 'workspace-addUsersOrgs',
+            subtype: 'paginate', uri: 'workspace/content/addUsersOrgs',
+            type: 'list', mode: 'create', object: { type: objectType, ver: '1.0' }
+          }, roles: 'collaboratingRole',
           breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
         }
       }
