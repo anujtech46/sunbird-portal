@@ -227,28 +227,6 @@ const routes: Routes = [
           }, roles: 'flagReviewerRole',
           breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
         }
-      },
-      {
-        path: 'collaborating-on/:pageNumber', component: CollaboratingOnComponent, canActivate: [AuthGuard],
-        data: {
-          telemetry: {
-            env: telemetryEnv, pageid: 'workspace-content-collaborating-on',
-            subtype: 'paginate', uri: 'workspace/content/collaborating-on',
-            type: 'list', mode: 'create', object: { type: objectType, ver: '1.0' }
-          }, roles: 'collaboratingRole',
-          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
-        }
-      },
-      {
-        path: 'addUsersOrgs', component: AddusersorgsComponent, canActivate: [AuthGuard],
-        data: {
-          telemetry: {
-            env: telemetryEnv, pageid: 'workspace-addUsersOrgs',
-            subtype: 'paginate', uri: 'workspace/content/addUsersOrgs',
-            type: 'list', mode: 'create', object: { type: objectType, ver: '1.0' }
-          }, roles: 'collaboratingRole',
-          breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Profile', url: '/profile' }, { label: 'My Workspace', url: '' }]
-        }
       }
       // , {
       //   path: 'collaborating-on/:pageNumber', component: CollaboratingOnComponent, canActivate: [AuthGuard],
