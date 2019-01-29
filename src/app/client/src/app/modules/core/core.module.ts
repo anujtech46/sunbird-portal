@@ -32,7 +32,8 @@ import { TelemetryModule } from '@sunbird/telemetry';
     ReactiveFormsModule,
     WebExtensionModule,
     TelemetryModule,
-    AvatarModule
+    AvatarModule,
+    GuidelineModule
   ],
   declarations: [MainHeaderComponent, MainFooterComponent, MainMenuComponent, SearchComponent, PermissionDirective,
     BodyScrollDirective, ConceptPickerComponent, DataDrivenFilterComponent, BreadcrumbsComponent, SortByComponent,

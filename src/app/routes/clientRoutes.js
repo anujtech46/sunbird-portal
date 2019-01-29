@@ -107,6 +107,7 @@ function getLocals(req, callback) {
   //branding
   locals.logoUrl = envHelper.LOGO_URL;
   locals.faviconUrl = envHelper.FAVICON_URL;
+  locals.appUrl = envHelper.PLAYSTORE_APP_LINK
   //botpress
   locals.botUrl = envHelper.BOT_URL;
   locals.isBotPressEnabled = envHelper.BOT_PRESS_ENABLED;

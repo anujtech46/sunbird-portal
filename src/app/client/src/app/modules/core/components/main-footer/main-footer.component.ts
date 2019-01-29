@@ -9,6 +9,13 @@ export class MainFooterComponent implements OnInit {
    * reference of resourceService service.
    */
   public resourceService: ResourceService;
+  /**
+   * reference of Router.
+   */
+  private router: Router;
+
+  date = new Date();
+  public appUrl: string;
   /*
   Date to show copyright year
   */
@@ -23,6 +30,7 @@ export class MainFooterComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.appUrl = (<HTMLInputElement>document.getElementById('appUrl')).value;
   }
 
 }

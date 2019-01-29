@@ -83,7 +83,7 @@ const jaldhara_env_variables = {
   // branding
   LOGO_URL: env.jaldhara_logo || 'https://jaldhara.blob.core.windows.net/portal-logo/dev_sunbird_logo.png',
   FAVICON_URL: env.jaldhara_favicon || 'https://jaldhara.blob.core.windows.net/portal-logo/dev_favicon.ico',
-
+  PLAYSTORE_APP_LINK: 'https://play.google.com/store/apps/details?id=in.knowledge.forwater.app&hl=en',
   //botpress
   BOT_URL: env.jaldhara_botUrl || 'http://52.66.209.199',
   BOT_PRESS_ENABLED: env.bot_press_url_enable || 'false',

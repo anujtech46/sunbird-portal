@@ -16,10 +16,19 @@
         <i class="large bars icon link primary-color mobile only" (click)="showSideBar()" tabindex="0"></i>
         <!--/Hamburger Icon-->
 
-        <!--Main Menu-->
-        <app-main-menu class="d-flex computer only ml-auto"></app-main-menu>
-        <!--/Main Menu-->
 
+        <div class="d-flex computer only ml-auto">
+                <a href="{{confluenceIssueUrl}}" target="blank" title="Issues"><i class="alarm-icon-header black bug icon large"></i></a>           
+            <a href="{{confluenceDiscussUrl}}" target="blank" title="Discussion"><i class="alarm-icon-header black comments icon large"></i></a>
+            <a (click)="navigateToAnnoucements()">
+                <i class="alarm-icon-header black alarm icon large alaramIconColor cursor-pointer"></i>
+                <span class="notify-circle" *ngIf="notificationCount > 0">{{notificationCount}}</span>
+            </a>
+        </div>
+        <!--Main Menu-->
+        <app-main-menu class="d-flex computer only ml-10"></app-main-menu>
+        <!--/Main Menu-->
+       
         <!--Avtar Dropdown-->
         <a 
             class="profile-avtar computer only p-0 ml-15" 
