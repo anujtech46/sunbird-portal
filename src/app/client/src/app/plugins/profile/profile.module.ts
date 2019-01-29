@@ -34,7 +34,8 @@ import { AvatarModule } from 'ngx-avatar';
     AvatarModule,
     SharedFeatureModule
   ],
-  declarations: [ProfilePageComponent, ProfileBadgeComponent, UpdateContactDetailsComponent, UpdateUserDetailsComponent],
+  declarations: [ProfilePageComponent, ProfileBadgeComponent, UpdateContactDetailsComponent, UpdateUserDetailsComponent,
+    UserRegisteredComponent, OrgRegisteredComponent],
   providers: [ProfileService],
   entryComponents: [ProfileBadgeComponent]
 })

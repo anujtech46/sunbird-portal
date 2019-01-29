@@ -126,16 +126,34 @@ export class UserUploadComponent implements OnInit, OnDestroy {
       externalId: ['', null],
       organisationId: ['', null]
     });
+    // this.userUploadInstructions = [
+    //   { instructions: this.resourceService.frmelmnts.instn.t0070},
+    //   {
+    //     instructions: this.resourceService.frmelmnts.instn.t0071,
+    //     subinstructions: [
+    //       { instructions: this.resourceService.frmelmnts.instn.t0072 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0073 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0074 }
+    //     ]
+    //   }];
     this.userUploadInstructions = [
-      { instructions: this.resourceService.frmelmnts.instn.t0070},
-      {
-        instructions: this.resourceService.frmelmnts.instn.t0071,
-        subinstructions: [
-          { instructions: this.resourceService.frmelmnts.instn.t0072 },
-          { instructions: this.resourceService.frmelmnts.instn.t0073 },
-          { instructions: this.resourceService.frmelmnts.instn.t0074 }
-        ]
-      }];
+        { instructions: this.resourceService.frmelmnts.instn.t0013 },
+        { instructions: this.resourceService.frmelmnts.instn.tjd0011 },
+        {
+          instructions: this.resourceService.frmelmnts.instn.t0033,
+          subinstructions: [
+            { instructions: this.resourceService.frmelmnts.instn.t0034 },
+            { instructions: this.resourceService.frmelmnts.instn.tjd0008 },
+            { instructions: this.resourceService.frmelmnts.instn.tjd0010 },
+            { instructions: this.resourceService.frmelmnts.instn.t0037 },
+            { instructions: this.resourceService.frmelmnts.instn.tjd0009 },
+            { instructions: this.resourceService.frmelmnts.instn.tjd0001 },
+            { instructions: this.resourceService.frmelmnts.instn.t0048 },
+            { instructions: this.resourceService.frmelmnts.instn.tjd0002 },
+            { instructions: this.resourceService.frmelmnts.instn.tjd0005 }
+          ]
+        },
+        { instructions: this.resourceService.frmelmnts.instn.tjd0003 }];
     this.showLoader = false;
     this.telemetryImpression = {
       context: {

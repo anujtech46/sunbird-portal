@@ -88,30 +88,39 @@ export class OrganizationUploadComponent implements OnInit, OnDestroy {
         this.redirectUrl = '/home';
       }
     });
+    // this.orgUploadInstructions = [
+    //   { instructions: this.resourceService.frmelmnts.instn.t0013 },
+    //   { instructions: this.resourceService.frmelmnts.instn.t0002 },
+    //   { instructions: this.resourceService.frmelmnts.instn.t0007 },
+    //   { instructions: this.resourceService.frmelmnts.instn.tjd0006 },
+    //   { instructions: this.resourceService.frmelmnts.instn.t0021 },
+    //   {
+    //     instructions: this.resourceService.frmelmnts.instn.t0022,
+    //     subinstructions: [
+    //       { instructions: this.resourceService.frmelmnts.instn.t0023 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0024 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0025 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0026 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0027 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0028 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0029 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0030 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0031 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0032 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0049 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0050 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0078 },
+    //       { instructions: this.resourceService.frmelmnts.instn.t0079 }
+    //     ]
+    //   }
+    // ];
     this.orgUploadInstructions = [
       { instructions: this.resourceService.frmelmnts.instn.t0013 },
       { instructions: this.resourceService.frmelmnts.instn.t0002 },
       { instructions: this.resourceService.frmelmnts.instn.t0007 },
       { instructions: this.resourceService.frmelmnts.instn.t0021 },
-      {
-        instructions: this.resourceService.frmelmnts.instn.t0022,
-        subinstructions: [
-          { instructions: this.resourceService.frmelmnts.instn.t0023 },
-          { instructions: this.resourceService.frmelmnts.instn.t0024 },
-          { instructions: this.resourceService.frmelmnts.instn.t0025 },
-          { instructions: this.resourceService.frmelmnts.instn.t0026 },
-          { instructions: this.resourceService.frmelmnts.instn.t0027 },
-          { instructions: this.resourceService.frmelmnts.instn.t0028 },
-          { instructions: this.resourceService.frmelmnts.instn.t0029 },
-          { instructions: this.resourceService.frmelmnts.instn.t0030 },
-          { instructions: this.resourceService.frmelmnts.instn.t0031 },
-          { instructions: this.resourceService.frmelmnts.instn.t0032 },
-          { instructions: this.resourceService.frmelmnts.instn.t0049 },
-          { instructions: this.resourceService.frmelmnts.instn.t0050 },
-          { instructions: this.resourceService.frmelmnts.instn.t0078 },
-          { instructions: this.resourceService.frmelmnts.instn.t0079 }
-        ]
-      }
+      { instructions: this.resourceService.frmelmnts.instn.tjd0004 },
+      { instructions: this.resourceService.frmelmnts.instn.tjd0007 }
     ];
     this.telemetryImpression = {
       context: {

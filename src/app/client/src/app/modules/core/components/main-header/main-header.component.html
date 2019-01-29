@@ -74,6 +74,11 @@
                     </a>
                     <a 
                         class="item" 
+                        *ngIf='permissionService.permissionAvailable'
+                         appPermission [permission]='workSpaceRole' 
+                         (click)="navigateToWorkspace()">{{resourceService.frmelmnts?.lnk?.workSpace}}</a>
+                    <a 
+                        class="item" 
                         *ngIf='permissionService.permissionAvailable' 
                         appPermission [permission]='myActivityRole' 
                         routerLink="myActivity">
