@@ -52,14 +52,17 @@ export class PageApiService {
      _.has(requestParam.sort_by, 'createdOn'))) {
       return observableOf(pageData);
     } else {
+      if (requestParam.sort_by) {
+        delete requestParam.sort_by['undefined'];
+      }
       const option: any = {
         url: this.config.urlConFig.URLS.PAGE_PREFIX,
         data: {
           request: {
             source: requestParam.source,
             name: requestParam.name,
-            filters: requestParam.filters,
-            sort_by: requestParam.sort_by,
+            filters: Object.keys(requestParam.filters).length > 0  ? requestParam.filters : undefined,
+            sort_by: Object.keys(requestParam.sort_by).length > 0  ? requestParam.sort_by : undefined,
           }
         }
       };
