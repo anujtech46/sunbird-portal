@@ -8,6 +8,7 @@ const learnerServiceBaseUrl = envHelper.LEARNER_URL
 const contentServiceBaseUrl = envHelper.CONTENT_URL
 const reqDataLimitOfContentUpload = '30mb'
 const telemetryHelper = require('../helpers/telemetryHelper')
+const _ = require('lodash')
 
 module.exports = function (app) {
   const proxyReqPathResolverMethod = function (req) {
@@ -73,6 +74,24 @@ module.exports = function (app) {
     }
   }))
 
+  app.use('/action/composite/v3/search', proxy(contentProxyUrl, {
+    proxyReqOptDecorator: proxyHeaders.decorateRequestHeaders(),
+    proxyReqPathResolver: function (req) {
+      var originalUrl = req.originalUrl
+      return require('url').parse(contentProxyUrl + originalUrl).path
+    },
+    proxyReqBodyDecorator: function(bodyContent, srcReq) {
+      bodyContent = JSON.parse(bodyContent)
+      if (bodyContent && bodyContent.request && bodyContent.request.filters && bodyContent.request.filters.objectType &&
+        bodyContent.request.filters.objectType.indexOf('Content') > -1) {
+          const channel = _.get(srcReq, 'session.rootOrghashTagId') || _.get(srcReq, 'headers.X-Channel-Id')
+          if(channel) {
+            bodyContent.request.filters.channel = channel
+          }
+      }
+      return bodyContent
+    }
+  }))
 
   app.use('/action/data/v1/form/read', proxy(contentServiceBaseUrl, {
     proxyReqOptDecorator: proxyHeaders.decorateRequestHeaders(),
