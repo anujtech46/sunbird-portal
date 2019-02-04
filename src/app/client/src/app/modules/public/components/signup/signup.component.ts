@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { IInteractEventObject, IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import { SignupService } from '../../module/signup';
+// import { SignupService } from '../../module/signup';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -39,7 +39,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   public unsubscribe$ = new Subject<void>();
 
   constructor(public resourceService: ResourceService, public configService: ConfigService, public activatedRoute: ActivatedRoute,
-    public router: Router, public signupService: SignupService, public toasterService: ToasterService) {
+    public router: Router, public toasterService: ToasterService) {
     this.languages = this.configService.dropDownConfig.COMMON.languages;
   }
   /**
@@ -82,19 +82,19 @@ export class SignupComponent implements OnInit, OnDestroy {
     } else {
       this.showcommonerror = false;
       this.showLoader = true;
-      this.signupService.signup(this.signUpForm.value).pipe(
-      takeUntil(this.unsubscribe$))
-      .subscribe(res => {
-        this.modal.approve();
-        this.showLoader = false;
-        this.signUpForm.reset();
-        this.toasterService.success(this.resourceService.messages.smsg.m0039);
-        this.router.navigate(['']);
-      },
-      err => {
-        this.showLoader = false;
-        this.toasterService.error(err.error.params.errmsg);
-      });
+      // this.signupService.signup(this.signUpForm.value).pipe(
+      // takeUntil(this.unsubscribe$))
+      // .subscribe(res => {
+      //   this.modal.approve();
+      //   this.showLoader = false;
+      //   this.signUpForm.reset();
+      //   this.toasterService.success(this.resourceService.messages.smsg.m0039);
+      //   this.router.navigate(['']);
+      // },
+      // err => {
+      //   this.showLoader = false;
+      //   this.toasterService.error(err.error.params.errmsg);
+      // });
     }
   }
 

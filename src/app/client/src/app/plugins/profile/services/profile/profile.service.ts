@@ -74,7 +74,7 @@ export class ProfileService {
   public add(request) {
     const data = this.formatRequest(request);
     const options = {
-      url: this.configService.urlConFig.URLS.USER.UPDATE_SKILLS,
+      url: this.configService.urlConFig.URLS.USER.ADD_SKILLS,
       data: data
     };
     return this.learnerService.post(options).pipe(map(

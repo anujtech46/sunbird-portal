@@ -183,7 +183,7 @@ export class AppComponent implements OnInit {
    * set org Details for Anonymous user.
    */
   private setOrgDetails(): Observable<any> {
-    return this.orgDetailsService.getOrgDetails(this.slug).pipe(
+    return this.orgDetailsService.getOrgDetails(this.slug || 'sunbird').pipe(
       tap(data =>  {
         this.orgDetails = data;
         this.channel = this.orgDetails.hashTagId;

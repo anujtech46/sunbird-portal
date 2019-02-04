@@ -91,8 +91,10 @@
   </section>
 
   <section class="d-flex flex-ai-center flex-dc pt-30 pb-30 profile-bg-c-4">
+      <app-user-skills></app-user-skills>
+
     <!-- User info computer view starts-->
-    <div class="ui container">
+    <!-- <div class="ui container">
       <div class="d-flex flex-jc-center relative">
         <div class="max-w-400 computer only">
           <div class="mb-15 d-flex flex-jc-center">
@@ -117,11 +119,11 @@
           (click)="showEdit = !showEdit">{{resourceService.frmelmnts.lbl.edit}}</button>
       </div>
 
-    </div>
+    </div> -->
     <!-- User info computer view ends-->
 
     <!-- User info mobile view starts-->
-    <div class="max-w-300 mobile only">
+    <!-- <div class="max-w-300 mobile only">
       <div class="mb-15 d-flex flex-ai-center flex-dc">
         <span class="fs-1-16">{{resourceService.frmelmnts.lbl.boards}}:</span>
         <span class="fs-1-16 font-w-bold text-ac" *ngIf="userProfile.framework">{{convertToString(userProfile.framework.board)}}</span>
@@ -142,7 +144,7 @@
         [telemetryInteractEdata]="myFrameworkEditEdata" (click)="showEdit = !showEdit">
         <button class="ui semi-circular dodger-blue button mt-30">{{resourceService.frmelmnts.lbl.edit}}</button>
       </div>
-    </div>
+    </div> -->
     <!-- User info mobile view ends-->
   </section>
 

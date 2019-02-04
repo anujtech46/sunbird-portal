@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GetComponent } from './components/get/get.component';
 import { DialCodeComponent } from './components/dial-code/dial-code.component';
 import { PublicFooterComponent } from './components/public-footer/public-footer.component';
-import { PublicPlayerService, LandingpageGuard } from './services';
+import { PublicPlayerService, LandingpageGuard, RssfeedService } from './services';
 import { SharedModule } from '@sunbird/shared';
 import { PublicRoutingModule } from './public-routing.module';
 import { TelemetryModule } from '@sunbird/telemetry';
@@ -34,6 +34,6 @@ import { BadgingModule } from '@sunbird/badge';
   ],
   declarations: [LandingPageComponent, GetComponent, DialCodeComponent,
     PublicFooterComponent, PublicContentPlayerComponent, PublicCollectionPlayerComponent],
-  providers: [PublicPlayerService, DeviceDetectorService, LandingpageGuard]
+  providers: [PublicPlayerService, DeviceDetectorService, LandingpageGuard, RssfeedService]
 })
 export class PublicModule { }
