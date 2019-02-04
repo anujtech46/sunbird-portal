@@ -5,7 +5,7 @@ import { SearchService, UserService } from '@sunbird/core';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPagination } from '@sunbird/announcement';
-import { Angular2Csv } from 'angular2-csv/Angular2-csv';
+import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import * as _ from 'lodash';
 import { IInteractEventObject, IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
 

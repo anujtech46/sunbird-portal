@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/co
 import { ResourceService, ToasterService, ServerResponse, ConfigService } from '@sunbird/shared';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OrgManagementService } from '../../services';
-import { Angular2Csv } from 'angular2-csv/Angular2-csv';
+import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import { IInteractEventInput, IImpressionEventInput, IInteractEventEdata, IInteractEventObject } from '@sunbird/telemetry';
 import { UserService } from '@sunbird/core';
 import { takeUntil } from 'rxjs/operators';
