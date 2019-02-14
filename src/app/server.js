@@ -150,6 +150,7 @@ coursePrice.init(app, config)
 // Handle course routes
 require('./helpers/contentStateUpdateHelper.js')(app)
 require('./helpers/pdfCreator/pdfCreator.js')(app)
+require('./helpers/courseDetail/courseDetailsHelper')(app)
 
 var Payment = require('sb_payment_plugin').PaymentRoutes
 const payment = new Payment(app)

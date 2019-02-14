@@ -39,7 +39,7 @@ let envVariables = {
   ANDROID_APP_URL: env.sunbird_android_app_url || 'http://www.sunbird.org',
   EXPLORE_BUTTON_VISIBILITY: env.sunbird_explore_button_visibility || 'true',
   ENABLE_SIGNUP: env.sunbird_enable_signup || 'true',
-  BUILD_NUMBER: env.build_number || packageObj.version+'.'+packageObj.buildNumber,
+  BUILD_NUMBER: env.build_number || packageObj.version + '.' + packageObj.buildNumber,
   TELEMETRY_SERVICE_LOCAL_URL: env.sunbird_telemetry_service_local_url || 'http://telemetry-service:9001/',
   PORTAL_API_CACHE_TTL: env.sunbird_api_response_cache_ttl || '600',
   SUNBIRD_EXTCONT_WHITELISTED_DOMAINS: env.sunbird_extcont_whitelisted_domains || 'youtube.com,youtu.be,juliabox.com',
@@ -58,8 +58,8 @@ const julia_env_variable = {
   CERTIFICATE_PROVIDER_NAME: env.julia_certificate_provider_name || 'Julia Computing, Inc.',
   CERTIFICATE_INSTRUCTOR_NAME: env.julia_certificate_instructor_name || 'Abhijith Chandraprabhu',
   CONTENT_FEEDBACK_STORE_CONTAINER_NAME: env.julia_content_feedback_storage_container_name || 'feedback',
-  JULIA_BOX_BASE_URL: env.julia_server_base_url || 'https://juliabox.com/', 
-  SUNBIRD_EXTERNAL_CONTENT_WHITELISTED_DOMAINS: env.sunbird_external_content_whitelisted_domains || ['youtube.com','juliabox.com'],
+  JULIA_BOX_BASE_URL: env.julia_server_base_url || 'https://juliabox.com/',
+  SUNBIRD_EXTERNAL_CONTENT_WHITELISTED_DOMAINS: env.sunbird_external_content_whitelisted_domains || ['youtube.com', 'juliabox.com'],
   ADD_TO_DIGILOCKER_APP_URL: env.julia_add_to_digilocker_app_url,
   ADD_TO_DIGILOCKER_APP_ID: env.julia_add_to_digilocker_app_id,
   ADD_TO_DIGILOCKER_APP_KEY: env.julia_add_to_digilocker_app_key,
@@ -75,6 +75,8 @@ const julia_env_variable = {
   JULIA_BOX_SUPPORT_EMAIL: env.julia_box_support_email || 'academy@juliacomputing.com',
   PORTAL_ADMIN_TRAMPOLINE_CLIENT_ID: env.sunbird_trampoline_admin_client_id,
   ERROR_HANDLER_PLUGIN: env.jaldhara_error_handler_plugin,
+  COURSE_MENTOR_USER_ID: env.julia_course_mentor_user_id || 'creatorcourseja@gmail.com',
+  COURSE_MENTOR_USER_PASSWORD: env.julia_course_mentor_user_password,
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')
@@ -82,8 +84,8 @@ envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_
 
 envVariables = { ...envVariables, ...julia_env_variable }
 
-if (process.env.NODE_ENV === 'local') {   
-  envVariables = Object.assign({}, envVariables,  require('./localVariables'));
+if (process.env.NODE_ENV === 'local') {
+  envVariables = Object.assign({}, envVariables, require('./localVariables'));
 }
 
 module.exports = envVariables;
