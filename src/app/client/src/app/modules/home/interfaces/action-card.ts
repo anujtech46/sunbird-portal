@@ -28,4 +28,8 @@ export interface ActionCard {
     * course id
     */
     courseId: string;
+    /**
+     * Batch name
+     */
+    batchName?: string;
 }

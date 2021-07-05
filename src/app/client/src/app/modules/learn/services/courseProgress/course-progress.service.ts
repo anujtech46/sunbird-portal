@@ -42,10 +42,10 @@ export class CourseProgressService {
   /**
   * method to get content status
   */
-  public getContentState(req) {
+  public getContentState(req, htmlContent: boolean = false) {
     const courseId_batchId = req.courseId + '_' + req.batchId;
     const courseProgress = this.courseProgress[courseId_batchId];
-    if (courseProgress) {
+    if (courseProgress && !htmlContent) {
       this.courseProgressData.emit(courseProgress);
       return Observable.of(courseProgress);
     } else {

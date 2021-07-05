@@ -28,8 +28,8 @@ const contentURL = envHelper.CONTENT_URL
 const realm = envHelper.PORTAL_REALM
 const authServerUrl = envHelper.PORTAL_AUTH_SERVER_URL
 const keycloakResource = envHelper.PORTAL_AUTH_SERVER_CLIENT
-const reqDataLimitOfContentEditor = '50mb'
-const reqDataLimitOfContentUpload = '50mb'
+const reqDataLimitOfContentEditor = envHelper.API_REQUEST_LIMIT_SIZE
+const reqDataLimitOfContentUpload = envHelper.API_REQUEST_LIMIT_SIZE
 const ekstepEnv = envHelper.EKSTEP_ENV
 const appId = envHelper.APPID
 const defaultTenant = envHelper.DEFAULT_TENANT
@@ -44,8 +44,14 @@ const request = require('request');
 const ejs = require('ejs');
 const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const MobileDetect = require('mobile-detect');
+const juliaBoxBaseUrl = envHelper.JULIA_BOX_BASE_URL
+const juliaLogoutHelper = require('./helpers/juliaNoteBook/juliaNoteBookHelper')
+
 let memoryStore = null
 let defaultTenantIndexStatus = 'false';
+const socialLoginHelper = require('./helpers/socialLoginHelper/socialLoginHelper')
+//require course price plugin
+var CoursePrice = require('sb_course_price_plugin').PriceRoutes
 
 if (envHelper.PORTAL_SESSION_STORE_TYPE === 'in-memory') {
   memoryStore = new session.MemoryStore()
@@ -123,8 +129,24 @@ app.use('/announcement/v1', bodyParser.urlencoded({ extended: false }),
 
 app.all('/logoff', endSession, function (req, res) {
   res.cookie('connect.sid', '', { expires: new Date() })
+  juliaLogoutHelper.logoutHelper()
   res.redirect('/logout')
 })
+
+// Initialize course price plugin
+const coursePrice = new CoursePrice()
+const config = { 
+  Authorization: 'Bearer ' + envHelper.PORTAL_API_AUTH_TOKEN,
+  baseUrl: envHelper.LEARNER_URL
+}
+coursePrice.init(app, config)
+
+var Payment = require('sb_payment_plugin').PaymentRoutes
+const payment = new Payment(app)
+
+// Add content State update wrapper api and pdf creator
+require('./helpers/contentStateUpdateHelper.js')(app)
+require('./helpers/pdfCreator/pdfCreator.js')(app)
 
 function getLocals(req) {
   var locals = {};
@@ -143,6 +165,10 @@ function getLocals(req) {
   locals.enableSignup = envHelper.ENABLE_SIGNUP;
   locals.buildNumber = envHelper.BUILD_NUMBER
   locals.apiCacheTtl = envHelper.PORTAL_API_CACHE_TTL
+  locals.courseCompletionBadgeId = envHelper.COURSE_COMPLETION_BADGE_ID;
+  locals.addToDigiLockerUrl = envHelper.ADD_TO_DIGILOCKER_APP_URL;
+  locals.addToDigiLockerAppID = envHelper.ADD_TO_DIGILOCKER_APP_ID;
+  locals.addToDigiLockerAppKey = envHelper.ADD_TO_DIGILOCKER_APP_KEY;
   return locals;
 }
 
@@ -355,6 +381,27 @@ app.all('/content/*',
 
 // Local proxy for content and learner service
 require('./proxy/localProxy.js')(app)
+require('./helpers/juliaNoteBook/juliaNoteBookHelper.js')(app)
+
+app.all('/juliabox/*',
+  proxy(juliaBoxBaseUrl, {
+    limit: reqDataLimitOfContentUpload,
+    proxyReqPathResolver: function (req) {
+      let urlParam = req.params['0']
+      let query = require('url').parse(req.url).query
+      let auth_query = "Authorization=" + (req.kauth && req.kauth.grant  && req.kauth.grant.id_token['token'])
+      // console.log('base URL = ' + juliaBoxBaseUrl + urlParam)
+      if (query) {
+        query = query + '&' + auth_query
+        // console.log('final query = ' + juliaBoxBaseUrl + urlParam + '?' + query)
+        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + query).path
+      } else {
+        // console.log('final query = ' + juliaBoxBaseUrl + urlParam + '?' + auth_query)
+        return require('url').parse(juliaBoxBaseUrl + urlParam + '?' + auth_query).path
+      }
+    }
+  })
+)
 
 app.all('/v1/user/session/create', function (req, res) {
   trampolineServiceHelper.handleRequest(req, res, keycloak)
@@ -400,7 +447,6 @@ require('./helpers/shareUrlHelper.js')(app)
 app.use('/resourcebundles/v1', bodyParser.urlencoded({ extended: false }),
   bodyParser.json({ limit: '50mb' }), require('./helpers/resourceBundles')(express))
 
-
 // redirect to home if nothing found
 app.all('*', function (req, res) {
   res.redirect('/')
@@ -414,6 +460,9 @@ keycloak.authenticated = function (request) {
   async.series({
     getUserData: function (callback) {
       permissionsHelper.getCurrentUserRoles(request, callback)
+    },
+    checkAndCreateUserData: function (callback) {
+      socialLoginHelper.createUserIfNotExist(request, callback)
     },
     getPermissionData: function (callback) {
       permissionsHelper.getPermissions(request)

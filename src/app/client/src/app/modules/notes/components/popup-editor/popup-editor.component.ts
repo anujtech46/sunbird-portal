@@ -134,7 +134,7 @@ export class PopupEditorComponent implements OnInit, AfterViewInit {
    * This method redirects the user from the editor.
   */
   public redirect() {
-    this.exitModal.emit();
+    
   }
 
   /**
@@ -177,9 +177,11 @@ export class PopupEditorComponent implements OnInit, AfterViewInit {
             updatedDate: new Date().toISOString()
           };
           this.createEventEmitter.emit(returnObj);
+          this.exitModal.emit();
         },
         (err) => {
           this.showLoader = false;
+          this.exitModal.emit();
           this.toasterService.error(this.resourceService.messages.fmsg.m0030);
         }
       );
@@ -209,9 +211,11 @@ export class PopupEditorComponent implements OnInit, AfterViewInit {
           id: requestData.noteId
         };
         this.updateEventEmitter.emit(returnObj);
+        this.exitModal.emit();
       },
       (err) => {
         this.showLoader = false;
+        this.exitModal.emit();
         this.toasterService.error(this.resourceService.messages.fmsg.m0034);
       }
     );

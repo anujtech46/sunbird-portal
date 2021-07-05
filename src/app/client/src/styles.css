@@ -2739,3 +2739,6 @@ iframe.iziModal-iframe {
 .ui.icon.input>i.icon.dialcode-search-icon:not(.link) {
   pointer-events: auto;
 }
+#openNoteBookModal .ui.modal{
+  transform: translateY(-100px);
+}

@@ -9,12 +9,12 @@
                     <img class="ui circular image profile-card-avatar" src="{{ profile.image || '/assets/images/user_logo.png' | cdnprefixurl }}"
                     />
                 </div>
-                <div class="padding-left-10">
-                    <div class="profile-update-heading">{{resourceService.messages?.stmsg?.m0060}}</div>
-                    <div *ngFor="let field of profile.missingFields | slice:0:2 ;  let first = first; let last = last" [ngClass]="{ first: first, last: last }"
-                        class="padding-top-5 profile-update-subheading">
+                <div class="padding-top-20 padding-left-10 content profileUpdateCardContentHeight">
+                    <div class="profileUpdateCardHeading">{{resourceService.messages?.stmsg?.m0060}}</div>
+                    <!-- <div *ngFor="let field of profile.missingFields | slice:0:2 ;  let first = first; let last = last" [ngClass]="{ first: first, last: last }"
+                        class="padding-top-5 profileUpdateCardSubDesc">
                         {{first ? 'Add ' + field + ( profile.missingFields.length > 1 ? '' : '' ) : field + (last ? ' now' : '') }}
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

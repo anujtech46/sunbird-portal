@@ -7,6 +7,8 @@ interface NodeModule {
 interface Window {
   config: any;
   context: any;
+  open_noteBook: any;
+  Razorpay: any
 }
 
 declare module '*.json' {

@@ -10,6 +10,10 @@ export interface ICourses {
     */
     courseName: string;
     /**
+    * course name
+    */
+    batchName?: string;
+    /**
     * course description
     */
     description: string;

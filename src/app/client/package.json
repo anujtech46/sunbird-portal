@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
+    "dev": "ng build --watch=true",
     "start": "ng build --deployUrl dist/ && mv ../dist/index.html ../dist/index.ejs",
     "proxy": "ng serve --proxy-config proxy.config.js",
     "build": "ng build --prod --deployUrl dist/",
@@ -36,9 +37,10 @@
     "@types/lodash": "^4.14.104",
     "@types/moment-duration-format": "^2.2.0",
     "angular-inport": "^1.1.0",
-    "angular2-csv": "^0.2.5",
     "angular2-uuid": "^1.1.1",
+    "angular5-csv": "^0.2.10",
     "core-js": "^2.4.1",
+    "crypto-js": "^3.1.9-1",
     "fine-uploader": "^5.15.7",
     "font-awesome": "^4.7.0",
     "gulp-download": "0.0.1",
@@ -69,13 +71,13 @@
     "@angular/compiler-cli": "^5.2.0",
     "@angular/language-service": "^5.2.0",
     "@compodoc/compodoc": "^1.0.5",
-    "compodoc": "0.0.41",
     "@types/jasmine": "~2.8.3",
     "@types/jasminewd2": "~2.0.2",
     "@types/jquery": "^3.3.1",
     "@types/jquery.fancytree": "^2.7.34",
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
+    "compodoc": "0.0.41",
     "husky": "0.14.3",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -89,7 +91,7 @@
     "minimist": "^1.2.0",
     "protractor": "~5.1.2",
     "ts-node": "~4.1.0",
-    "tslint": "~5.9.1",
+    "tslint": "^5.9.1",
     "typescript": "~2.5.3"
   }
 }

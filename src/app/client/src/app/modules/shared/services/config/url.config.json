@@ -88,7 +88,8 @@
       "GET": "org/v1/badges/list",
       "ASSIGN": "user/v1/badges/add",
       "CREATE": "badging/v1/issuer/badge/assertion/create",
-      "BADGE_CLASS_SEARCH": "badging/v1/issuer/badge/search"
+      "BADGE_CLASS_SEARCH": "badging/v1/issuer/badge/search",
+      "GET_ISSUER_LIST": "badging/v1/issuer/list"
     },
     "ORG_TYPE": {
       "GET": "org/v1/type/list",
@@ -126,6 +127,31 @@
     "TELEMETRY": {
        "APISLUG": "service/v1/content/",
       "SYNC": "data/v1/telemetry"
+    },
+    "JULIA_PREFIX": "/juliabox/",
+    "JULIA_BOX": {
+      "PING": "jbox/ping",
+      "SSO": "jbox/load_notebook_sso",
+      "NOTEBOOK_STATUS": "notebook/status"
+    },
+    "PRICE_PREFIX": "/price/v1/",
+    "PRICE": {
+      "CREATE": "create",
+      "UPDATE": "update",
+      "READ": "read",
+      "SEARCH": "search"
+    },
+    "CERTIFICATE_PREFIX": "/certificate/v1",
+    "CERTIFICATE": {
+      "COURSE_CERTIFICATE": "/course/download"
+    },
+    "PAYMENT_PREFIX": "payment/v1/",
+    "PAYMENT": {
+      "START": "start",
+      "CREATE": "create",
+      "SUBMIT": "update",
+      "STATUS": "status",
+      "SEND": "send"
     }
   }
 }

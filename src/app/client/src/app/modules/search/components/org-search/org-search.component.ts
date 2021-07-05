@@ -3,7 +3,7 @@ import { SearchService } from '@sunbird/core';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPagination } from '@sunbird/announcement';
-import { Angular2Csv } from 'angular2-csv/Angular2-csv';
+import { Angular5Csv } from 'angular5-csv/Angular5-csv';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { IInteractEventObject, IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
@@ -178,7 +178,7 @@ export class OrgSearchComponent implements OnInit {
         'orgName': key.orgName
       });
     });
-    return new Angular2Csv(downloadArray, 'Organisations', options);
+    return new Angular5Csv(downloadArray, 'Organisations', options);
   }
 
   /**

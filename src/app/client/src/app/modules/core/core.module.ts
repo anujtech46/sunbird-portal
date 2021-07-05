@@ -9,12 +9,12 @@ import {
   UserService, LearnerService, PermissionService, AnnouncementService, ConceptPickerService,
   BadgesService, ContentService, CoursesService, PageApiService,
   TenantService, FrameworkService, FormService, PlayerService, SearchService,
-  CopyContentService, BreadcrumbsService, OrgDetailsService
+  CopyContentService, BreadcrumbsService, OrgDetailsService, JuliaBoxService, PaymentService
 } from './services';
 import {
   MainHeaderComponent, MainMenuComponent, SearchComponent, ConceptPickerComponent, DataDrivenFilterComponent,
   ErrorPageComponent, SortByComponent, FlagContentComponent, ContentPlayerMetadataComponent,
-  BreadcrumbsComponent, LanguageDropdownComponent
+  BreadcrumbsComponent, LanguageDropdownComponent, CoursePaymentComponent
 } from './components';
 import { AuthGuard } from './guard/auth-gard.service';
 import { CacheService } from 'ng2-cache-service';
@@ -33,7 +33,7 @@ import { TelemetryModule } from '@sunbird/telemetry';
   ],
   declarations: [MainHeaderComponent, MainMenuComponent, SearchComponent, PermissionDirective, ConceptPickerComponent,
     DataDrivenFilterComponent, BreadcrumbsComponent, SortByComponent, ErrorPageComponent, FlagContentComponent,
-    ContentPlayerMetadataComponent, LanguageDropdownComponent],
+    ContentPlayerMetadataComponent, LanguageDropdownComponent, CoursePaymentComponent],
   exports: [MainHeaderComponent, PermissionDirective, ConceptPickerComponent, DataDrivenFilterComponent,
     SortByComponent, BreadcrumbsComponent, FlagContentComponent, ContentPlayerMetadataComponent,
     TelemetryModule, LanguageDropdownComponent]
@@ -45,7 +45,7 @@ export class CoreModule {
       providers: [LearnerService, UserService, TenantService, SearchService, CopyContentService,
         PermissionService, AnnouncementService, BadgesService, ContentService, CoursesService, PageApiService,
         AuthGuard, FrameworkService, FormService, CacheService,
-        ConceptPickerService, BreadcrumbsService, PlayerService, OrgDetailsService]
+        ConceptPickerService, BreadcrumbsService, PlayerService, OrgDetailsService, JuliaBoxService, PaymentService]
     };
   }
 }

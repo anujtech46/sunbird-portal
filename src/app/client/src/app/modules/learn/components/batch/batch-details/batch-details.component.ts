@@ -98,7 +98,12 @@ export class BatchDetailsComponent implements OnInit, OnDestroy {
     .takeUntil(this.unsubscribe)
     .subscribe((data: ServerResponse) => {
       if (data.result.response.content && data.result.response.content.length > 0) {
-        this.batchList = data.result.response.content;
+        this.batchId = data.result.response.content;
+        if (this.batchId) {
+          this.batchList = _.filter(data.result.response.content, (batchData) => {
+            return batchData.batchId !== this.batchId;
+          });
+        }
         this.fetchUserDetails();
       } else {
         this.showBatchList = true;

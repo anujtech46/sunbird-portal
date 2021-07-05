@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ResourceService, ToasterService, ServerResponse, ConfigService } from '@sunbird/shared';
-import { Angular2Csv } from 'angular2-csv';
+import { Angular5Csv } from 'angular5-csv/Angular5-csv';
 import { OrgManagementService } from '../../services/org-management/org-management.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { IInteractEventInput, IImpressionEventInput, IInteractEventEdata, IInteractEventObject } from '@sunbird/telemetry';
@@ -182,7 +182,7 @@ export class UserUploadComponent implements OnInit, OnDestroy {
       decimalseparator: '.',
       showLabels: true
     };
-    const csv = new Angular2Csv(this.config.appConfig.ADMIN_UPLOAD.SAMPLE_USER_CSV, 'Sample_Users', options);
+    const csv = new Angular5Csv(this.config.appConfig.ADMIN_UPLOAD.SAMPLE_USER_CSV, 'Sample_Users', options);
   }
   /**
   * This method helps to call uploadOrg method to upload a csv file

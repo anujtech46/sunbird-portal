@@ -1,0 +1,28 @@
+<div class="rightSideSectionCards ui card margin-top-15" *ngIf="userBadges && (userBadges.name || userBadges.badgeClassName)">
+  <div class="content">
+    <div class="header announcementCard-header">Certification
+      <app-course-certificate [courseData]="courseData"></app-course-certificate>
+    </div>
+    <div class="ui items margin-top-10">
+      <div class="item">
+        <img class="ui avatar image" [src]="userBadges.image || userBadges.badgeClassImage">
+        <div class="middle aligned content padding-left-10">
+          <div class="ui huge sub header secondary-text-color-sunbird">{{userBadges.name || userBadges.badgeClassName}}</div>
+          <i *ngIf="userBadgesName && userBadgesName.length > 70" class="ellipsis horizontal icon" title="userBadges.name || userBadges.badgeClassName">
+          </i>
+          <div class="description">
+            <div class="secondary-text-color-sunbird">{{userBadges.issuerName}}
+              <i *ngIf="issueName && issueName.length > 40" class="ellipsis horizontal icon" title="userBadges.issueName">
+              </i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content extra" *ngIf="fileUrl">
+    <span class="ui right floated cursor-pointer cardsKnowMore">
+        <a href="{{fileUrl}}" id="{{addToDigiLockerId}}" class="locker_saver"></a>
+      </span>
+  </div>
+</div>

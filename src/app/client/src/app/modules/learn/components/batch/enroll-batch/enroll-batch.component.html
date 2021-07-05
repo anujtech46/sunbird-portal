@@ -1,8 +1,13 @@
-<sui-modal *ngIf='showEnrollDetails && batchDetails' (dismissed)="redirect()" [isClosable]="true" #enrollBatch>
+<sui-modal *ngIf='showEnrollDetails && batchDetails' [isClosable]="false" #enrollBatch>
     <div class="header" [appTelemetryImpression]="telemetryImpression">
         <div class="ui grid">
             <div class="eleven wide column">
                 <span class="ui header">{{batchDetails.name}}</span>
+            </div>
+            <div class="one wide column actions">
+                <h5 class="ui basic icon circular button deny" (click)="redirect()">
+                  <i class="ui remove icon"></i>
+                </h5>
             </div>
         </div>
     </div>
@@ -21,8 +26,8 @@
                         <div class="ten wide column padding-left-25">
                             <div class="ui grid">
                                 <div class="eight wide column batch-des">
-                                    <label>{{resourceService.frmelmnts.lbl.batchdescription}}</label>
-                                    <div *ngIf="batchDetails.description" class="des-content">
+                                    <label *ngIf="batchDetails.description">{{resourceService.frmelmnts.lbl.batchdescription}}</label>
+                                    <div class="des-content">
                                             <p *ngIf="!readMore"> {{ batchDetails.description | slice:0:120}}&nbsp;
                                                 <span class="ui cardsKnowMore mouse-pointer" *ngIf="batchDetails.description && batchDetails.description.length > 120 && readMore === false" (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
                                             </p>
@@ -31,18 +36,21 @@
                                             </p>
                                     </div>
                                 </div>
-                                <div class="four wide column">
-                                    <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="enrollToCourse()">
-                                        <span class="text">{{resourceService.frmelmnts.lbl.enrollcourse}}</span>
+                                <div class="four wide column" *ngIf="paymentType && orderDataStatus" >
+                                    <button *ngIf="paymentType && paymentType.toLowerCase() === 'optional'" [disabled]="disableSubmitBtn" class="ui fluid blue right floated  ui button margin-top-0" id="enrollToCourse" (click)="enrollToCourse()">
+                                        <span class="text">SKIP AND ENROLL</span>
+                                    </button>
+                                    <button [disabled]="disableSubmitBtn" class="ui fluid blue right floated ui button margin-top-20" id="enrollToCourse" (click)="createPayment()">
+                                        <span class="text">PAY AND ENROLL</span>
                                     </button>
                                 </div>
                             </div>
                             <div class="ui grid batch-date">
-                                <div class="six wide column  start-date">
+                                <div class="six wide column  start-date" *ngIf="batchDetails.startDate">
                                     <label>{{resourceService.frmelmnts.lbl.startdate}}</label>
                                     <span class="padding-left-10">{{batchDetails.startDate }}</span>
                                 </div>
-                                <div class="six wide column  end-date">
+                                <div class="six wide column  end-date" *ngIf="batchDetails.endDate">
                                     <label>{{resourceService.frmelmnts.lbl.enddate}}</label>
                                     <span class="padding-left-10">{{batchDetails.endDate }}</span>
                                 </div>
@@ -63,6 +71,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="six wide column">
+                <app-course-price [viewType]="'CARD'" [courseId]="batchDetails.courseId" [batchId]="batchDetails.identifier" (updatePriceData)="updatePriceData($event)"></app-course-price>
             </div>
         </div>
     </div>

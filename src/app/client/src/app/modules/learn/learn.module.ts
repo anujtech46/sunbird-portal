@@ -10,8 +10,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
   CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
-  UpdateCourseBatchComponent, CarriculumCardComponent } from './components';
-import { CourseConsumptionService, CourseBatchService, CourseProgressService } from './services';
+  UpdateCourseBatchComponent, CarriculumCardComponent, CourseBadgeComponent, CoursePriceComponent,
+  CourseCertificateComponent, CourseBenefitComponent } from './components';
+import { CourseConsumptionService, CourseBatchService, CourseProgressService, CourseBadgeService,
+          JuliaNoteBookService, CoursePriceService, CourseCertificateService } from './services';
 import { CoreModule } from '@sunbird/core';
 import { DiscussionModule } from '@sunbird/discussion';
 import { NotesModule } from '@sunbird/notes';
@@ -19,7 +21,7 @@ import { DashboardModule } from '@sunbird/dashboard';
 
 @NgModule({
   imports: [
-    CommonModule,
+  CommonModule,
     SharedModule,
     SuiModule,
     DashboardModule,
@@ -33,9 +35,12 @@ import { DashboardModule } from '@sunbird/dashboard';
     TelemetryModule,
     NgInviewModule
   ],
-  providers: [CourseConsumptionService, CourseBatchService, CourseProgressService],
+  providers: [CourseConsumptionService, CourseBatchService, CourseProgressService, CourseBadgeService,
+     JuliaNoteBookService, CoursePriceService, CourseCertificateService],
   declarations: [LearnPageComponent, CoursePlayerComponent, CourseConsumptionHeaderComponent,
     CourseConsumptionPageComponent, BatchDetailsComponent, EnrollBatchComponent, CreateBatchComponent,
-    UpdateCourseBatchComponent, CarriculumCardComponent]
+    UpdateCourseBatchComponent, CarriculumCardComponent,
+     CourseBadgeComponent, CoursePriceComponent, CourseCertificateComponent, CourseBenefitComponent,
+     CourseBenefitComponent]
 })
 export class LearnModule { }

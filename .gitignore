@@ -11,6 +11,8 @@
 /src/app/dist
 /src/app/client/src/documentation/
 /src/app/client/src/coverage
+/src/app/node_modules/
+/src/app/client/node_modules
 /src/app/client/src/thirdparty
 src/app/dist/thirdparty/editors/
 src/app/app_dist
@@ -19,3 +21,7 @@ src/app/app_dist
 **/node_modules
 /src/app/client/coverage
 /src/app/client/documentation
+
+src/app/helpers/localVariables\.js
+
+src/app/helpers/jaldhara\.localVariables\.js

@@ -99,6 +99,7 @@ export class AppComponent implements OnInit {
           this.initializeAnonymousSession();
         });
       });
+      this.initTenantService();
     }
   }
   initializeLogedInsession() {

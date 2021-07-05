@@ -93,7 +93,7 @@ public configService: ConfigService;
    */
   constructor(resourceService: ResourceService, private playerService: PlayerService,
     userService: UserService, courseService: CoursesService, toasterService: ToasterService,
-    route: Router, activatedRoute: ActivatedRoute, configService: ConfigService, utilService: UtilService) {
+    route: Router, activatedRoute: ActivatedRoute, configService: ConfigService, utilService: UtilService, public router: Router) {
     this.userService = userService;
     this.courseService = courseService;
     this.resourceService = resourceService;
@@ -108,6 +108,7 @@ public configService: ConfigService;
   */
   public populateUserProfile() {
     const profile = 'profile';
+    this.showLoader = true;
     this.userSubscription = this.userService.userData$.subscribe(
       user => {
         if (user && !user.err) {
@@ -136,11 +137,15 @@ public configService: ConfigService;
    * This method calls the course API.
    */
   public populateEnrolledCourse() {
+    this.showLoader = true;
     this.courseSubscription = this.courseService.enrolledCourseData$.subscribe(
       data => {
         if (data && !data.err) {
           this.showLoader = false;
-          const constantData = this.configService.appConfig.Home.enrolledCourses.constantData;
+          if (data.enrolledCourses.length === 0) {
+            this.router.navigate(['learn']);
+          } else {
+            const constantData = this.configService.appConfig.Home.enrolledCourses.constantData;
             const metaData = { metaData: this.configService.appConfig.Home.enrolledCourses.metaData };
             const dynamicFields = {
               'maxCount': this.configService.appConfig.Home.enrolledCourses.maxCount,
@@ -148,9 +153,12 @@ public configService: ConfigService;
             };
             const courses = this.utilService.getDataForCard(data.enrolledCourses,
               constantData, dynamicFields, metaData);
-          this.toDoList = this.toDoList.concat(courses);
+            this.toDoList = this.toDoList.concat(courses);
+          }
+          this.populateUserProfile();
         } else if (data && data.err) {
           this.showLoader = false;
+          this.populateUserProfile();
           this.toasterService.error(this.resourceService.messages.fmsg.m0001);
         }
       },
@@ -178,7 +186,6 @@ public configService: ConfigService;
   * user details and enrolled courses.
   */
   ngOnInit() {
-    this.populateUserProfile();
     this.populateEnrolledCourse();
     this.telemetryImpression = {
       context: {

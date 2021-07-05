@@ -89,7 +89,7 @@ export class CourseConsumptionHeaderComponent implements OnInit, AfterViewInit, 
         !this.contentId && this.enrolledBatchInfo.status > 0 && this.lastPlayedContentId) {
         this.onPageLoadResume = false;
         this.showResumeCourse = false;
-        this.resumeCourse();
+        // this.resumeCourse();
       } else if (!this.flaggedCourse && this.contentId && this.enrolledBatchInfo.status > 0 && this.lastPlayedContentId) {
         this.onPageLoadResume = false;
         this.showResumeCourse = false;

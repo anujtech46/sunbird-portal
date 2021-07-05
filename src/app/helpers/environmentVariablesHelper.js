@@ -34,18 +34,33 @@ let envVariables = {
   KEY_CLOAK_REALM: env.sunbird_keycloak_realm || 'sunbird',
   CACHE_STORE: env.sunbird_cache_store || 'memory',
   CACHE_TTL: env.sunbird_cache_ttl || 1800,
-  CONTENT_CHANNEL_FILTER_TYPE: env.sunbird_content_channel_filter_type || 'all',
+  CONTENT_CHANNEL_FILTER_TYPE: env.sunbird_content_channel_filter_type || 'self',
   learner_Service_Local_BaseUrl: env.sunbird_learner_service_local_base_url || 'http://learner-service:9000',
   content_Service_Local_BaseUrl: env.sunbird_content_service_local_base_url || 'http://content_service_content_service:5000',
   ANDROID_APP_URL: env.sunbird_android_app_url || 'http://www.sunbird.org',
-  EXPLORE_BUTTON_VISIBILITY: env.sunbird_explore_button_visibility || 'true',
   ENABLE_SIGNUP: env.sunbird_enable_signup || 'true',
   BUILD_NUMBER: env.build_number || packageObj.version+'.'+packageObj.buildNumber,
   TELEMETRY_SERVICE_LOCAL_URL: env.sunbird_telemetry_service_local_url || 'http://telemetry-service:9001/',
-  PORTAL_API_CACHE_TTL: env.sunbird_api_response_cache_ttl || '600'
+  PORTAL_API_CACHE_TTL: env.sunbird_api_response_cache_ttl || '600',
+  EXPLORE_BUTTON_VISIBILITY: env.sunbird_explore_button_visibility || 'false',
+  ENABLE_SIGNUP: env.sunbird_enable_signup || 'true',
+  BUILD_NUMBER: env.build_number || packageObj.version+'.'+packageObj.buildNumber,
+  TELEMETRY_SERVICE_LOCAL_URL: env.sunbird_telemetry_service_local_url || 'http://telemetry-service:9001/',
+  SUNBIRD_EXTERNAL_CONTENT_WHITELISTED_DOMAINS: env.sunbird_external_content_whitelisted_domains || ['youtube.com','juliabox.com']
 }
 
 envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_cassandra_urls !== '')
   ? env.sunbird_cassandra_urls.split(',') : ['localhost']
+
+try {
+  envVariables = Object.assign({}, envVariables,  require('./julia_env_variables'))
+} catch(err) {
+
+}   
+
+
+if (process.env.NODE_ENV === 'local') {   
+  envVariables = Object.assign({}, envVariables,  require('./localVariables'))   
+}
 
 module.exports = envVariables

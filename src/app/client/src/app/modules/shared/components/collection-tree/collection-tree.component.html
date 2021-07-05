@@ -6,7 +6,7 @@
       <i *ngIf="child.folder" class="icon right-float padding-top-5" [class.plus]="!child.togglePanelIcon" [class.minus]="child.togglePanelIcon"></i>
     </div>
     <div *ngIf="child.folder" content>
-      <app-fancy-tree (itemSelect)="onItemSelect($event)" [nodes]="child.children" [options]="{ showConnectors: true }"></app-fancy-tree>
+      <app-fancy-tree (itemSelect)="onItemSelect($event)" [nodes]="child.children" [options]="{ showConnectors: true }" [contentState]="contentStatus"></app-fancy-tree>
     </div>
   </sui-accordion-panel>
 </sui-accordion>
